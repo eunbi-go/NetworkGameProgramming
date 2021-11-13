@@ -1,0 +1,134 @@
+﻿  stdafx.cpp
+  CrazyArcade.cpp
+  Ballon.cpp
+  Basket.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Bazzi.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Bazzi.cpp(182,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Bazzi.cpp(182,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  BmpManager.cpp
+  Bomb.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  BombWave.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  BossBomb.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CollidManager.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\CollidManager.cpp(67,50): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Dao.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Dao.cpp(183,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Dao.cpp(183,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Digenie.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Digenie.cpp(181,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Digenie.cpp(181,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Flower.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Grass.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  HMSon.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\HMSon.cpp(282,62): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\HMSon.cpp(282,51): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\HMSon.cpp(285,57): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\HMSon.cpp(285,45): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  KeyManager.cpp
+  Leaf1.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Leaf2.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Line.cpp
+  LineManager.cpp
+  Logo.cpp
+  컴파일하고 있습니다...
+  MainGame.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  MaxPotion.cpp
+  Mbape.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Messi.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  MyBitMap.cpp
+  MyEdit.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  MyMenu.cpp
+  Obj.cpp
+  ObjManager.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(250,111): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(250,70): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(252,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(252,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(255,111): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(255,69): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(257,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(257,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(260,111): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(260,69): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(262,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(262,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(265,112): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(265,70): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(267,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(267,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(270,111): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(270,69): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(272,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(272,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(275,110): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(275,68): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(277,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(277,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(280,110): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(280,68): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(282,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(282,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(285,110): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(285,68): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(287,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(287,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Player.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Player.cpp(188,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Player.cpp(188,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Potion.cpp
+  Rock1.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Rock1.cpp(37,15): warning C4552: '+': 식의 결과가 사용되지 않습니다.
+  Rock2.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Rock2.cpp(37,14): warning C4552: '+': 식의 결과가 사용되지 않습니다.
+  Rock3.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Rock3.cpp(38,14): warning C4552: '+': 식의 결과가 사용되지 않습니다.
+  Scene.cpp
+  SceneManager.cpp
+  Skate.cpp
+  SoundMgr.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\SoundMgr.cpp(92,14): warning C4244: '초기화 중': 'intptr_t'에서 'long'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\SoundMgr.cpp(112,37): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Stage1.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Stage2.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  컴파일하고 있습니다...
+  Stage_Boss.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Tile.cpp
+  TileManager.cpp
+  Uni.cpp
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Uni.cpp(182,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\Uni.cpp(182,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  WatingRoom.cpp
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_System_Create
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_System_Init
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_Sound_Release
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_System_Release
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_System_Close
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_Channel_IsPlaying
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_System_PlaySound
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_System_Update
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_Channel_SetMode
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_Channel_Stop
+SoundMgr.obj : error LNK2001: 확인할 수 없는 외부 기호 FMOD_System_CreateSound
+C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\x64\Release\111A_API_GameProject.exe : fatal error LNK1120: 11개의 확인할 수 없는 외부 참조입니다.

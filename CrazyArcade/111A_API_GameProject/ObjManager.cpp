@@ -287,22 +287,15 @@ void CObjManager::Picking_Object(CObj * _pObj, MAPBLOCK::BLOCK _block)
 		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::ROCK3);
 		break;
 	}
-
-
-	//int iIdx = TILEX * y + x;
-
-	//for (int i = 0; i < MAPBLOCK::END; ++i)
-	//{
-	//	if (0 > iIdx || m_listMapBLOCK[i].size() <= (size_t)iIdx)
-	//		return;
-	//}
-
-	//dynamic_cast<CObj*>(m_vecTile[iIdx])->Set_TileKey(_iDrawID);
 }
 
+// 네트워크 텀프를 위한 수정
 void CObjManager::Save_Object()
 {
-	HANDLE hFile = CreateFile(L"../Data/Object.dat", GENERIC_WRITE,
+	//HANDLE hFile = CreateFile(L"../Data/Object.dat", GENERIC_WRITE,
+	//	NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	HANDLE hFile = CreateFile(L"../Data/NetworkObject.dat", GENERIC_WRITE,
 		NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (INVALID_HANDLE_VALUE == hFile)
@@ -334,9 +327,10 @@ void CObjManager::Save_Object()
 	MessageBox(g_hWnd, L"저장 성공", L"성공", MB_OK);
 }
 
+// 네트워크 텀프를 위한 수정
 void CObjManager::Load_Object()
 {
-	HANDLE hFile = CreateFile(L"../Data/Object.dat", GENERIC_READ,
+	HANDLE hFile = CreateFile(L"../Data/NetworkObject.dat", GENERIC_READ,
 		NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (INVALID_HANDLE_VALUE == hFile)

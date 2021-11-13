@@ -7,6 +7,7 @@
 #include "MyEdit.h"
 #include "Stage2.h"
 #include "Stage_Boss.h"
+#include "CNetworkStage.h"
 
 CSceneManager* CSceneManager::m_pInstance = nullptr;
 CSceneManager::CSceneManager()
@@ -50,7 +51,9 @@ void CSceneManager::Scene_Change(SCENEID _eScene)
 		case CSceneManager::SCENE_STAGE_BOSS:
 			m_pScene = new CStage_Boss;
 			break;
-
+		case CSceneManager::SCENE_STAGE_NETWORK:
+			m_pScene = new CNetworkStage;
+			break;
 		}
 		m_pScene->Initialize();
 		m_ePreScene = m_eCurScene;

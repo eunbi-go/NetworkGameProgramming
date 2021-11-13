@@ -145,6 +145,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CNetworkStage.h" />
     <ClInclude Include="CrazyArcade.h" />
     <ClInclude Include="AbstractFactory.h" />
     <ClInclude Include="Ballon.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="WatingRoom.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CNetworkStage.cpp" />
     <ClCompile Include="CrazyArcade.cpp" />
     <ClCompile Include="Ballon.cpp" />
     <ClCompile Include="Basket.cpp" />

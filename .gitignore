@@ -32,3 +32,5 @@
 *.app
 
 *.ipch
+.vs/
+*.VC.db
