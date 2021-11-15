@@ -1,6 +1,4 @@
-﻿  Stage1.cpp
-C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.h(31,21): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-SoundMgr.obj : error LNK2019: FMOD_System_Create"public: void __cdecl CSoundMgr::Initialize(void)" (?Initialize@CSoundMgr@@QEAAXXZ) 함수에서 참조되는 확인할 수 없는 외부 기호
+﻿SoundMgr.obj : error LNK2019: FMOD_System_Create"public: void __cdecl CSoundMgr::Initialize(void)" (?Initialize@CSoundMgr@@QEAAXXZ) 함수에서 참조되는 확인할 수 없는 외부 기호
 SoundMgr.obj : error LNK2019: FMOD_System_Release"public: void __cdecl CSoundMgr::Release(void)" (?Release@CSoundMgr@@QEAAXXZ) 함수에서 참조되는 확인할 수 없는 외부 기호
 SoundMgr.obj : error LNK2019: FMOD_System_Init"public: void __cdecl CSoundMgr::Initialize(void)" (?Initialize@CSoundMgr@@QEAAXXZ) 함수에서 참조되는 확인할 수 없는 외부 기호
 SoundMgr.obj : error LNK2019: FMOD_System_Close"public: void __cdecl CSoundMgr::Release(void)" (?Release@CSoundMgr@@QEAAXXZ) 함수에서 참조되는 확인할 수 없는 외부 기호
@@ -12,4 +10,4 @@ SoundMgr.obj : error LNK2019: FMOD_Channel_Stop"public: void __cdecl CSoundMgr::
 SoundMgr.obj : error LNK2019: FMOD_Channel_IsPlaying"public: void __cdecl CSoundMgr::PlaySoundW(wchar_t *,enum CSoundMgr::CHANNELID)" (?PlaySoundW@CSoundMgr@@QEAAXPEA_WW4CHANNELID@1@@Z) 함수에서 참조되는 확인할 수 없는 외부 기호
 SoundMgr.obj : error LNK2019: FMOD_Channel_SetMode"public: void __cdecl CSoundMgr::PlayBGM(wchar_t *)" (?PlayBGM@CSoundMgr@@QEAAXPEA_W@Z) 함수에서 참조되는 확인할 수 없는 외부 기호
 fmodex_vc.lib : warning LNK4272: 'x86' 라이브러리 컴퓨터 종류가 'x64' 대상 컴퓨터 종류와 충돌합니다.
-C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\x64\Debug\111A_API_GameProject.exe : fatal error LNK1120: 11개의 확인할 수 없는 외부 참조입니다.
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\x64\Debug\111A_API_GameProject.exe : fatal error LNK1120: 11개의 확인할 수 없는 외부 참조입니다.
