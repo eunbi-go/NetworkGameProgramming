@@ -7,9 +7,11 @@
 #include "SceneManager.h"
 #include "TileManager.h"
 #include "SoundMgr.h"
+#include "ClientManager.h"
 
 CMainGame::CMainGame()
 {
+	CClientManager::Get_Instance()->connectToServer();
 }
 
 
@@ -27,11 +29,22 @@ void CMainGame::Initialize()
 	CSoundMgr::Get_Instance()->Initialize();
 	CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENEID::SCENE_MENU);
 	CTileManager::Get_Instance()->Initialize();
+
+	if (isInit) {
+		CClientManager::Get_Instance()->sendInfo();
+		CClientManager::Get_Instance()->recvClientID();
+		CClientManager::Get_Instance()->recvInfo();
+		CClientManager::Get_Instance()->applyInfo();
+
+		isInit = false;
+	}
 }
 
 void CMainGame::Update()
 {
 	CSceneManager::Get_Instance()->Update();
+
+	CClientManager::Get_Instance()->set_buffOn();
 }
 
 void CMainGame::Late_Update()
@@ -50,6 +63,12 @@ void CMainGame::Render()
 	CSceneManager::Get_Instance()->Render(HBackBuffer);
 
 	BitBlt(m_DC, 0, 0, WINCX, WINCY, HBackBuffer, 0, 0, SRCCOPY);
+
+
+	// 서버 통신
+	CClientManager::Get_Instance()->sendInfo();
+	CClientManager::Get_Instance()->recvInfo();
+	CClientManager::Get_Instance()->applyInfo();
 }
 
 void CMainGame::Release()
@@ -61,6 +80,8 @@ void CMainGame::Release()
 
 	CObjManager::Destroy_Instance();
 	CSoundMgr::Destroy_Instance();
+
+	CClientManager::Destroy_Instance();
 
 	ReleaseDC(g_hWnd, m_DC);
 }

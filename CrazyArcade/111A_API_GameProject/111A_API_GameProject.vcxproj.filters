@@ -172,6 +172,9 @@
     <Filter Include="소스 파일\04.Scene\04.GameStart\04.NetworkStage">
       <UniqueIdentifier>{d5e2e01c-1320-4417-acbe-4823e8791886}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\98.Manager\09. ClientManager">
+      <UniqueIdentifier>{827e39d0-3024-4f13-9bf6-5d38e6fbbd14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -345,6 +348,9 @@
     <ClInclude Include="CNetworkStage.h">
       <Filter>소스 파일\04.Scene\04.GameStart\04.NetworkStage</Filter>
     </ClInclude>
+    <ClInclude Include="ClientManager.h">
+      <Filter>소스 파일\98.Manager\09. ClientManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CrazyArcade.cpp">
@@ -487,6 +493,9 @@
     </ClCompile>
     <ClCompile Include="CNetworkStage.cpp">
       <Filter>소스 파일\04.Scene\04.GameStart\04.NetworkStage</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientManager.cpp">
+      <Filter>소스 파일\98.Manager\09. ClientManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

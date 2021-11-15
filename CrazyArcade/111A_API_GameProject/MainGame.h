@@ -23,6 +23,8 @@ private:
 	//int				m_iFPS;
 	//DWORD			m_dwTime;
 	//TCHAR			m_szFPS[16];
+
+	bool	isInit = true;
 };
 
 
