@@ -12,6 +12,7 @@
 CMainGame::CMainGame()
 {
 	CClientManager::Get_Instance()->connectToServer();
+	CClientManager::Get_Instance()->recvClientID();
 }
 
 

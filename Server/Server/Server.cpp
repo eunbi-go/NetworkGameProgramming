@@ -3,6 +3,8 @@
 static int ClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WolrdInfo;			// 클라이언트로 보낼 패킷
 
+#define SERVERPORT 9000
+
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
 {
@@ -46,7 +48,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	// ClientID 보내기 (후에 처음 들어왔을때만 보내게 처리)
-	retval = send(client_sock, (char*)ClientID, sizeof(int), 0);
+	retval = send(client_sock, (char*)&ClientID, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
@@ -54,9 +56,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n",
 		ntohs(clientaddr.sin_port), ClientID);
 
-	while (1) {
-		
-	}
+	//while (1) {
+	//	
+	//}
 
 	closesocket(client_sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
