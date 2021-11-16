@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <map>
+#include <vector>
+#include <algorithm>
 
 #include "enum.h"
 #include "struct.h"

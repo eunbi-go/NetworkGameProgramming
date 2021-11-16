@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
-static int ClientID = 0;				// 클라이언트의 ID
+static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WolrdInfo;			// 클라이언트로 보낼 패킷
+vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
 
 #define SERVERPORT 9000
 
@@ -47,24 +48,32 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-	// ClientID 보내기 (후에 처음 들어왔을때만 보내게 처리)
-	retval = send(client_sock, (char*)&ClientID, sizeof(int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
+	// 현재 클라이언트가 처음 접속했는지 확인
+	auto iter = find(vecIsFirstConnect.begin(), vecIsFirstConnect.end(), clientaddr.sin_port);
+	if (iter == vecIsFirstConnect.end())
+	{
+		// 처음 접속이면 포트 번호를 저장
+		vecIsFirstConnect.push_back(clientaddr.sin_port);
+		// ClientID 보내기 (후에 처음 들어왔을때만 보내게 처리)
+		retval = send(client_sock, (char*)&iClientID, sizeof(int), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+
+		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
+		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
 	}
-
-	printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n",
-		ntohs(clientaddr.sin_port), ClientID);
-
-	//while (1) {
-	//	
-	//}
-
+	else
+	{
+		//while (1) {
+		//	
+		//}
+	}
+	
 	closesocket(client_sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 
-	ClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
 	return 0;
 }
 
