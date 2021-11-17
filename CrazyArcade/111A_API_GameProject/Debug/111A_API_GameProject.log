@@ -1,4 +1,2 @@
 ﻿  ClientManager.cpp
-  MainGame.cpp
-  코드를 생성하고 있습니다...
-  111A_API_GameProject.vcxproj -> C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\Debug\111A_API_GameProject.exe
+C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ClientManager.cpp : fatal error C1090: PDB API를 호출하지 못했습니다. 오류 코드 '3': C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\Debug\vc142.pdb
