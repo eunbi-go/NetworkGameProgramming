@@ -32,6 +32,9 @@ public:
 
 	void	set_buffOn();
 
+public:
+	void	setPlayerInfo(const INFO& tPInfo);
+
 private:
 	void	err_quit(char* msg);		// 소켓 함수 오류 출력 후 종료
 	void	err_display(char* msg);		// 소켓 함수 오류 출력

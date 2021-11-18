@@ -52,7 +52,14 @@ void CClientManager::recvClientID()
 
 int CClientManager::sendInfo()
 {
-	return 0;
+	ZeroMemory(&tClientInfo, sizeof(tClientInfo));
+	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
+	tClientInfo.iTest = 5;
+	retval = send(sock, (char*)&tClientInfo, sizeof(tClientInfo), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	return retval;
 }
 
 int CClientManager::recvInfo()
@@ -65,6 +72,10 @@ void CClientManager::applyInfo()
 }
 
 void CClientManager::set_buffOn()
+{
+}
+
+void CClientManager::setPlayerInfo(const INFO& tPInfo)
 {
 }
 
