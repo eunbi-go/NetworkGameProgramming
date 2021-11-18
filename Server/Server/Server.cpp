@@ -7,6 +7,7 @@ vector<USHORT> vecIsFirstConnect;		// Å¬¶óÀÌ¾ğÆ®°¡ Á¢¼ÓÇÏ¸é Å¬¶óÀÌ¾ğÆ®ÀÇ Æ÷Æ®¹øÈ
 #define SERVERPORT 9000
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
+void Send_Data(LPVOID arg);
 
 // ¼ÒÄÏ ÇÔ¼ö ¿À·ù Ãâ·Â ÈÄ Á¾·á
 void err_quit(const char* msg)
@@ -84,6 +85,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		Receive_Data((LPVOID)client_sock, WorldInfo);
 
+		// Ä³¸¯ÅÍ Á¾·ù, ÃÊ±â À§Ä¡ Á¤ÇØ¼­ Client·Î Àü¼Û
+		Send_Data((LPVOID)client_sock);
 
 		printf("Æ÷Æ® ¹øÈ£=%d ¿¡°Ô ClientID: %d Àü¼Û ¼º°ø\n", ntohs(clientaddr.sin_port), iClientID);
 		iClientID++;		// ´ÙÀ½ Á¢¼ÓÇÒ Å¬¶óÀÌ¾ğÆ® ID´Â +1 ÇØ¼­ °ü¸®
@@ -179,4 +182,17 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 
 	// WorldInfoÀÇ ClientID Å°°ª¿¡ ClientInfo¸¦ ÀúÀåÇÑ´Ù.
 	WorldInfo.insert({ iClientID, ClientInfo });
+}
+
+void Send_Data(LPVOID arg)
+{
+	SOCKET client_sock = (SOCKET)arg;
+	int retval;
+
+	// ¿©±â¼­ ÀÎ°ÔÀÓ ÇÃ·¹ÀÌ¾î ÃÊ±â À§Ä¡µµ Á¤ÇØÁà¼­ º¸³»Áà¾ßÇÔ
+
+	retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
 }

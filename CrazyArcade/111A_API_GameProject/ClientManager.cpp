@@ -53,6 +53,23 @@ void CClientManager::recvClientID()
 int CClientManager::sendInfo()
 {
 	ZeroMemory(&tClientInfo, sizeof(tClientInfo));
+
+	// ClientID에 따라서 캐릭터를 정해서 서버로 보냄
+	// ClientID : 0 -> 배찌,	ClientID : 1 -> 다오,	ClientID : 2 -> 디즈니
+
+	switch (iClientID)
+	{
+	case 0:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::BAZZI;
+		break;
+	case 1:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::DAO;
+		break;
+	case 2:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::DIGENIE;
+		break;
+	}
+
 	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
 	tClientInfo.iTest = 5;
 	retval = send(sock, (char*)&tClientInfo, sizeof(tClientInfo), 0);
