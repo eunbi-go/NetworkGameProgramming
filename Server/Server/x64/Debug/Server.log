@@ -1,4 +1,4 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(499,5): warning MSB8004: Output 디렉터리가 슬래시로 끝나지 않습니다. Output 디렉터리의 적절한 평가를 허용하는 데 필요하므로 이 빌드 인스턴스에서 슬래시를 추가합니다.
   Server.cpp
-C:\Users\고은비\Documents\NetworkGameProgramming\Server\Server\Server.cpp(45,7): warning C4101: 'buf' :참조되지 않은 지역 변수입니다.
-  Server.vcxproj -> C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\Release\Server.exe
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\Server\Server\Server.cpp(65,7): warning C4101: 'buf' :참조되지 않은 지역 변수입니다.
+  Server.vcxproj -> D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\Release\Server.exe
