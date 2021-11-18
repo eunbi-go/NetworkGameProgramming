@@ -4,6 +4,7 @@
 #include "KeyManager.h"
 #include "SceneManager.h"
 #include "SoundMgr.h"
+#include "ClientManager.h"
 
 CWatingRoom::CWatingRoom()
 {
@@ -17,7 +18,7 @@ CWatingRoom::~CWatingRoom()
 
 void CWatingRoom::Initialize()
 {
-	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Map/Lobby.bmp", L"Lobby");
+	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Map/3PLobby.bmp", L"Lobby");
 	
 	// 캐릭터 썸네일
 	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Character/Bazzi/bazzi_image.bmp", L"Bazzi_sumnail");
@@ -102,6 +103,26 @@ void CWatingRoom::Late_update()
 
 void CWatingRoom::Render(HDC _DC)
 {
+	// ClientID별 캐릭터 위치
+	// ClientID : 0  ->  50
+	// ClientID : 1  ->  155
+	// ClientID : 2  ->  260
+
+	int iTempPos = 0;
+	// 클라이언트 아이디 따라 위치 정해주기
+	switch (CClientManager::Get_Instance()->GetClientID())
+	{
+	case 0:
+		iTempPos = 50;
+		break;
+	case 1:
+		iTempPos = 155;
+		break;
+	case 2:
+		iTempPos = 260;
+		break;
+	}
+
 	HDC hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Lobby");
 	BitBlt(_DC, 0, 0, WINCX, WINCY, hMemDC, 0, 0, SRCCOPY);
 
@@ -109,13 +130,13 @@ void CWatingRoom::Render(HDC _DC)
 	{
 		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Bazzi_sumnail");
 		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
-
+		
 		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"bazzi");
-		GdiTransparentBlt(_DC, m_tRect.left - 15, m_tRect.top
+		GdiTransparentBlt(_DC, iTempPos, m_tRect.top
 			, 50, 60, hMemDC
 			, 0, 0
 			, 50, 60
-			, RGB(100, 100, 100));
+			, RGB(100, 100, 100));		
 	}
 	if (CSceneManager::Get_Instance()->Get_Char() == CHARNAME::DAO)
 	{
@@ -123,7 +144,7 @@ void CWatingRoom::Render(HDC _DC)
 		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
 
 		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"dao");
-		GdiTransparentBlt(_DC, m_tRect.left - 15, m_tRect.top
+		GdiTransparentBlt(_DC, iTempPos, m_tRect.top
 			, 50, 60, hMemDC
 			, 0, 0
 			, 50, 60
@@ -135,7 +156,7 @@ void CWatingRoom::Render(HDC _DC)
 		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
 
 		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"degenie");
-		GdiTransparentBlt(_DC, m_tRect.left - 15, m_tRect.top
+		GdiTransparentBlt(_DC, iTempPos, m_tRect.top
 			, 50, 60, hMemDC
 			, 0, 0
 			, 50, 60
@@ -147,7 +168,7 @@ void CWatingRoom::Render(HDC _DC)
 		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
 
 		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"uni");
-		GdiTransparentBlt(_DC, m_tRect.left - 15, m_tRect.top
+		GdiTransparentBlt(_DC, iTempPos, m_tRect.top
 			, 50, 60, hMemDC
 			, 0, 0
 			, 50, 60

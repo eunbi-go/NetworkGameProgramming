@@ -32,6 +32,8 @@ public:
 
 	void	set_buffOn();
 
+	int		GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
+
 private:
 	void	err_quit(char* msg);		// 소켓 함수 오류 출력 후 종료
 	void	err_display(char* msg);		// 소켓 함수 오류 출력
