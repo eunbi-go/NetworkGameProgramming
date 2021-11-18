@@ -7,6 +7,7 @@
 #include "BmpManager.h"
 #include "SoundMgr.h"
 #include "SceneManager.h"
+#include "ClientManager.h"
 
 
 CPlayer::CPlayer()
@@ -43,6 +44,7 @@ void CPlayer::Initialize()
 	m_eState = OBJSTATE::IDLE;
 	m_eCurDir = OBJDIR::IDLE;
 
+	//CClientManager::Get_Instance()->setPlayerInfo(m_tInfo);
 }
 
 int CPlayer::Update()

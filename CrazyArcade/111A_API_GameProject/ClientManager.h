@@ -32,6 +32,9 @@ public:
 
 	void	set_buffOn();
 
+public:
+	void	setPlayerInfo(const INFO& tPInfo);
+
 	int		GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
 
 private:

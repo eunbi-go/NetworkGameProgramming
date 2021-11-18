@@ -1,10 +1,12 @@
 #include "stdafx.h"
 
 static int iClientID = 0;				// 클라이언트의 ID
-map<int, CLIENTINFO> WolrdInfo;			// 클라이언트로 보낼 패킷
+map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
 vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
 
 #define SERVERPORT 9000
+
+void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
@@ -35,6 +37,26 @@ void err_display(const char* msg)
 	LocalFree(lpMsgBuf);
 }
 
+// 사용자 정의 데이터 수신 함수
+int recvn(SOCKET s, char* buf, int len, int flags)
+{
+	int received;
+	char* ptr = buf;
+	int left = len;
+
+	while (left > 0) {
+		received = recv(s, ptr, left, flags);
+		if (received == SOCKET_ERROR)
+			return SOCKET_ERROR;
+		else if (received == 0)
+			break;
+		left -= received;
+		ptr += received;
+	}
+
+	return (len - left);
+}
+
 // 클라이언트와 데이터 통신
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -60,8 +82,12 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			err_display("send()");
 		}
 
+		Receive_Data((LPVOID)client_sock, WorldInfo);
+
+
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
+
 	}
 	else
 	{
@@ -136,4 +162,21 @@ int main(int argc, char* argv[])
 	WSACleanup();
 	return 0;
 
+}
+
+void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
+{
+	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
+	SOCKET client_sock = (SOCKET)arg;
+	int retval;
+	CLIENTINFO ClientInfo;
+
+	// 고정 길이 데이터 받아오기
+	retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
+	WorldInfo.insert({ iClientID, ClientInfo });
 }

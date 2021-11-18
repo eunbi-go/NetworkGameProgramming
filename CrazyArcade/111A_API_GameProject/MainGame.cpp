@@ -33,7 +33,7 @@ void CMainGame::Initialize()
 
 	if (isInit) {
 		CClientManager::Get_Instance()->sendInfo();
-		CClientManager::Get_Instance()->recvClientID();
+		//CClientManager::Get_Instance()->recvClientID();
 		CClientManager::Get_Instance()->recvInfo();
 		CClientManager::Get_Instance()->applyInfo();
 
