@@ -60,5 +60,9 @@ private:
 
 	bool		isBuff = false;	// 버프 효과 판단
 	DWORD		dwBuffTime = 0;	// 버프 지속 시간
+
+	// 서버로부터 받는 패킷 
+	// - 플레이어, 상대 플레이어, 몬스터, 아이템 정보가 모두 들어있음
+	map<int, CLIENTINFO>	tWorldInfo;
 };
 

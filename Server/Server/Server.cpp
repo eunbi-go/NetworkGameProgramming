@@ -190,7 +190,6 @@ void Send_Data(LPVOID arg)
 	int retval;
 
 	// 여기서 인게임 플레이어 초기 위치도 정해줘서 보내줘야함
-
 	retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");

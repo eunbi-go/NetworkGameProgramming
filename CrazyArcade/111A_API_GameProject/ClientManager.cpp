@@ -81,7 +81,17 @@ int CClientManager::sendInfo()
 
 int CClientManager::recvInfo()
 {
-	return 0;
+	// 서버로부터 모든 클라이언트의 
+	// 플레이어 정보, 아이템 정보, 몬스터 정보를 담고 있는 
+	// WorldInfo 맵 컨테이너를 받는다.
+
+	// 몇 개의 ClientInfo가 있는지 알아야 한다.
+	retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	return retval;
 }
 
 void CClientManager::applyInfo()
