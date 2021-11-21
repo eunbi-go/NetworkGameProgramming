@@ -189,7 +189,30 @@ void Send_Data(LPVOID arg)
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
 
-	// 여기서 인게임 플레이어 초기 위치도 정해줘서 보내줘야함
+	// ClientID = 0,	위치는 왼쪽 위
+	if (WorldInfo.find(0) != WorldInfo.end()) {
+		WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
+		WorldInfo[0].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
+	}
+
+	// ClientID = 1,	위치는 오른쪽 위
+	if (WorldInfo.find(1) != WorldInfo.end()) {
+		WorldInfo[1].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+		WorldInfo[1].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
+	}
+
+	// ClientID = 2,	위치는 왼쪽 아래
+	if (WorldInfo.find(2) != WorldInfo.end()) {
+		WorldInfo[2].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
+		WorldInfo[2].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	}
+
+	// ClientID = 3,	위치는 오른쪽 아래
+	if (WorldInfo.find(3) != WorldInfo.end()) {
+		WorldInfo[3].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+		WorldInfo[3].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	}
+
 
 	retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
 	if (retval == SOCKET_ERROR) {

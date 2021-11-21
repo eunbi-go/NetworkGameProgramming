@@ -16,3 +16,9 @@ using namespace std;
 
 #define SERVERPORT	9000
 #define BUFSIZE		512
+
+#define MAPSTARTX 20
+#define MAPSTARTY 40
+
+#define TILECX 40
+#define TILECY 40
