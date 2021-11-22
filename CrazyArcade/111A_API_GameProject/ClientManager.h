@@ -32,6 +32,8 @@ public:
 
 	void	set_buffOn();
 
+	void	recvInitPlayerPos();
+
 public:
 	void	setPlayerInfo(const INFO& tPInfo);
 

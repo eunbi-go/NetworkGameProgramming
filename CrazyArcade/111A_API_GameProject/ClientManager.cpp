@@ -71,7 +71,6 @@ int CClientManager::sendInfo()
 	}
 
 	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
-	tClientInfo.iTest = 5;
 	retval = send(sock, (char*)&tClientInfo, sizeof(tClientInfo), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
@@ -100,6 +99,14 @@ void CClientManager::applyInfo()
 
 void CClientManager::set_buffOn()
 {
+}
+
+void CClientManager::recvInitPlayerPos()
+{
+	retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
 }
 
 void CClientManager::setPlayerInfo(const INFO& tPInfo)

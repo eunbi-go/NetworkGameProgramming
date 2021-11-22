@@ -32,9 +32,13 @@ void CMainGame::Initialize()
 	CTileManager::Get_Instance()->Initialize();
 
 	if (isInit) {
+		// 캐릭터 정보를 서버에게 보낸다.
 		CClientManager::Get_Instance()->sendInfo();
-		//CClientManager::Get_Instance()->recvClientID();
-		CClientManager::Get_Instance()->recvInfo();
+		// 플레이어의 초기 위치를 받아온다.
+		CClientManager::Get_Instance()->recvInitPlayerPos();
+		// 맵 정보, 상대 플레이어 정보, 아이템 정보를 받아와서 
+
+		// 적용한다.
 		CClientManager::Get_Instance()->applyInfo();
 
 		isInit = false;
