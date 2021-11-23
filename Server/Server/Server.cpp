@@ -3,6 +3,11 @@
 static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
 vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
+map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
+map<int, bool> mapIsCollision;			// 버프 판단을 위한 충돌 확인 맵
+
+HANDLE hRecvEvent;		// 각 클라이언트와의 수신 결과를 알려주기 위한 이벤트
+HANDLE hSendEvent;		// 각 클라이언트와의 송신 결과를 알려주기 위한 이벤트
 
 #define SERVERPORT 9000
 
@@ -94,9 +99,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	}
 	else
 	{
-		//while (1) {
-		//	
-		//}
+		while (1) {
+
+		}
 	}
 	
 	closesocket(client_sock);
@@ -139,6 +144,13 @@ int main(int argc, char* argv[])
 	int addrlen;
 	HANDLE hThread;
 
+	// 이벤트 생성
+	hRecvEvent = CreateEvent(NULL, FALSE, FALSE, NULL);	// 자동 리셋, 비신호
+	if (hRecvEvent == NULL) return 1;
+
+	hSendEvent = CreateEvent(NULL, FALSE, FALSE, NULL);	// 자동 리셋, 비신호
+	if (hSendEvent == NULL) return 1;
+
 	while (1)
 	{
 		// accept()
@@ -158,7 +170,15 @@ int main(int argc, char* argv[])
 			(LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
+
+		// mapIsReceive컨테이너에 ClientID를 key로 가진 bool변수를 false로 초기화 한 다음 삽입해준다.
+		mapIsRecv.insert({ iClientID, false });
 	}
+
+	// 이벤트 제거
+	CloseHandle(hRecvEvent);
+	CloseHandle(hSendEvent);
+
 	closesocket(listen_sock);
 
 	// 윈속 종료
@@ -182,6 +202,12 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iClientID, ClientInfo });
+	
+	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
+	mapIsRecv[iClientID] = true;
+
+	// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
+
 }
 
 void Send_Data(LPVOID arg)
@@ -218,4 +244,27 @@ void Send_Data(LPVOID arg)
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
+
+	else
+	{
+
+	}
 }
+
+//void CheckBuff()
+//{
+//	// 모든 클라이언트에게 정보를 받은 후
+//	// 모든 플레이어가 충돌했다면 PlayInfo 안의 b_isContactPlayer를 true로 설정
+//	RECT rc = {};
+//
+//	for (auto Dst = WorldInfo.begin(); Dst != WorldInfo.end(); ++Dst)
+//	{
+//		rc = Dst->second.PlayerInfo.PlayerSize;
+//
+//		for (auto Src = WorldInfo.begin(); Src != WorldInfo.end(); ++Src)
+//		{
+//			
+//		}
+//	}
+//
+//}
