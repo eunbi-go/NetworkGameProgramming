@@ -2,7 +2,7 @@
 
 static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
-vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
+map<USHORT, int> mapClientPort;			// 클라이언트의 포트번호와 클라이언트ID 저장
 map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
 map<int, bool> mapIsCollision;			// 버프 판단을 위한 충돌 확인 맵
 
@@ -77,11 +77,12 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	// 현재 클라이언트가 처음 접속했는지 확인
-	auto iter = find(vecIsFirstConnect.begin(), vecIsFirstConnect.end(), clientaddr.sin_port);
-	if (iter == vecIsFirstConnect.end())
+	//auto iter = find(mapClientPort.begin(), mapClientPort.end(), clientaddr.sin_port);
+	auto iter = mapClientPort.find(clientaddr.sin_port);
+	if (iter == mapClientPort.end())
 	{
 		// 처음 접속이면 포트 번호를 저장
-		vecIsFirstConnect.push_back(clientaddr.sin_port);
+		mapClientPort.insert({ clientaddr.sin_port, iClientID });
 		// ClientID 보내기 (후에 처음 들어왔을때만 보내게 처리)
 		retval = send(client_sock, (char*)&iClientID, sizeof(int), 0);
 		if (retval == SOCKET_ERROR) {
@@ -99,9 +100,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	}
 	else
 	{
-		while (1) {
+		//while (1) {
 
-		}
+		//}
 	}
 	
 	closesocket(client_sock);
@@ -189,10 +190,18 @@ int main(int argc, char* argv[])
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 {
+	bool isSend = false;
+
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
+	SOCKADDR_IN clientaddr;
+	int addrlen;
 	CLIENTINFO ClientInfo;
+
+	// 클라이언트 정보 얻기
+	addrlen = sizeof(clientaddr);
+	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	// 고정 길이 데이터 받아오기
 	retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
@@ -204,16 +213,34 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	WorldInfo.insert({ iClientID, ClientInfo });
 	
 	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
-	mapIsRecv[iClientID] = true;
+	auto iter = mapClientPort.find(clientaddr.sin_port);
+	mapIsRecv[iter->second] = true;
 
 	// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
+	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
+	{
+		if (!iter->second) {
+			isSend = false;
+			break;
+		}
 
+		else isSend = true;
+	}
+
+	if (isSend) SetEvent(hSendEvent);
 }
 
 void Send_Data(LPVOID arg)
 {
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
+	SOCKADDR_IN clientaddr;
+	int addrlen;
+	bool isRecv = false;
+
+	// 클라이언트 정보 얻기
+	addrlen = sizeof(clientaddr);
+	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	// ClientID = 0,	위치는 왼쪽 위
 	if (WorldInfo.find(0) != WorldInfo.end()) {
@@ -247,8 +274,22 @@ void Send_Data(LPVOID arg)
 
 	else
 	{
-
+		// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
+		auto iter = mapClientPort.find(clientaddr.sin_port);
+		mapIsRecv[iter->second] = false;
 	}
+
+	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
+	{
+		if (iter->second) {
+			isRecv = false;
+			break;
+		}
+
+		else isRecv = true;
+	}
+
+	if (isRecv) SetEvent(hRecvEvent);
 }
 
 //void CheckBuff()
