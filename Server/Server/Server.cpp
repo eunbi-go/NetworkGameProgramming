@@ -1,13 +1,17 @@
 #include "stdafx.h"
+#include "TileManager.h"
+#include "Obj.h"
 
 static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
+vector<CObj*>	vecMapTile;				// 맵 타일
 vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
 
 #define SERVERPORT 9000
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
 void Send_Data(LPVOID arg);
+void Send_InitMap(LPVOID arg);
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
@@ -83,10 +87,25 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			err_display("send()");
 		}
 
+		int	iSize = sizeof(vecMapTile);
+
+		retval = send(client_sock, (char*)&iSize, sizeof(int), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+
+		retval = send(client_sock, (char*)&vecMapTile, sizeof(iSize), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+
 		Receive_Data((LPVOID)client_sock, WorldInfo);
 
 		// 캐릭터 종류, 초기 위치 정해서 Client로 전송
 		Send_Data((LPVOID)client_sock);
+
+		// 맵 정보 전송 -> 클라이언트는 이 정보를 바탕으로 맵 초기화
+		//Send_InitMap((LPVOID)client_sock);
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
@@ -98,7 +117,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		//	
 		//}
 	}
-	
+
 	closesocket(client_sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
@@ -109,6 +128,10 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 int main(int argc, char* argv[])
 {
 	int retval;
+
+	// 맵 생성
+	CTileManager::Get_Instance()->Load_Tile();
+	vecMapTile = CTileManager::Get_Instance()->Get_MapTile();
 
 	// 윈속 초기화
 	WSADATA wsa;
@@ -215,6 +238,27 @@ void Send_Data(LPVOID arg)
 
 
 	retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+}
+
+void Send_InitMap(LPVOID arg)
+{
+	SOCKET client_sock = (SOCKET)arg;
+	int retval;
+
+	// 맵 타일에서 장애물들이 깨질 수 있으니 항상 같은 크기를 갖지 않는다
+	// -> 고정-가변 전송 방식으로 전송
+	
+	int	iSize = sizeof(vecMapTile);
+
+	retval = send(client_sock, (char*)&iSize, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
+	retval = send(client_sock, (char*)&vecMapTile, sizeof(iSize), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}

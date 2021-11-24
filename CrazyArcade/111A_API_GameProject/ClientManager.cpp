@@ -48,6 +48,19 @@ void CClientManager::recvClientID()
 		err_display("recv()");
 		exit(1);
 	}
+
+	int iMapTileSize = 0;
+
+	retval = recvn(sock, (char*)&iMapTileSize, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+		exit(1);
+	}
+
+	retval = recvn(sock, (char*)&vecMapTile, sizeof(iMapTileSize), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
 }
 
 int CClientManager::sendInfo()
@@ -104,6 +117,24 @@ void CClientManager::set_buffOn()
 void CClientManager::recvInitPlayerPos()
 {
 	retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+
+}
+
+void CClientManager::recvInitMapTile()
+{
+	int iMapTileSize = 0;
+
+	retval = recvn(sock, (char*)&iMapTileSize, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+		exit(1);
+	}
+
+	retval = recvn(sock, (char*)&vecMapTile, sizeof(iMapTileSize), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}

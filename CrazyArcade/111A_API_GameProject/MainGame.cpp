@@ -36,7 +36,8 @@ void CMainGame::Initialize()
 		CClientManager::Get_Instance()->sendInfo();
 		// 플레이어의 초기 위치를 받아온다.
 		CClientManager::Get_Instance()->recvInitPlayerPos();
-		// 맵 정보, 상대 플레이어 정보, 아이템 정보를 받아와서 
+		// 맵 정보를 받아온다.
+		//CClientManager::Get_Instance()->recvInitMapTile();
 
 		// 적용한다.
 		CClientManager::Get_Instance()->applyInfo();

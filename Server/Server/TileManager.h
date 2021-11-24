@@ -10,24 +10,16 @@ public:
 	~CTileManager();
 
 public:
-	void Initialize();
-	void Update();
-	void Late_Update();
-	void Render(HDC _DC);
+	void Load_Tile();
+
 	void Release();
 
 public:
-	void Picking_Tile(int _iDrawID);
-	void Save_Tile();
-	void Load_Tile();
-	void Load_TileFromServer();
-
-public:
 	void SetTileBlockType(float _x, float _y, MAPBLOCK::BLOCK _block);
-	void Set_vecMapTile(vector<CObj*> vObj) { m_vecTile = vObj; }
 
 public:
 	MAPBLOCK::BLOCK GetTileBlockType(float _x, float _y);
+	vector<CObj*> Get_MapTile() { return m_vecTile; }
 
 public:
 	static CTileManager* Get_Instance()
@@ -42,9 +34,9 @@ public:
 	}
 
 private:
-	static CTileManager*		m_pInstance;
+	static CTileManager* m_pInstance;
 	vector<CObj*>				m_vecTile;
-	CTile*						m_Tile[TILEX ][TILEY ];
+	CTile* m_Tile[TILEX][TILEY];
 };
 
 

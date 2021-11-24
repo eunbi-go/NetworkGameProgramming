@@ -11,6 +11,9 @@
 
 #include "enum.h"
 #include "struct.h"
+#include "define.h"
+#include "Function.h"
+#include "AbstractFactory.h"
 
 using namespace std;
 

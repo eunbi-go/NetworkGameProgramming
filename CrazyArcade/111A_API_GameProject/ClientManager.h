@@ -1,4 +1,5 @@
 #pragma once
+#include "Obj.h"
 class CClientManager
 {
 public:
@@ -33,11 +34,13 @@ public:
 	void	set_buffOn();
 
 	void	recvInitPlayerPos();
+	void	recvInitMapTile();
 
 public:
 	void	setPlayerInfo(const INFO& tPInfo);
 
 	int		GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
+	vector<CObj*> Get_MapTile() { return vecMapTile; }
 
 private:
 	void	err_quit(char* msg);		// 소켓 함수 오류 출력 후 종료
@@ -66,5 +69,8 @@ private:
 	// 서버로부터 받는 패킷 
 	// - 플레이어, 상대 플레이어, 몬스터, 아이템 정보가 모두 들어있음
 	map<int, CLIENTINFO>	tWorldInfo;
+
+	// 서버로부터 받은 맵 정보
+	vector<CObj*> vecMapTile;
 };
 
