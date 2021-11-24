@@ -100,9 +100,14 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	}
 	else
 	{
-		//while (1) {
+		while (1) {
+			// 데이터 받기
+			Receive_Data((LPVOID)client_sock, WorldInfo);
 
-		//}
+			// 데이터 보내기
+			Send_Data((LPVOID)client_sock);
+
+		}
 	}
 	
 	closesocket(client_sock);
@@ -190,7 +195,11 @@ int main(int argc, char* argv[])
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 {
-	bool isSend = false;
+	// 전송 완료 대기
+	DWORD EventRetval;
+	EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
+	if (EventRetval != WAIT_OBJECT_0) return;
+
 
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
 	SOCKET client_sock = (SOCKET)arg;
@@ -198,6 +207,7 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	SOCKADDR_IN clientaddr;
 	int addrlen;
 	CLIENTINFO ClientInfo;
+	bool isSend = false;
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -232,6 +242,12 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 
 void Send_Data(LPVOID arg)
 {
+	// 수신 완료 대기
+	DWORD EventRetval;
+	EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
+	if (EventRetval != WAIT_OBJECT_0) return;
+
+
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
 	SOCKADDR_IN clientaddr;
