@@ -103,7 +103,7 @@ void CClientManager::set_buffOn()
 
 void CClientManager::recvInitPlayerPos()
 {
-	retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	retval = recvn(sock, (char*)&tClientInfo, sizeof(tClientInfo), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}

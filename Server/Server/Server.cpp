@@ -213,8 +213,7 @@ void Send_Data(LPVOID arg)
 		WorldInfo[3].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
 	}
 
-
-	retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
+	retval = send(client_sock, (char*)&WorldInfo[iClientID], sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}

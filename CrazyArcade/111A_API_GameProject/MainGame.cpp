@@ -48,7 +48,6 @@ void CMainGame::Initialize()
 void CMainGame::Update()
 {
 	CSceneManager::Get_Instance()->Update();
-
 	CClientManager::Get_Instance()->set_buffOn();
 }
 
