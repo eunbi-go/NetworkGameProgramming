@@ -105,8 +105,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		// 캐릭터 종류, 초기 위치 정해서 Client로 전송
 		Send_Data((LPVOID)client_sock);
 
-
-
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
 
