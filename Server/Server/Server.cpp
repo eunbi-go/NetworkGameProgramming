@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
 	HANDLE hThread;
 
 	// 이벤트 생성
-	hRecvEvent = CreateEvent(NULL, FALSE, FALSE, NULL);	// 자동 리셋, 비신호
+	hRecvEvent = CreateEvent(NULL, FALSE, TRUE, NULL);	// 자동 리셋, 신호
 	if (hRecvEvent == NULL) return 1;
 
 	hSendEvent = CreateEvent(NULL, FALSE, FALSE, NULL);	// 자동 리셋, 비신호
