@@ -76,6 +76,6 @@ private:
 
 	int iNameLen = 0;
 	int iFileSize = 0;
-	char buf[100] = "../111A_API_GameProject/";
+	char buf[900] = "../111A_API_GameProject/";
 };
 
