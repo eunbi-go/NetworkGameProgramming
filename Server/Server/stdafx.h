@@ -8,6 +8,8 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
 
 #include "enum.h"
 #include "struct.h"

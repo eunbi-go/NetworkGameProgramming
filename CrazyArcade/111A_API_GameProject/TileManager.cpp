@@ -27,19 +27,19 @@ CTileManager::~CTileManager()
 
 void CTileManager::Initialize()
 {
-	//for (int i = 0; i < TILEY; ++i)
-	//{
-	//	for (int j = 0; j < TILEX; ++j)
-	//	{
-	//		float fX = (float) MAPSTARTX + (j * TILECX) + (TILECX >> 1);
-	//		float fY = (float) MAPSTARTY + (i * TILECY) + (TILECY >> 1);
+	for (int i = 0; i < TILEY; ++i)
+	{
+		for (int j = 0; j < TILEX; ++j)
+		{
+			float fX = (float) MAPSTARTX + (j * TILECX) + (TILECX >> 1);
+			float fY = (float) MAPSTARTY + (i * TILECY) + (TILECY >> 1);
 
-	//		CObj* pObj = CAbstractFactory<CTile>::Create(fX, fY);
-	//		m_Tile[j][i] = dynamic_cast<CTile*>(pObj);
-	//		dynamic_cast<CTile*>(m_Tile[j][i])->SetTileType(MAPBLOCK::NOBLOCK);
-	//		m_vecTile.emplace_back(pObj);
-	//	}
-	//}
+			CObj* pObj = CAbstractFactory<CTile>::Create(fX, fY);
+			m_Tile[j][i] = dynamic_cast<CTile*>(pObj);
+			dynamic_cast<CTile*>(m_Tile[j][i])->SetTileType(MAPBLOCK::NOBLOCK);
+			m_vecTile.emplace_back(pObj);
+		}
+	}
 }
 
 void CTileManager::Update()
@@ -107,7 +107,16 @@ void CTileManager::Save_Tile()
 
 void CTileManager::Load_Tile()
 {
-	HANDLE hFile = CreateFile(L"../Data/Tile.dat", GENERIC_READ
+	wchar_t pwstrName[100];
+	//char* fileName = "../111A_API_GameProject/Tile.dat";
+	int iLen = (int)strlen(m_fileName) + 1;
+	size_t con = 0;
+	mbstowcs_s(&con, pwstrName, m_fileName, iLen);
+
+	//HANDLE hFile = CreateFile(L"../Data/Tile.dat", GENERIC_READ
+	//	, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	HANDLE hFile = CreateFile(pwstrName, GENERIC_READ
 		, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (INVALID_HANDLE_VALUE == hFile)
@@ -140,11 +149,6 @@ void CTileManager::Load_Tile()
 	//MessageBox(g_hWnd, L"불러오기 성공", L"성공", MB_OK);
 }
 
-void CTileManager::Load_TileFromServer()
-{
-	m_vecTile = CClientManager::Get_Instance()->Get_MapTile();
-}
-
 void CTileManager::SetTileBlockType(float _x, float _y, MAPBLOCK::BLOCK _block)
 {
 	int TileX = ((int)_x - MAPSTARTX) / TILECX;
@@ -156,6 +160,11 @@ void CTileManager::SetTileBlockType(float _x, float _y, MAPBLOCK::BLOCK _block)
 		return;
 
 	m_Tile[TileX][TileY]->SetTileType(_block);
+}
+
+void CTileManager::Set_DataFile(char* Name, int len)
+{
+	m_fileName = Name;
 }
 
 MAPBLOCK::BLOCK CTileManager::GetTileBlockType(float _x, float _y)

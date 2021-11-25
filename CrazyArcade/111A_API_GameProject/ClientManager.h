@@ -72,5 +72,10 @@ private:
 
 	// 서버로부터 받은 맵 정보
 	vector<CObj*> vecMapTile;
+	char name[100];
+
+	int iNameLen = 0;
+	int iFileSize = 0;
+	char buf[100] = "../111A_API_GameProject/";
 };
 

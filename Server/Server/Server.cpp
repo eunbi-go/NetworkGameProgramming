@@ -1,7 +1,10 @@
+//#define _WINSOCK_DEPRECATED_NO_WARNINGS // 최신 VC++ 컴파일 시 경고 방지
+#define _CRT_SECURE_NO_WRANINGS
 #include "stdafx.h"
 #include "TileManager.h"
 #include "Obj.h"
 
+#define BUFSIZE 500
 static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
 vector<CObj*>	vecMapTile;				// 맵 타일
@@ -87,25 +90,15 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			err_display("send()");
 		}
 
-		int	iSize = sizeof(vecMapTile);
-
-		retval = send(client_sock, (char*)&iSize, sizeof(int), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-
-		retval = send(client_sock, (char*)&vecMapTile, sizeof(iSize), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
+		// 맵 정보 전송 -> 클라이언트는 이 정보를 바탕으로 맵 초기화
+		Send_InitMap((LPVOID)client_sock);
 
 		Receive_Data((LPVOID)client_sock, WorldInfo);
 
 		// 캐릭터 종류, 초기 위치 정해서 Client로 전송
 		Send_Data((LPVOID)client_sock);
 
-		// 맵 정보 전송 -> 클라이언트는 이 정보를 바탕으로 맵 초기화
-		//Send_InitMap((LPVOID)client_sock);
+
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
@@ -247,19 +240,39 @@ void Send_InitMap(LPVOID arg)
 {
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
+	char buf[BUFSIZE + 1];
 
-	// 맵 타일에서 장애물들이 깨질 수 있으니 항상 같은 크기를 갖지 않는다
-	// -> 고정-가변 전송 방식으로 전송
-	
-	int	iSize = sizeof(vecMapTile);
+	ifstream    in{ "Tile.dat", ios::in | ios::binary }; // video.mp4
+	if (!in) {
+		printf("파일 열기 실패\n");
+		exit(0);
+	}
+	in.seekg(0, ios::end);
+	int iSize = in.tellg();
+	in.seekg(0, ios::beg);
 
+	int len = strlen("Tile.dat");
+	strncpy_s(buf, "Tile.dat", len);
+
+	// 고정 - 파일 제목 크기
+	retval = send(client_sock, (char*)&len, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) err_display("send()");
+
+	// 가변 - 파일 제목
+	retval = send(client_sock, buf, len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
+	// 고정 - 파일 내용 크기
 	retval = send(client_sock, (char*)&iSize, sizeof(int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
+	if (retval == SOCKET_ERROR) err_display("send()");
 
-	retval = send(client_sock, (char*)&vecMapTile, sizeof(iSize), 0);
-	if (retval == SOCKET_ERROR) {
+	char* FileData = new char[iSize];
+	in.read(&FileData[0], iSize);
+
+	// 가변 - 파일 데이터
+	retval = send(client_sock, &FileData[0], iSize, 0);
+	if (retval == SOCKET_ERROR)
 		err_display("send()");
-	}
 }

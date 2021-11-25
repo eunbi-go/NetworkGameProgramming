@@ -20,11 +20,11 @@ public:
 	void Picking_Tile(int _iDrawID);
 	void Save_Tile();
 	void Load_Tile();
-	void Load_TileFromServer();
 
 public:
 	void SetTileBlockType(float _x, float _y, MAPBLOCK::BLOCK _block);
 	void Set_vecMapTile(vector<CObj*> vObj) { m_vecTile = vObj; }
+	void Set_DataFile(char* Name, int len);
 
 public:
 	MAPBLOCK::BLOCK GetTileBlockType(float _x, float _y);
@@ -45,6 +45,7 @@ private:
 	static CTileManager*		m_pInstance;
 	vector<CObj*>				m_vecTile;
 	CTile*						m_Tile[TILEX ][TILEY ];
+	char*						m_fileName;
 };
 
 
