@@ -121,11 +121,15 @@ void CClientManager::recvInitMapTile()
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
+	
+	char* pName = new char[iNameLen+1];
+
 	// 가변 - 파일 이름
-	retval = recvn(sock, name, iNameLen, 0);
+	retval = recvn(sock, &pName[0], iNameLen, 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
+	pName[iNameLen] = '\0';
 
 
 	retval = recvn(sock, (char*)&iFileSize, sizeof(int), 0);
@@ -140,10 +144,10 @@ void CClientManager::recvInitMapTile()
 		err_display("recv()");
 	}
 
-	std::ofstream    out{ name, std::ios::out };
+	std::ofstream    out{ pName, std::ios::out };
 	out.write(&fileD[0], iFileSize);
 
-	strcat_s(buf, name);
+	strcat_s(buf, pName);
 	CTileManager::Get_Instance()->Set_DataFile(buf, strlen(buf));
 }
 
