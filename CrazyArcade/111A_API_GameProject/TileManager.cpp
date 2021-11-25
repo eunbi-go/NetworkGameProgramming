@@ -3,6 +3,7 @@
 #include "Tile.h"
 #include "BmpManager.h"
 #include "KeyManager.h"
+#include "ClientManager.h"
 
 CTileManager* CTileManager::m_pInstance = nullptr;
 CTileManager::CTileManager()
@@ -106,7 +107,16 @@ void CTileManager::Save_Tile()
 
 void CTileManager::Load_Tile()
 {
-	HANDLE hFile = CreateFile(L"../Data/Tile.dat", GENERIC_READ
+	wchar_t pwstrName[100];
+	//char* fileName = "../111A_API_GameProject/Tile.dat";
+	int iLen = (int)strlen(m_fileName) + 1;
+	size_t con = 0;
+	mbstowcs_s(&con, pwstrName, m_fileName, iLen);
+
+	//HANDLE hFile = CreateFile(L"../Data/Tile.dat", GENERIC_READ
+	//	, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	HANDLE hFile = CreateFile(pwstrName, GENERIC_READ
 		, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (INVALID_HANDLE_VALUE == hFile)
@@ -150,6 +160,11 @@ void CTileManager::SetTileBlockType(float _x, float _y, MAPBLOCK::BLOCK _block)
 		return;
 
 	m_Tile[TileX][TileY]->SetTileType(_block);
+}
+
+void CTileManager::Set_DataFile(char* Name, int len)
+{
+	m_fileName = Name;
 }
 
 MAPBLOCK::BLOCK CTileManager::GetTileBlockType(float _x, float _y)

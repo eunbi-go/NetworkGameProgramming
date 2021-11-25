@@ -1,18 +1,29 @@
+//#define _WINSOCK_DEPRECATED_NO_WARNINGS // 최신 VC++ 컴파일 시 경고 방지
+#define _CRT_SECURE_NO_WRANINGS
 #include "stdafx.h"
+#include "TileManager.h"
+#include "Obj.h"
 
+#define BUFSIZE 500
 static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
+<<<<<<< HEAD
 map<USHORT, int> mapClientPort;			// 클라이언트의 포트번호와 클라이언트ID 저장
 map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
 map<int, bool> mapIsCollision;			// 버프 판단을 위한 충돌 확인 맵
 
 HANDLE hRecvEvent;		// 각 클라이언트와의 수신 결과를 알려주기 위한 이벤트
 HANDLE hSendEvent;		// 각 클라이언트와의 송신 결과를 알려주기 위한 이벤트
+=======
+vector<CObj*>	vecMapTile;				// 맵 타일
+vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
+>>>>>>> 6f13c2e399b16d99a8b306c8841d9e3008252285
 
 #define SERVERPORT 9000
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
 void Send_Data(LPVOID arg);
+void Send_InitMap(LPVOID arg);
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
@@ -89,10 +100,15 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			err_display("send()");
 		}
 
+		// 맵 정보 전송 -> 클라이언트는 이 정보를 바탕으로 맵 초기화
+		Send_InitMap((LPVOID)client_sock);
+
 		Receive_Data((LPVOID)client_sock, WorldInfo);
 
 		// 캐릭터 종류, 초기 위치 정해서 Client로 전송
 		Send_Data((LPVOID)client_sock);
+
+
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
@@ -109,7 +125,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		}
 	}
-	
+
 	closesocket(client_sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
@@ -120,6 +136,10 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 int main(int argc, char* argv[])
 {
 	int retval;
+
+	// 맵 생성
+	CTileManager::Get_Instance()->Load_Tile();
+	vecMapTile = CTileManager::Get_Instance()->Get_MapTile();
 
 	// 윈속 초기화
 	WSADATA wsa;
@@ -287,6 +307,7 @@ void Send_Data(LPVOID arg)
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
+<<<<<<< HEAD
 
 	else
 	{
@@ -325,3 +346,47 @@ void Send_Data(LPVOID arg)
 //	}
 //
 //}
+=======
+}
+
+void Send_InitMap(LPVOID arg)
+{
+	SOCKET client_sock = (SOCKET)arg;
+	int retval;
+	char buf[BUFSIZE + 1];
+
+	ifstream    in{ "Tile.dat", ios::in | ios::binary }; // video.mp4
+	if (!in) {
+		printf("파일 열기 실패\n");
+		exit(0);
+	}
+	in.seekg(0, ios::end);
+	int iSize = in.tellg();
+	in.seekg(0, ios::beg);
+
+	int len = strlen("Tile.dat");
+	strncpy_s(buf, "Tile.dat", len);
+
+	// 고정 - 파일 제목 크기
+	retval = send(client_sock, (char*)&len, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) err_display("send()");
+
+	// 가변 - 파일 제목
+	retval = send(client_sock, buf, len, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
+	// 고정 - 파일 내용 크기
+	retval = send(client_sock, (char*)&iSize, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) err_display("send()");
+
+	char* FileData = new char[iSize];
+	in.read(&FileData[0], iSize);
+
+	// 가변 - 파일 데이터
+	retval = send(client_sock, &FileData[0], iSize, 0);
+	if (retval == SOCKET_ERROR)
+		err_display("send()");
+}
+>>>>>>> 6f13c2e399b16d99a8b306c8841d9e3008252285

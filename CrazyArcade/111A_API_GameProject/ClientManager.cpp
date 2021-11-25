@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ClientManager.h"
+#include "TileManager.h"
 
 #define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
@@ -48,6 +49,8 @@ void CClientManager::recvClientID()
 		err_display("recv()");
 		exit(1);
 	}
+
+	
 }
 
 int CClientManager::sendInfo()
@@ -107,6 +110,41 @@ void CClientManager::recvInitPlayerPos()
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
+
+
+}
+
+void CClientManager::recvInitMapTile()
+{
+	// 고정 - 파일 이름 크기
+	retval = recvn(sock, (char*)&iNameLen, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	// 가변 - 파일 이름
+	retval = recvn(sock, name, iNameLen, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+
+	retval = recvn(sock, (char*)&iFileSize, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	char* fileD = new char[iFileSize];
+
+	retval = recvn(sock, &fileD[0], iFileSize, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	std::ofstream    out{ name, std::ios::out };
+	out.write(&fileD[0], iFileSize);
+
+	strcat_s(buf, name);
+	CTileManager::Get_Instance()->Set_DataFile(buf, strlen(buf));
 }
 
 void CClientManager::setPlayerInfo(const INFO& tPInfo)

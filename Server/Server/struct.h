@@ -54,4 +54,13 @@ typedef struct ClientInfo					// 서버로 전송할 각 클라이언트의 정보
 	OBJPOS				BombPos[10];		// 폭탄의 정보(위치)		 MAX=10
 }CLIENTINFO;
 
+typedef struct tagFrame
+{
+	int		iFrameStart;
+	int		iFrameEnd;
+	int		iFrameScene;
+	DWORD	dwFrameTime;
+	DWORD	dwFrameSpeed;
+}FRAME;
+
 #endif // !__STRUCT_H__
