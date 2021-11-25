@@ -18,7 +18,7 @@ CMainGame::CMainGame()
 	// 캐릭터 정보를 서버에게 보낸다.
 	CClientManager::Get_Instance()->sendInfo();
 	// 플레이어의 초기 위치를 받아온다.
-	CClientManager::Get_Instance()->recvInitPlayerPos();
+	//CClientManager::Get_Instance()->recvInitPlayerPos();
 }
 
 
@@ -74,8 +74,8 @@ void CMainGame::Render()
 
 
 	// 서버 통신
-	//CClientManager::Get_Instance()->sendInfo();
-	//CClientManager::Get_Instance()->recvInfo();
+	CClientManager::Get_Instance()->sendInfo();
+	CClientManager::Get_Instance()->recvInfo();
 	//CClientManager::Get_Instance()->applyInfo();
 }
 
