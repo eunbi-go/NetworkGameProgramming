@@ -76,7 +76,7 @@ void CStage_Boss::Initialize()
 	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Item/Potion.bmp", L"Potion");
 	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Item/MaxPotion.bmp", L"MaxPotion");
 
-	//CTileManager::Get_Instance()->Load_Tile();
+	CTileManager::Get_Instance()->Load_Tile();
 	CObjManager::Get_Instance()->Load_Object_Boss();
 
 	//플레이어 생성

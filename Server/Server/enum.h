@@ -17,6 +17,15 @@ namespace CHARNAME
 	enum NAME { BAZZI, DAO, DIGENIE, UNI, END };
 }
 
+namespace MAPBLOCK
+{
+	enum BLOCK {
+		NOBLOCK, MONSTER,
+		BASKET, LEAF1, LEAF2, FLOWER,
+		GRASS, BUSH, ROCK1, ROCK2, ROCK3, STONESTATUE, BOMB, END
+	};
+}
+
 namespace MONSTERNAME
 {
 	enum NAME { MESSI, MBAPE, HMSON };
@@ -25,6 +34,11 @@ namespace MONSTERNAME
 namespace GAMEITEM
 {
 	enum ITEM { BALLON, POTION, MAXPOTION, SKATE, END };
+}
+
+namespace OBJSTATE
+{
+	enum STATE { IDLE, WALK, BUBBLE, POP, ATTACK, HIT, DEAD, END };
 }
 
 #endif // !__ENUM_H__
