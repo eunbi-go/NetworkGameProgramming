@@ -7,17 +7,14 @@
 #define BUFSIZE 500
 static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
-<<<<<<< HEAD
 map<USHORT, int> mapClientPort;			// 클라이언트의 포트번호와 클라이언트ID 저장
 map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
 map<int, bool> mapIsCollision;			// 버프 판단을 위한 충돌 확인 맵
 
 HANDLE hRecvEvent;		// 각 클라이언트와의 수신 결과를 알려주기 위한 이벤트
 HANDLE hSendEvent;		// 각 클라이언트와의 송신 결과를 알려주기 위한 이벤트
-=======
 vector<CObj*>	vecMapTile;				// 맵 타일
 vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
->>>>>>> 6f13c2e399b16d99a8b306c8841d9e3008252285
 
 #define SERVERPORT 9000
 
@@ -307,7 +304,6 @@ void Send_Data(LPVOID arg)
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
-<<<<<<< HEAD
 
 	else
 	{
@@ -346,8 +342,6 @@ void Send_Data(LPVOID arg)
 //	}
 //
 //}
-=======
-}
 
 void Send_InitMap(LPVOID arg)
 {
@@ -389,4 +383,3 @@ void Send_InitMap(LPVOID arg)
 	if (retval == SOCKET_ERROR)
 		err_display("send()");
 }
->>>>>>> 6f13c2e399b16d99a8b306c8841d9e3008252285
