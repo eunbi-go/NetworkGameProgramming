@@ -74,7 +74,12 @@ int CClientManager::sendInfo()
 	}
 
 	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
-	retval = send(sock, (char*)&tClientInfo, sizeof(tClientInfo), 0);
+	//retval = send(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
+	int k = 10;
+	retval = send(sock, (char*)&k, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
@@ -88,10 +93,16 @@ int CClientManager::recvInfo()
 	// WorldInfo 맵 컨테이너를 받는다.
 
 	// 몇 개의 ClientInfo가 있는지 알아야 한다.
-	retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	//retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
+	int k = 0;
+	retval = recvn(sock, (char*)&k, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
+
 
 	return retval;
 }
@@ -121,11 +132,15 @@ void CClientManager::recvInitMapTile()
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
+	
+	char* pName = new char[iNameLen+1];
+
 	// 가변 - 파일 이름
-	retval = recvn(sock, name, iNameLen, 0);
+	retval = recvn(sock, &pName[0], iNameLen, 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
+	pName[iNameLen] = '\0';
 
 
 	retval = recvn(sock, (char*)&iFileSize, sizeof(int), 0);
@@ -140,10 +155,10 @@ void CClientManager::recvInitMapTile()
 		err_display("recv()");
 	}
 
-	std::ofstream    out{ name, std::ios::out };
+	std::ofstream    out{ pName, std::ios::out };
 	out.write(&fileD[0], iFileSize);
 
-	strcat_s(buf, name);
+	strcat_s(buf, pName);
 	CTileManager::Get_Instance()->Set_DataFile(buf, strlen(buf));
 }
 

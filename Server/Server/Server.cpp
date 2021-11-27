@@ -102,7 +102,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		// 맵 정보 전송 -> 클라이언트는 이 정보를 바탕으로 맵 초기화
 		Send_InitMap((LPVOID)client_sock);
 
-		Receive_Data((LPVOID)client_sock, WorldInfo);
+		//Receive_Data((LPVOID)client_sock, WorldInfo);
 
 		// 캐릭터 종류, 초기 위치 정해서 Client로 전송
 		//Send_Data((LPVOID)client_sock);
@@ -114,10 +114,17 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (1) {
 		// 데이터 받기
+<<<<<<< HEAD
 		//Receive_Data((LPVOID)client_sock, WorldInfo);
 
 		// 데이터 보내기
 		//Send_Data((LPVOID)client_sock);
+=======
+		Receive_Data((LPVOID)client_sock, WorldInfo);
+
+		// 데이터 보내기
+		Send_Data((LPVOID)client_sock);
+>>>>>>> 51df204d4ba6f501ac998bf7bb57e4317e37732d
 
 	}
 
@@ -134,7 +141,6 @@ int main(int argc, char* argv[])
 
 	// 맵 생성
 	CTileManager::Get_Instance()->Load_Tile();
-	vecMapTile = CTileManager::Get_Instance()->Get_MapTile();
 
 	// 윈속 초기화
 	WSADATA wsa;
@@ -166,10 +172,10 @@ int main(int argc, char* argv[])
 	HANDLE hThread;
 
 	// 이벤트 생성
+	// TRUE로 신호상태로 놔야할듯
 	hRecvEvent = CreateEvent(NULL, FALSE, FALSE, NULL);	// 자동 리셋, 비신호
 	if (hRecvEvent == NULL) return 1;
-
-	hSendEvent = CreateEvent(NULL, FALSE, FALSE, NULL);	// 자동 리셋, 비신호
+	hSendEvent = CreateEvent(NULL, FALSE, TRUE, NULL);	// 자동 리셋, 신호
 	if (hSendEvent == NULL) return 1;
 
 	while (1)
@@ -210,10 +216,10 @@ int main(int argc, char* argv[])
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 {
-	//// 전송 완료 대기
-	//DWORD EventRetval;
-	//EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
-	//if (EventRetval != WAIT_OBJECT_0) return;
+	// 전송 완료 대기
+	DWORD EventRetval;
+	EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
+	if (EventRetval != WAIT_OBJECT_0) return;
 
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
 	SOCKET client_sock = (SOCKET)arg;
@@ -228,14 +234,19 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	// 고정 길이 데이터 받아오기
-	retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
+	//retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
+	int k = 0;
+	retval = recvn(client_sock, (char*)&k, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
 
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iClientID, ClientInfo });
-	
+
 	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	mapIsRecv[iter->second] = true;
@@ -251,15 +262,16 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		else isSend = true;
 	}
 
-	if (isSend) SetEvent(hSendEvent);
+	if (isSend)
+		SetEvent(hRecvEvent);
 }
 
 void Send_Data(LPVOID arg)
 {
-	//// 수신 완료 대기
-	//DWORD EventRetval;
-	//EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
-	//if (EventRetval != WAIT_OBJECT_0) return;
+	// 수신 완료 대기
+	DWORD EventRetval;
+	EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
+	if (EventRetval != WAIT_OBJECT_0) return;
 
 
 	SOCKET client_sock = (SOCKET)arg;
@@ -272,7 +284,42 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
+<<<<<<< HEAD
 	retval = send(client_sock, (char*)&WorldInfo[iClientID], sizeof(CLIENTINFO), 0);
+=======
+	// ClientID = 0,	위치는 왼쪽 위
+	if (WorldInfo.find(0) != WorldInfo.end()) {
+		WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
+		WorldInfo[0].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
+	}
+
+	// ClientID = 1,	위치는 오른쪽 위
+	if (WorldInfo.find(1) != WorldInfo.end()) {
+		WorldInfo[1].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+		WorldInfo[1].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
+	}
+
+	// ClientID = 2,	위치는 왼쪽 아래
+	if (WorldInfo.find(2) != WorldInfo.end()) {
+		WorldInfo[2].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
+		WorldInfo[2].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	}
+
+	// ClientID = 3,	위치는 오른쪽 아래
+	if (WorldInfo.find(3) != WorldInfo.end()) {
+		WorldInfo[3].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+		WorldInfo[3].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	}
+
+
+	//CLIENTINFO	tTest;
+	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
+	int k = 0;
+	retval = send(client_sock, (char*)&k, sizeof(int), 0);
+>>>>>>> 51df204d4ba6f501ac998bf7bb57e4317e37732d
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
@@ -298,7 +345,8 @@ void Send_Data(LPVOID arg)
 		else isRecv = true;
 	}
 
-	if (isRecv) SetEvent(hRecvEvent);
+	if (isRecv)
+		SetEvent(hSendEvent);
 }
 
 //void CheckBuff()
