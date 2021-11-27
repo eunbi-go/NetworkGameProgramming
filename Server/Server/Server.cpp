@@ -100,25 +100,23 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		// 맵 정보 전송 -> 클라이언트는 이 정보를 바탕으로 맵 초기화
 		Send_InitMap((LPVOID)client_sock);
 
-		Receive_Data((LPVOID)client_sock, WorldInfo);
+		//Receive_Data((LPVOID)client_sock, WorldInfo);
 
 		// 캐릭터 종류, 초기 위치 정해서 Client로 전송
-		Send_Data((LPVOID)client_sock);
+		//Send_Data((LPVOID)client_sock);
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
 
 	}
-	else
-	{
-		//while (1) {
-		//	// 데이터 받기
-		//	Receive_Data((LPVOID)client_sock, WorldInfo);
 
-		//	// 데이터 보내기
-		//	Send_Data((LPVOID)client_sock);
+	while (1) {
+		// 데이터 받기
+		Receive_Data((LPVOID)client_sock, WorldInfo);
 
-		//}
+		// 데이터 보내기
+		Send_Data((LPVOID)client_sock);
+
 	}
 
 	closesocket(client_sock);
@@ -166,10 +164,11 @@ int main(int argc, char* argv[])
 	HANDLE hThread;
 
 	// 이벤트 생성
+	// TRUE로 신호상태로 놔야할듯
 	hRecvEvent = CreateEvent(NULL, FALSE, FALSE, NULL);	// 자동 리셋, 비신호
 	if (hRecvEvent == NULL) return 1;
 
-	hSendEvent = CreateEvent(NULL, FALSE, FALSE, NULL);	// 자동 리셋, 비신호
+	hSendEvent = CreateEvent(NULL, FALSE, TRUE, NULL);	// 자동 리셋, 비신호
 	if (hSendEvent == NULL) return 1;
 
 	while (1)
@@ -210,10 +209,10 @@ int main(int argc, char* argv[])
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 {
-	//// 전송 완료 대기
-	//DWORD EventRetval;
-	//EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
-	//if (EventRetval != WAIT_OBJECT_0) return;
+	// 전송 완료 대기
+	DWORD EventRetval;
+	EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
+	if (EventRetval != WAIT_OBJECT_0) return;
 
 
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
@@ -229,7 +228,12 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	// 고정 길이 데이터 받아오기
-	retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
+	//retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
+	int k = 0;
+	retval = recvn(client_sock, (char*)&k, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
@@ -252,15 +256,16 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		else isSend = true;
 	}
 
-	if (isSend) SetEvent(hSendEvent);
+	if (isSend) 
+		SetEvent(hRecvEvent);
 }
 
 void Send_Data(LPVOID arg)
 {
-	//// 수신 완료 대기
-	//DWORD EventRetval;
-	//EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
-	//if (EventRetval != WAIT_OBJECT_0) return;
+	// 수신 완료 대기
+	DWORD EventRetval;
+	EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
+	if (EventRetval != WAIT_OBJECT_0) return;
 
 
 	SOCKET client_sock = (SOCKET)arg;
@@ -298,7 +303,13 @@ void Send_Data(LPVOID arg)
 	}
 
 
-	retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
+	//CLIENTINFO	tTest;
+	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
+	int k = 0;
+	retval = send(client_sock, (char*)&k, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
@@ -320,7 +331,8 @@ void Send_Data(LPVOID arg)
 		else isRecv = true;
 	}
 
-	if (isRecv) SetEvent(hRecvEvent);
+	if (isRecv) 
+		SetEvent(hSendEvent);
 }
 
 //void CheckBuff()

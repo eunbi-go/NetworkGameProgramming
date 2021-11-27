@@ -74,7 +74,12 @@ int CClientManager::sendInfo()
 	}
 
 	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
-	retval = send(sock, (char*)&tClientInfo, sizeof(tClientInfo), 0);
+	//retval = send(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
+	int k = 10;
+	retval = send(sock, (char*)&k, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
@@ -88,10 +93,16 @@ int CClientManager::recvInfo()
 	// WorldInfo 맵 컨테이너를 받는다.
 
 	// 몇 개의 ClientInfo가 있는지 알아야 한다.
-	retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	//retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
+	int k = 0;
+	retval = recvn(sock, (char*)&k, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
+
 
 	return retval;
 }
