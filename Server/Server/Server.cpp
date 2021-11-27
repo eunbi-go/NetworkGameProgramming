@@ -226,15 +226,15 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	// 고정 길이 데이터 받아오기
-	//retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
-	int k = 0;
-	retval = recvn(client_sock, (char*)&k, sizeof(int), 0);
+	retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
+	//int k = 0;
+	//retval = recvn(client_sock, (char*)&k, sizeof(int), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
 
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iClientID, ClientInfo });
@@ -301,16 +301,16 @@ void Send_Data(LPVOID arg)
 	}
 
 
-	//CLIENTINFO	tTest;
-	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-	int k = 0;
-	retval = send(client_sock, (char*)&k, sizeof(int), 0);
+	CLIENTINFO	tTest;
+	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
+	//int k = 0;
+	//retval = send(client_sock, (char*)&k, sizeof(int), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
 
 	else
 	{

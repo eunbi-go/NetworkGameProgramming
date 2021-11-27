@@ -32,7 +32,6 @@ void CPlayer::Initialize()
 	m_tInfo.iCX = 25;
 	m_tInfo.iCY = 25;
 
-
 	m_tInfo.iBombPower = 1;
 
 	m_tInfo.iHP = 1;
