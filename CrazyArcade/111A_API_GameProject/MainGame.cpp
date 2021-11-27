@@ -15,15 +15,12 @@ CMainGame::CMainGame()
 	CClientManager::Get_Instance()->recvClientID();
 	// 맵 정보를 받아온다.
 	CClientManager::Get_Instance()->recvInitMapTile();
-<<<<<<< HEAD
 	//// 캐릭터 정보를 서버에게 보낸다.
 	//CClientManager::Get_Instance()->sendInfo();
 	//// 플레이어의 초기 위치를 받아온다.
-=======
 	// 캐릭터 정보를 서버에게 보낸다.
-	CClientManager::Get_Instance()->sendInfo();
+	//CClientManager::Get_Instance()->sendInfo();
 	// 플레이어의 초기 위치를 받아온다.
->>>>>>> 92208dbbf5500d55bc77d221bc76374720850983
 	//CClientManager::Get_Instance()->recvInitPlayerPos();
 }
 
