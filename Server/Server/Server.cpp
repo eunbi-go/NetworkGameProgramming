@@ -16,6 +16,8 @@ HANDLE hSendEvent;		// 각 클라이언트와의 송신 결과를 알려주기 위한 이벤트
 vector<CObj*>	vecMapTile;				// 맵 타일
 vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
 
+bool isStart = false;
+
 #define SERVERPORT 9000
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
@@ -103,24 +105,20 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		Receive_Data((LPVOID)client_sock, WorldInfo);
 
 		// 캐릭터 종류, 초기 위치 정해서 Client로 전송
-		Send_Data((LPVOID)client_sock);
-
-
+		//Send_Data((LPVOID)client_sock);
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
 
 	}
-	else
-	{
-		//while (1) {
-		//	// 데이터 받기
-		//	Receive_Data((LPVOID)client_sock, WorldInfo);
 
-		//	// 데이터 보내기
-		//	Send_Data((LPVOID)client_sock);
+	while (1) {
+		// 데이터 받기
+		//Receive_Data((LPVOID)client_sock, WorldInfo);
 
-		//}
+		// 데이터 보내기
+		//Send_Data((LPVOID)client_sock);
+
 	}
 
 	closesocket(client_sock);
@@ -217,7 +215,6 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	//EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
 	//if (EventRetval != WAIT_OBJECT_0) return;
 
-
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
@@ -275,35 +272,14 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-	// ClientID = 0,	위치는 왼쪽 위
-	if (WorldInfo.find(0) != WorldInfo.end()) {
-		WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-		WorldInfo[0].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	}
-
-	// ClientID = 1,	위치는 오른쪽 위
-	if (WorldInfo.find(1) != WorldInfo.end()) {
-		WorldInfo[1].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-		WorldInfo[1].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	}
-
-	// ClientID = 2,	위치는 왼쪽 아래
-	if (WorldInfo.find(2) != WorldInfo.end()) {
-		WorldInfo[2].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-		WorldInfo[2].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	}
-
-	// ClientID = 3,	위치는 오른쪽 아래
-	if (WorldInfo.find(3) != WorldInfo.end()) {
-		WorldInfo[3].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-		WorldInfo[3].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	}
-
-
-	retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
+	retval = send(client_sock, (char*)&WorldInfo[iClientID], sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
+	/*retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}*/
 
 	else
 	{

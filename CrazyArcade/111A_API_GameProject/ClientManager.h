@@ -38,6 +38,7 @@ public:
 
 public:
 	void	setPlayerInfo(const INFO& tPInfo);
+	void	setGameStart() { bisStart = true; }
 
 	int		GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
 	vector<CObj*> Get_MapTile() { return vecMapTile; }
@@ -77,5 +78,7 @@ private:
 	int iNameLen = 0;
 	int iFileSize = 0;
 	char buf[900] = "../111A_API_GameProject/";
+
+	bool bisStart = false;		// 게임 시작했는가
 };
 
