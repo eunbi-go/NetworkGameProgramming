@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ClientManager.h"
 #include "TileManager.h"
+#include "ObjManager.h"
 
 #define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
@@ -9,6 +10,8 @@ CClientManager* CClientManager::m_pInstance = nullptr;
 
 CClientManager::CClientManager()
 {
+	ZeroMemory(&tClientInfo, sizeof(tClientInfo));
+
 }
 
 CClientManager::~CClientManager()
@@ -39,6 +42,7 @@ int CClientManager::connectToServer()
 	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 
+	
 	return retval;
 }
 
@@ -55,8 +59,6 @@ void CClientManager::recvClientID()
 
 int CClientManager::sendInfo()
 {
-	ZeroMemory(&tClientInfo, sizeof(tClientInfo));
-
 	// ClientID에 따라서 캐릭터를 정해서 서버로 보냄
 	// ClientID : 0 -> 배찌,	ClientID : 1 -> 다오,	ClientID : 2 -> 디즈니
 
@@ -71,7 +73,13 @@ int CClientManager::sendInfo()
 	case 2:
 		tClientInfo.PlayerInfo.PlayerName = CHARNAME::DIGENIE;
 		break;
+	default:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::UNI;
+		break;
 	}
+
+	// 플레이어 위치 tClientInfo에 저장
+	setPlayerInfo();
 
 	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
 	retval = send(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
@@ -164,8 +172,11 @@ void CClientManager::recvInitMapTile()
 	CTileManager::Get_Instance()->Set_DataFile(buf, strlen(buf));
 }
 
-void CClientManager::setPlayerInfo(const INFO& tPInfo)
+void CClientManager::setPlayerInfo()
 {
+	tClientInfo.PlayerInfo.PlayerPos.fX = CObjManager::Get_Instance()->Get_PlayerX();
+	tClientInfo.PlayerInfo.PlayerPos.fY = CObjManager::Get_Instance()->Get_PlayerY();
+	
 }
 
 void CClientManager::err_quit(char* msg)

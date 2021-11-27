@@ -8,6 +8,7 @@
 #include "SoundMgr.h"
 #include "SceneManager.h"
 #include "TileManager.h"
+#include "ClientManager.h"
 
 CUni::CUni()
 {
@@ -25,8 +26,26 @@ void CUni::Initialize()
 	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Character/Uni/uni_bubble.bmp", L"UniBubble");
 	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Character/Uni/uni_pop.bmp", L"UniPop");
 
-	m_tInfo.fX = MAPSTARTX + (TILECX >> 1);
-	m_tInfo.fY = MAPSTARTY + (TILECY >> 1);
+	//ClientID = 0, 위치는 왼쪽 위
+	if (CClientManager::Get_Instance()->GetClientID() == 0) {
+		m_tInfo.fX = MAPSTARTX + (TILECX >> 1);
+		m_tInfo.fY = MAPSTARTY + (TILECY >> 1);
+	}
+	// ClientID = 1,	위치는 오른쪽 위
+	if (CClientManager::Get_Instance()->GetClientID() == 1) {
+		m_tInfo.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+		m_tInfo.fY = MAPSTARTY + (TILECY >> 1);
+	}
+	// ClientID = 2,	위치는 왼쪽 아래
+	if (CClientManager::Get_Instance()->GetClientID() == 2) {
+		m_tInfo.fX = MAPSTARTX + (TILECX >> 1);
+		m_tInfo.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	}
+	// ClientID = 3,	위치는 오른쪽 아래
+	if (CClientManager::Get_Instance()->GetClientID() == 3) {
+		m_tInfo.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+		m_tInfo.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	}
 	m_tInfo.iCX = 25;
 	m_tInfo.iCY = 25;
 
