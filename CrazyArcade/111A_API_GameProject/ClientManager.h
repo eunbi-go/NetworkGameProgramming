@@ -37,7 +37,7 @@ public:
 	void	recvInitMapTile();
 
 public:
-	void	setPlayerInfo(const INFO& tPInfo);
+	void	setPlayerInfo();		// 네트워크 통신용 플레이어 위치 전송
 	void	setGameStart() { bisStart = true; }
 
 	int		GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환

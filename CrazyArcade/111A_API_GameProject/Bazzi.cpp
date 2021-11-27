@@ -46,6 +46,7 @@ void CBazzi::Initialize()
 		m_tInfo.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
 		m_tInfo.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
 	}
+
 	m_tInfo.iCX = 25;
 	m_tInfo.iCY = 25;
 
@@ -64,6 +65,7 @@ void CBazzi::Initialize()
 
 int CBazzi::Update()
 {
+
 	if (OBJSTATE::BUBBLE == m_eState)
 	{
 		if (m_dwTime + 6000 < GetTickCount())

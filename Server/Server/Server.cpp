@@ -5,7 +5,7 @@
 #include "Obj.h"
 
 #define BUFSIZE 500
-static int iClientID = 0;				// 클라이언트의 ID
+static int iClientID = 1;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
 map<USHORT, int> mapClientPort;			// 클라이언트의 포트번호와 클라이언트ID 저장
 map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
@@ -114,18 +114,10 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (1) {
 		// 데이터 받기
-<<<<<<< HEAD
-		//Receive_Data((LPVOID)client_sock, WorldInfo);
-
-		// 데이터 보내기
-		//Send_Data((LPVOID)client_sock);
-=======
 		Receive_Data((LPVOID)client_sock, WorldInfo);
 
 		// 데이터 보내기
 		Send_Data((LPVOID)client_sock);
->>>>>>> 51df204d4ba6f501ac998bf7bb57e4317e37732d
-
 	}
 
 	closesocket(client_sock);
@@ -234,15 +226,15 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	// 고정 길이 데이터 받아오기
-	//retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
-	int k = 0;
-	retval = recvn(client_sock, (char*)&k, sizeof(int), 0);
+	retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
+	//int k = 0;
+	//retval = recvn(client_sock, (char*)&k, sizeof(int), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
 
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iClientID, ClientInfo });
@@ -284,32 +276,30 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-<<<<<<< HEAD
-	retval = send(client_sock, (char*)&WorldInfo[iClientID], sizeof(CLIENTINFO), 0);
-=======
-	// ClientID = 0,	위치는 왼쪽 위
-	if (WorldInfo.find(0) != WorldInfo.end()) {
-		WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-		WorldInfo[0].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	}
 
-	// ClientID = 1,	위치는 오른쪽 위
-	if (WorldInfo.find(1) != WorldInfo.end()) {
-		WorldInfo[1].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-		WorldInfo[1].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	}
+	//// ClientID = 0,	위치는 왼쪽 위
+	//if (WorldInfo.find(0) != WorldInfo.end()) {
+	//	WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
+	//	WorldInfo[0].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
+	//}
 
-	// ClientID = 2,	위치는 왼쪽 아래
-	if (WorldInfo.find(2) != WorldInfo.end()) {
-		WorldInfo[2].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-		WorldInfo[2].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	}
+	//// ClientID = 1,	위치는 오른쪽 위
+	//if (WorldInfo.find(1) != WorldInfo.end()) {
+	//	WorldInfo[1].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+	//	WorldInfo[1].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
+	//}
 
-	// ClientID = 3,	위치는 오른쪽 아래
-	if (WorldInfo.find(3) != WorldInfo.end()) {
-		WorldInfo[3].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-		WorldInfo[3].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	}
+	//// ClientID = 2,	위치는 왼쪽 아래
+	//if (WorldInfo.find(2) != WorldInfo.end()) {
+	//	WorldInfo[2].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
+	//	WorldInfo[2].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	//}
+
+	//// ClientID = 3,	위치는 오른쪽 아래
+	//if (WorldInfo.find(3) != WorldInfo.end()) {
+	//	WorldInfo[3].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+	//	WorldInfo[3].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	//}
 
 
 	//CLIENTINFO	tTest;
@@ -317,9 +307,9 @@ void Send_Data(LPVOID arg)
 	//if (retval == SOCKET_ERROR) {
 	//	err_display("send()");
 	//}
-	int k = 0;
+	int k = 100;
 	retval = send(client_sock, (char*)&k, sizeof(int), 0);
->>>>>>> 51df204d4ba6f501ac998bf7bb57e4317e37732d
+
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}

@@ -47,6 +47,8 @@ void CPlayer::Initialize()
 		m_tInfo.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
 		m_tInfo.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
 	}
+
+
 	m_tInfo.iCX = 25;
 	m_tInfo.iCY = 25;
 
@@ -101,8 +103,6 @@ int CPlayer::Update()
 
 void CPlayer::Late_Update()
 {
-
-
 	if (m_tInfo.fX < 32)
 		m_tInfo.fX += m_tInfo.fSpeed;
 
