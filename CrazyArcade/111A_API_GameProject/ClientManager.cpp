@@ -42,7 +42,6 @@ int CClientManager::connectToServer()
 	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 
-	
 	return retval;
 }
 
@@ -54,7 +53,7 @@ void CClientManager::recvClientID()
 		exit(1);
 	}
 
-	
+	tClientInfo.ClientID = iClientID;
 }
 
 int CClientManager::sendInfo()
@@ -173,8 +172,7 @@ void CClientManager::recvInitMapTile()
 void CClientManager::setPlayerInfo()
 {
 	tClientInfo.PlayerInfo.PlayerPos.fX = CObjManager::Get_Instance()->Get_PlayerX();
-	tClientInfo.PlayerInfo.PlayerPos.fY = CObjManager::Get_Instance()->Get_PlayerY();
-	
+	tClientInfo.PlayerInfo.PlayerPos.fY = CObjManager::Get_Instance()->Get_PlayerY();	
 }
 
 void CClientManager::err_quit(char* msg)

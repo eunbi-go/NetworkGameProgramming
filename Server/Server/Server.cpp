@@ -3,9 +3,10 @@
 #include "stdafx.h"
 #include "TileManager.h"
 #include "Obj.h"
+#include <math.h>
 
 #define BUFSIZE 500
-static int iClientID = 1;				// 클라이언트의 ID
+static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
 map<USHORT, int> mapClientPort;			// 클라이언트의 포트번호와 클라이언트ID 저장
 map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
@@ -108,15 +109,19 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		//Send_Data((LPVOID)client_sock);
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
+
+		// mapIsReceive컨테이너에 ClientID를 key로 가진 bool변수를 false로 초기화 한 다음 삽입해준다.
+		mapIsRecv.insert({ iClientID, false });
+
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
 
 	}
 
 	while (1) {
-		// 데이터 받기
+		//// 데이터 받기
 		Receive_Data((LPVOID)client_sock, WorldInfo);
 
-		// 데이터 보내기
+		//// 데이터 보내기
 		Send_Data((LPVOID)client_sock);
 	}
 
@@ -190,8 +195,7 @@ int main(int argc, char* argv[])
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 
-		// mapIsReceive컨테이너에 ClientID를 key로 가진 bool변수를 false로 초기화 한 다음 삽입해준다.
-		mapIsRecv.insert({ iClientID, false });
+		
 	}
 
 	// 이벤트 제거
@@ -208,10 +212,10 @@ int main(int argc, char* argv[])
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 {
-	// 전송 완료 대기
-	DWORD EventRetval;
-	EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
-	if (EventRetval != WAIT_OBJECT_0) return;
+	//// 전송 완료 대기
+	//DWORD EventRetval;
+	//EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
+	//if (EventRetval != WAIT_OBJECT_0) return;
 
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
 	SOCKET client_sock = (SOCKET)arg;
@@ -230,40 +234,38 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
-	//int k = 0;
-	//retval = recvn(client_sock, (char*)&k, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
+	
+	int id = ClientInfo.ClientID;
+	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
+	WorldInfo.insert({ id, ClientInfo });
+	// 실시간으로 값을 ClientInfo 값을 바꿔준다
+	WorldInfo[id] = ClientInfo;
+
+	//// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
+	//auto iter = mapClientPort.find(clientaddr.sin_port);
+	//mapIsRecv[iter->second] = true;
+
+	//// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
+	//for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
+	//{
+	//	if (!iter->second) {
+	//		isSend = false;
+	//		break;
+	//	}
+
+	//	else isSend = true;
 	//}
 
-	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
-	WorldInfo.insert({ iClientID, ClientInfo });
-
-	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
-	auto iter = mapClientPort.find(clientaddr.sin_port);
-	mapIsRecv[iter->second] = true;
-
-	// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
-	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
-	{
-		if (!iter->second) {
-			isSend = false;
-			break;
-		}
-
-		else isSend = true;
-	}
-
-	if (isSend)
-		SetEvent(hRecvEvent);
+	//if (isSend)
+	//	SetEvent(hRecvEvent);
 }
 
 void Send_Data(LPVOID arg)
 {
-	// 수신 완료 대기
-	DWORD EventRetval;
-	EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
-	if (EventRetval != WAIT_OBJECT_0) return;
+	//// 수신 완료 대기
+	//DWORD EventRetval;
+	//EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
+	//if (EventRetval != WAIT_OBJECT_0) return;
 
 
 	SOCKET client_sock = (SOCKET)arg;
@@ -276,37 +278,6 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-
-	//// ClientID = 0,	위치는 왼쪽 위
-	//if (WorldInfo.find(0) != WorldInfo.end()) {
-	//	WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-	//	WorldInfo[0].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	//}
-
-	//// ClientID = 1,	위치는 오른쪽 위
-	//if (WorldInfo.find(1) != WorldInfo.end()) {
-	//	WorldInfo[1].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-	//	WorldInfo[1].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	//}
-
-	//// ClientID = 2,	위치는 왼쪽 아래
-	//if (WorldInfo.find(2) != WorldInfo.end()) {
-	//	WorldInfo[2].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-	//	WorldInfo[2].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	//}
-
-	//// ClientID = 3,	위치는 오른쪽 아래
-	//if (WorldInfo.find(3) != WorldInfo.end()) {
-	//	WorldInfo[3].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-	//	WorldInfo[3].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	//}
-
-
-	//CLIENTINFO	tTest;
-	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
 	int k = 100;
 	retval = send(client_sock, (char*)&k, sizeof(int), 0);
 
@@ -325,18 +296,18 @@ void Send_Data(LPVOID arg)
 		mapIsRecv[iter->second] = false;
 	}
 
-	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
-	{
-		if (iter->second) {
-			isRecv = false;
-			break;
-		}
+	//for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
+	//{
+	//	if (iter->second) {
+	//		isRecv = false;
+	//		break;
+	//	}
 
-		else isRecv = true;
-	}
+	//	else isRecv = true;
+	//}
 
-	if (isRecv)
-		SetEvent(hSendEvent);
+	//if (isRecv)
+	//	SetEvent(hSendEvent);
 }
 
 //void CheckBuff()

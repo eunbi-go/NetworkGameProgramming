@@ -53,7 +53,7 @@ typedef struct ClientInfo					// 서버로 전송할 각 클라이언트의 정보
 	ITEMINFO			ItemInfo[10];		// 아이템의 정보(이름, 위치) MAX=10
 	MONSTERINFO			MonsterInfo[10];	// 몬스터의 정보(이름, 위치) MAX=10	
 	OBJPOS				BombPos[10];		// 폭탄의 정보(위치)		 MAX=10
-	//int iTest;
+	int					ClientID;
 }CLIENTINFO;
 ////////////////////////////////////////////////////////////////////////////
 
