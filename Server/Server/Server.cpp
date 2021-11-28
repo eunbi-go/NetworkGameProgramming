@@ -302,7 +302,6 @@ void Send_Data(LPVOID arg)
 	//}
 
 
-<<<<<<< HEAD
 	CLIENTINFO	tTest;
 	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
@@ -313,7 +312,7 @@ void Send_Data(LPVOID arg)
 	//if (retval == SOCKET_ERROR) {
 	//	err_display("send()");
 	//}
-=======
+	// 
 	//CLIENTINFO	tTest;
 	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	//if (retval == SOCKET_ERROR) {
@@ -329,7 +328,6 @@ void Send_Data(LPVOID arg)
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}*/
->>>>>>> 5b2964dd14080cce44a88ba57ea83eaf827bbe4c
 
 	else
 	{
