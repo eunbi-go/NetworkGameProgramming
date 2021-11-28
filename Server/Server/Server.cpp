@@ -230,17 +230,12 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
-	//int k = 0;
-	//retval = recvn(client_sock, (char*)&k, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
 
+	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
-	WorldInfo.insert({ iClientID, ClientInfo });
+	WorldInfo.insert({ iter->second, ClientInfo });
 
 	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
-	auto iter = mapClientPort.find(clientaddr.sin_port);
 	mapIsRecv[iter->second] = true;
 
 	// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
@@ -276,7 +271,9 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
+	auto iter = mapClientPort.find(clientaddr.sin_port);
 
+<<<<<<< HEAD
 	//// ClientID = 0,	위치는 왼쪽 위
 	//if (WorldInfo.find(0) != WorldInfo.end()) {
 	//	WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
@@ -303,10 +300,14 @@ void Send_Data(LPVOID arg)
 
 
 	CLIENTINFO	tTest;
+=======
+	CLIENTINFO	tTest = WorldInfo[iter->second];
+>>>>>>> ef08363d25afb98dcf2299298653b47c36e6874f
 	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
+<<<<<<< HEAD
 	//int k = 0;
 	//retval = send(client_sock, (char*)&k, sizeof(int), 0);
 	//if (retval == SOCKET_ERROR) {
@@ -328,6 +329,8 @@ void Send_Data(LPVOID arg)
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}*/
+=======
+>>>>>>> ef08363d25afb98dcf2299298653b47c36e6874f
 
 	else
 	{

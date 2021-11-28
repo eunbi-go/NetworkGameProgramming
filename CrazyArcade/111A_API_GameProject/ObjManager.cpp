@@ -235,6 +235,22 @@ float CObjManager::Get_BombY()
 	}
 }
 
+void CObjManager::Set_PlayerX(float fX)
+{
+	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
+	{
+		dynamic_cast<CPlayer*>(*iter)->Set_PlayerX(fX);
+	}
+}
+
+void CObjManager::Set_PlayerY(float fY)
+{
+	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
+	{
+		dynamic_cast<CPlayer*>(*iter)->Set_PlayerY(fY);
+	}
+}
+
 void CObjManager::Picking_Object(CObj * _pObj, MAPBLOCK::BLOCK _block)
 {
 	POINT pt = {};

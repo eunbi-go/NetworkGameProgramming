@@ -202,6 +202,8 @@ void CDao::Key_Check()
 			CObjManager::Get_Instance()->Add_Object(pObj, OBJID::BOMB);
 		}
 	}
+
+	CClientManager::Get_Instance()->setPlayerPosToClientInfo(m_tInfo.fX, m_tInfo.fY);
 }
 
 void CDao::Scene_Change()

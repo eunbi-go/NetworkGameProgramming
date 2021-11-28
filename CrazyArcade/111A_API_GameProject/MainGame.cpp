@@ -15,6 +15,8 @@ CMainGame::CMainGame()
 	CClientManager::Get_Instance()->recvClientID();
 	// 맵 정보를 받아온다.
 	CClientManager::Get_Instance()->recvInitMapTile();
+	// 플레이어 생성
+	//CClientManager::Get_Instance()->addPlayer();
 	//// 캐릭터 정보를 서버에게 보낸다.
 	//CClientManager::Get_Instance()->sendInfo();
 	//// 플레이어의 초기 위치를 받아온다.
@@ -41,7 +43,6 @@ void CMainGame::Initialize()
 	CTileManager::Get_Instance()->Initialize();
 
 	if (isInit) {
-
 		
 
 		// 적용한다.
@@ -53,6 +54,8 @@ void CMainGame::Initialize()
 
 void CMainGame::Update()
 {
+
+
 	CSceneManager::Get_Instance()->Update();
 
 	CClientManager::Get_Instance()->set_buffOn();
@@ -66,6 +69,10 @@ void CMainGame::Late_Update()
 
 void CMainGame::Render()
 {
+	// 서버 통신
+	CClientManager::Get_Instance()->sendInfo();
+	CClientManager::Get_Instance()->recvInfo();
+
 	HDC HMemDC = CBmpManager::Get_Instance()->Find_Image(L"Stage1Back");
 	HDC HBackBuffer = CBmpManager::Get_Instance()->Find_Image(L"BackBuffer");
 
@@ -76,9 +83,7 @@ void CMainGame::Render()
 	BitBlt(m_DC, 0, 0, WINCX, WINCY, HBackBuffer, 0, 0, SRCCOPY);
 
 
-	// 서버 통신
-	CClientManager::Get_Instance()->sendInfo();
-	CClientManager::Get_Instance()->recvInfo();
+
 	//CClientManager::Get_Instance()->applyInfo();
 }
 
