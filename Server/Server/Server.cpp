@@ -230,17 +230,12 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
-	//int k = 0;
-	//retval = recvn(client_sock, (char*)&k, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
 
+	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
-	WorldInfo.insert({ iClientID, ClientInfo });
+	WorldInfo.insert({ iter->second, ClientInfo });
 
 	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
-	auto iter = mapClientPort.find(clientaddr.sin_port);
 	mapIsRecv[iter->second] = true;
 
 	// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
@@ -276,60 +271,13 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
+	auto iter = mapClientPort.find(clientaddr.sin_port);
 
-	//// ClientID = 0,	위치는 왼쪽 위
-	//if (WorldInfo.find(0) != WorldInfo.end()) {
-	//	WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-	//	WorldInfo[0].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	//}
-
-	//// ClientID = 1,	위치는 오른쪽 위
-	//if (WorldInfo.find(1) != WorldInfo.end()) {
-	//	WorldInfo[1].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-	//	WorldInfo[1].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	//}
-
-	//// ClientID = 2,	위치는 왼쪽 아래
-	//if (WorldInfo.find(2) != WorldInfo.end()) {
-	//	WorldInfo[2].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-	//	WorldInfo[2].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	//}
-
-	//// ClientID = 3,	위치는 오른쪽 아래
-	//if (WorldInfo.find(3) != WorldInfo.end()) {
-	//	WorldInfo[3].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-	//	WorldInfo[3].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	//}
-
-
-<<<<<<< HEAD
-	CLIENTINFO	tTest;
+	CLIENTINFO	tTest = WorldInfo[iter->second];
 	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
-	//int k = 0;
-	//retval = send(client_sock, (char*)&k, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-=======
-	//CLIENTINFO	tTest;
-	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-	int k = 100;
-	retval = send(client_sock, (char*)&k, sizeof(int), 0);
-
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	/*retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}*/
->>>>>>> 5b2964dd14080cce44a88ba57ea83eaf827bbe4c
 
 	else
 	{

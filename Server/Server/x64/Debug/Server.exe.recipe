@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\Release\Server.exe</FullPath>
+      <FullPath>C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\Debug\Server.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
