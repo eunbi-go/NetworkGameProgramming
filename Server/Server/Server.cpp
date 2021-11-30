@@ -5,7 +5,7 @@
 #include "Obj.h"
 
 #define BUFSIZE 500
-static int iClientID = 1;				// 클라이언트의 ID
+static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
 map<USHORT, int> mapClientPort;			// 클라이언트의 포트번호와 클라이언트ID 저장
 map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
@@ -272,19 +272,35 @@ void Send_Data(LPVOID arg)
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	auto iter = mapClientPort.find(clientaddr.sin_port);
+	int iClientKey = iter->second;
 
+	// 본인 클라이언트 정보
 	CLIENTINFO	tTest = WorldInfo[iter->second];
 	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
 
-	else
-	{
+	// 상대방 클라이언트 개수, 정보
+	int nClientNum = WorldInfo.size();
+	for (int i = 0; i < nClientNum; ++i) {
+		if (i != iClientKey) {
+			CLIENTINFO	tTest = WorldInfo[i];
+			retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
+		}
+	}
+
+	// 변화된 맵 오브젝트
+
+	//else
+	//{
 		// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
 		auto iter = mapClientPort.find(clientaddr.sin_port);
 		mapIsRecv[iter->second] = false;
-	}
+	//}
 
 	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
 	{
