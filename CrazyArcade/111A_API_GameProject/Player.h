@@ -22,6 +22,9 @@ public:
 	float Get_PlayerX() { return m_tInfo.fX; }
 	float Get_PlayerY() { return m_tInfo.fY; }
 
+	void Set_PlayerX(float fX) { m_tInfo.fX = fX; }
+	void Set_PlayerY(float fY) { m_tInfo.fY = fY; }
+
 public:
 	void Set_PlayerBombCount(int _ballonitem) {
 		if (m_tInfo.iMaxBomb == 7)

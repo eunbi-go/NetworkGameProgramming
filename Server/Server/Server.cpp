@@ -232,26 +232,31 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		err_display("recv()");
 	}
 
-	int id = ClientInfo.ClientID;
+
+
+
+
+
+	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
-	WorldInfo.insert({ id, ClientInfo });
+	WorldInfo.insert({ iter->second, ClientInfo });
+
 	// 실시간으로 값을 ClientInfo 값을 바꿔준다1
-	WorldInfo[id] = ClientInfo;
+	WorldInfo[iter->second] = ClientInfo;
 
-	//// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
-	//auto iter = mapClientPort.find(clientaddr.sin_port);
-	//mapIsRecv[iter->second] = true;
+	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
+	mapIsRecv[iter->second] = true;
 
-	//// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
-	//for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
-	//{
-	//	if (!iter->second) {
-	//		isSend = false;
-	//		break;
-	//	}
+	// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
+	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
+	{
+		if (!iter->second) {
+			isSend = false;
+			break;
+		}
 
-	//	else isSend = true;
-	//}
+		else isSend = true;
+	}
 
 	//if (isSend)
 	//	SetEvent(hRecvEvent);
@@ -275,6 +280,7 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
+
 	for (int i = 0; i < iClientID; ++i)
 	{
 		WorldInfo[i].ClientID_Number = iClientID;
@@ -290,6 +296,14 @@ void Send_Data(LPVOID arg)
 		}
 	}
 
+	//auto iter = mapClientPort.find(clientaddr.sin_port);
+
+	//CLIENTINFO	tTest = WorldInfo[iter->second];
+	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
+
 	//else
 	//{
 	//	// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
@@ -297,15 +311,15 @@ void Send_Data(LPVOID arg)
 	//	mapIsRecv[iter->second] = false;
 	//}
 
-	//for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
-	//{
-	//	if (iter->second) {
-	//		isRecv = false;
-	//		break;
-	//	}
+	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
+	{
+		if (iter->second) {
+			isRecv = false;
+			break;
+		}
 
-	//	else isRecv = true;
-	//}
+		else isRecv = true;
+	}
 
 	//if (isRecv)
 	//	SetEvent(hSendEvent);

@@ -2,6 +2,7 @@
 #include "ClientManager.h"
 #include "TileManager.h"
 #include "ObjManager.h"
+#include "Player.h"
 
 #define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
@@ -11,7 +12,8 @@ CClientManager* CClientManager::m_pInstance = nullptr;
 CClientManager::CClientManager()
 {
 	ZeroMemory(&tClientInfo, sizeof(tClientInfo));
-
+	tClientInfo.PlayerInfo.PlayerPos.fX = 100.0f;
+	tClientInfo.PlayerInfo.PlayerPos.fY = 100.0f;
 }
 
 CClientManager::~CClientManager()
@@ -62,24 +64,24 @@ int CClientManager::sendInfo()
 	// ClientID에 따라서 캐릭터를 정해서 서버로 보냄
 	// ClientID : 0 -> 배찌,	ClientID : 1 -> 다오,	ClientID : 2 -> 디즈니
 
-	switch (iClientID)
-	{
-	case 0:
-		tClientInfo.PlayerInfo.PlayerName = CHARNAME::BAZZI;
-		break;
-	case 1:
-		tClientInfo.PlayerInfo.PlayerName = CHARNAME::DAO;
-		break;
-	case 2:
-		tClientInfo.PlayerInfo.PlayerName = CHARNAME::DIGENIE;
-		break;
-	default:
-		tClientInfo.PlayerInfo.PlayerName = CHARNAME::UNI;
-		break;
-	}
+	//switch (iClientID)
+	//{
+	//case 0:
+	//	tClientInfo.PlayerInfo.PlayerName = CHARNAME::BAZZI;
+	//	break;
+	//case 1:
+	//	tClientInfo.PlayerInfo.PlayerName = CHARNAME::DAO;
+	//	break;
+	//case 2:
+	//	tClientInfo.PlayerInfo.PlayerName = CHARNAME::DIGENIE;
+	//	break;
+	//default:
+	//	tClientInfo.PlayerInfo.PlayerName = CHARNAME::UNI;
+	//	break;
+	//}
 
 	// 플레이어 위치 tClientInfo에 저장
-	setPlayerInfo();
+	//setPlayerInfo();
 
 	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
 	retval = send(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
@@ -122,6 +124,13 @@ int CClientManager::recvInfo()
 	}
 
 	
+	//retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
+	
+	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fX);
+	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fY);
 
 
 	return retval;
@@ -129,6 +138,8 @@ int CClientManager::recvInfo()
 
 void CClientManager::applyInfo()
 {
+	// 받아온 몬스터, 맵 블록, 아이템 적용
+
 }
 
 void CClientManager::set_buffOn()
@@ -186,6 +197,12 @@ void CClientManager::setPlayerInfo()
 {
 	tClientInfo.PlayerInfo.PlayerPos.fX = CObjManager::Get_Instance()->Get_PlayerX();
 	tClientInfo.PlayerInfo.PlayerPos.fY = CObjManager::Get_Instance()->Get_PlayerY();	
+}
+
+void CClientManager::setPlayerPosToClientInfo(float fX, float fY)
+{
+	tClientInfo.PlayerInfo.PlayerPos.fX = fX;
+	tClientInfo.PlayerInfo.PlayerPos.fY = fY;
 }
 
 void CClientManager::err_quit(char* msg)
