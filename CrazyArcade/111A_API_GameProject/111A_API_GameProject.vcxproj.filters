@@ -175,6 +175,9 @@
     <Filter Include="소스 파일\98.Manager\09. ClientManager">
       <UniqueIdentifier>{827e39d0-3024-4f13-9bf6-5d38e6fbbd14}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\98.Manager\10.TimeManager">
+      <UniqueIdentifier>{0912ac05-c8a2-43c6-a1bc-3d0d8db34245}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -351,6 +354,9 @@
     <ClInclude Include="ClientManager.h">
       <Filter>소스 파일\98.Manager\09. ClientManager</Filter>
     </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>소스 파일\98.Manager\10.TimeManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CrazyArcade.cpp">
@@ -496,6 +502,9 @@
     </ClCompile>
     <ClCompile Include="ClientManager.cpp">
       <Filter>소스 파일\98.Manager\09. ClientManager</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>소스 파일\98.Manager\10.TimeManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

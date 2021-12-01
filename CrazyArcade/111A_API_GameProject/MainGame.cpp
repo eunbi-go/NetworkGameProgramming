@@ -8,6 +8,7 @@
 #include "TileManager.h"
 #include "SoundMgr.h"
 #include "ClientManager.h"
+#include "TimeManager.h"
 
 CMainGame::CMainGame()
 {
@@ -41,6 +42,7 @@ void CMainGame::Initialize()
 	CSoundMgr::Get_Instance()->Initialize();
 	CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENEID::SCENE_MENU);
 	CTileManager::Get_Instance()->Initialize();
+	CTimeManager::Get_Instance()->Ready_CTimeManager();
 
 	if (isInit) {
 		
@@ -65,6 +67,7 @@ void CMainGame::Late_Update()
 {
 	CSceneManager::Get_Instance()->Late_Update();
 	CKeyManager::Get_Instance()->Key_Update();
+	CTimeManager::Get_Instance()->Update_CTimeManager();
 }
 
 void CMainGame::Render()
@@ -96,6 +99,7 @@ void CMainGame::Release()
 
 	CObjManager::Destroy_Instance();
 	CSoundMgr::Destroy_Instance();
+	CTimeManager::Destroy_Instance();
 
 	CClientManager::Destroy_Instance();
 

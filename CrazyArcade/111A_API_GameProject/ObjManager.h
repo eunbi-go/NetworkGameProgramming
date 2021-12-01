@@ -50,6 +50,9 @@ public:
 
 	void Set_Cheat(bool _ischeat) { m_bisCheat = _ischeat; }
 	bool Get_Cheat() { return m_bisCheat; }
+
+	CObj* Get_Player() { return m_listObj[OBJID::PLAYER].front(); }
+
 public:
 	static CObjManager* Get_Instance()
 	{

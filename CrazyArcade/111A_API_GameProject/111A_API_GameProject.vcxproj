@@ -157,6 +157,7 @@
     <ClInclude Include="BombWave.h" />
     <ClInclude Include="BossBomb.h" />
     <ClInclude Include="CollidManager.h" />
+    <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Dao.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="Digenie.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="BombWave.cpp" />
     <ClCompile Include="BossBomb.cpp" />
     <ClCompile Include="CollidManager.cpp" />
+    <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Dao.cpp" />
     <ClCompile Include="Digenie.cpp" />
     <ClCompile Include="Flower.cpp" />
