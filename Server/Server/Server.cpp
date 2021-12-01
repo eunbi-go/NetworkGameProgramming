@@ -118,10 +118,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	}
 
 	while (1) {
-		//// 데이터 받기
+		// 데이터 받기
 		Receive_Data((LPVOID)client_sock, WorldInfo);
-
-		//// 데이터 보내기
+		// 데이터 보내기
 		Send_Data((LPVOID)client_sock);
 	}
 
@@ -194,8 +193,6 @@ int main(int argc, char* argv[])
 			(LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
-
-		
 	}
 
 	// 이벤트 제거
@@ -234,11 +231,11 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
-	
+
 	int id = ClientInfo.ClientID;
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ id, ClientInfo });
-	// 실시간으로 값을 ClientInfo 값을 바꿔준다
+	// 실시간으로 값을 ClientInfo 값을 바꿔준다1
 	WorldInfo[id] = ClientInfo;
 
 	//// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
@@ -278,23 +275,27 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-	int k = 100;
-	retval = send(client_sock, (char*)&k, sizeof(int), 0);
-
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	/*retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}*/
-
-	else
+	for (int i = 0; i < iClientID; ++i)
 	{
-		// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
-		auto iter = mapClientPort.find(clientaddr.sin_port);
-		mapIsRecv[iter->second] = false;
+		WorldInfo[i].ClientID_Number = iClientID;
+		retval = send(client_sock, (char*)&WorldInfo[i], sizeof(CLIENTINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		else
+		{
+			// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
+			auto iter = mapClientPort.find(clientaddr.sin_port);
+			mapIsRecv[iter->second] = false;
+		}
 	}
+
+	//else
+	//{
+	//	// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
+	//	auto iter = mapClientPort.find(clientaddr.sin_port);
+	//	mapIsRecv[iter->second] = false;
+	//}
 
 	//for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
 	//{

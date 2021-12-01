@@ -58,6 +58,7 @@ void CClientManager::recvClientID()
 
 int CClientManager::sendInfo()
 {
+	ZeroMemory(&tClientInfo, sizeof(CLIENTINFO));
 	// ClientID에 따라서 캐릭터를 정해서 서버로 보냄
 	// ClientID : 0 -> 배찌,	ClientID : 1 -> 다오,	ClientID : 2 -> 디즈니
 
@@ -100,15 +101,27 @@ int CClientManager::recvInfo()
 	// WorldInfo 맵 컨테이너를 받는다.
 
 	// 몇 개의 ClientInfo가 있는지 알아야 한다.
-	//retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
-	int k = 0;
-	retval = recvn(sock, (char*)&k, sizeof(int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
+	int ClientInfoNum = tClientInfo.ClientID_Number;	// 총 접속한 클라이언트의 개수
+	
+	if (ClientInfoNum == 0)
+		ClientInfoNum = 1;
+
+	for (int i = 0; i < ClientInfoNum; ++i)
+	{
+		ZeroMemory(&tClientInfo, sizeof(CLIENTINFO));
+		retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+		cout << "접속한 클라이언트 수 : " << ClientInfoNum << endl;
+		cout << "Player" << i << "-> X:" << tClientInfo.PlayerInfo.PlayerPos.fX
+			<< " Y:" << tClientInfo.PlayerInfo.PlayerPos.fY << endl;
+		cout << "-------------------------------------------" << endl;
+		tWorldInfo.insert({ i, tClientInfo });
+		tWorldInfo[i] = tClientInfo;
 	}
+
+	
 
 
 	return retval;
