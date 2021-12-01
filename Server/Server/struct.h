@@ -30,7 +30,7 @@ typedef struct PlayerInfo
 	OBJDIR::DIR			PlayerDir;			// 플레이어의 방향 정보
 	OBJPOS				PlayerPos;			// 플레이어의 위치
 	//FRAME				PlayerFrame;		// 플레이어 현재 프레임
-	//RECT				PlayerSize;			// 플레이어 사이즈(크기)
+	RECT				PlayerSize;			// 플레이어 사이즈(크기)
 	bool				b_isContactPlayer;	// 플레이어가 모두 충돌했는가? 서버에서 판단
 }PLAYERINFO;
 

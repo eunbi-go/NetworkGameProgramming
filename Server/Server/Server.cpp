@@ -192,6 +192,7 @@ int main(int argc, char* argv[])
 
 		// mapIsReceive컨테이너에 ClientID를 key로 가진 bool변수를 false로 초기화 한 다음 삽입해준다.
 		mapIsRecv.insert({ iClientID, false });
+		mapIsCollision.insert({ iClientID, false });
 	}
 
 	// 이벤트 제거
@@ -347,23 +348,52 @@ void Send_Data(LPVOID arg)
 		SetEvent(hSendEvent);
 }
 
-//void CheckBuff()
-//{
-//	// 모든 클라이언트에게 정보를 받은 후
-//	// 모든 플레이어가 충돌했다면 PlayInfo 안의 b_isContactPlayer를 true로 설정
-//	RECT rc = {};
-//
-//	for (auto Dst = WorldInfo.begin(); Dst != WorldInfo.end(); ++Dst)
-//	{
-//		rc = Dst->second.PlayerInfo.PlayerSize;
-//
-//		for (auto Src = WorldInfo.begin(); Src != WorldInfo.end(); ++Src)
-//		{
-//			
-//		}
-//	}
-//
-//}
+void CheckBuff()
+{
+	// 모든 클라이언트에게 정보를 받은 후
+	// 모든 플레이어가 충돌했다면 PlayInfo 안의 b_isContactPlayer를 true로 설정
+	RECT rc = {};
+	auto Dst = WorldInfo.begin();
+	bool isBuffOn = false;
+
+	// 충돌 판단
+	for (auto Src = WorldInfo.begin(); Src != WorldInfo.end(); ++Src) 
+	{
+		if (Src != WorldInfo.begin()) 
+		{
+			if (IntersectRect(&rc, &Dst->second.PlayerInfo.PlayerSize, &Src->second.PlayerInfo.PlayerSize)) 
+			{
+				auto iter = mapIsCollision.find(Dst->first);
+				iter->second = true;
+				iter = mapIsCollision.find(Src->first);
+				iter->second = true;
+			}
+		}
+	}
+
+	// 모든 플레이어가 충돌했다면 isBuffOn을 true로 설정
+	for (auto iter = mapIsCollision.begin(); iter != mapIsCollision.end(); ++iter) 
+	{
+		if (iter->second)
+		{
+			isBuffOn = false;
+			break;
+		}
+
+		else isBuffOn = true;
+	}
+
+	// isBuffOn이 true라면 CLIENTINFO 속 b_isContactPlayer를 true로 설정한 후
+	// mapIsCollision은 다시 false로 설정
+	if (isBuffOn)
+	{
+		for (auto iter = WorldInfo.begin(); iter != WorldInfo.end(); ++iter)
+			iter->second.PlayerInfo.b_isContactPlayer = true;
+
+		for (auto iter = mapIsCollision.begin(); iter != mapIsCollision.end(); ++iter)
+			iter->second = false;
+	}
+}
 
 void Send_InitMap(LPVOID arg)
 {

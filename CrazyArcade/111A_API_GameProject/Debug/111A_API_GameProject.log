@@ -1,13 +1,18 @@
-﻿  ClientManager.cpp
-  CNetworkStage.cpp
+﻿  stdafx.cpp
+  Ballon.cpp
   Basket.cpp
   Bazzi.cpp
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Bazzi.cpp(206,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Bazzi.cpp(206,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  BmpManager.cpp
   Bomb.cpp
   BombWave.cpp
   BossBomb.cpp
-  TimeManager.cpp
+  CNetworkStage.cpp
+  ClientManager.cpp
+  CollidManager.cpp
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\CollidManager.cpp(67,50): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  CrazyArcade.cpp
   Dao.cpp
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Dao.cpp(201,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Dao.cpp(201,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
@@ -21,12 +26,23 @@ D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArca
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\HMSon.cpp(282,51): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\HMSon.cpp(285,57): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\HMSon.cpp(285,45): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  KeyManager.cpp
   Leaf1.cpp
   Leaf2.cpp
+  Line.cpp
+  코드를 생성하고 있습니다...
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\CollidManager.cpp(211): warning C4715: 'CCollidManager::isCollision_Rect_BombWaveToBlock': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  컴파일하고 있습니다...
+  LineManager.cpp
+  Logo.cpp
   MainGame.cpp
+  MaxPotion.cpp
   Mbape.cpp
   Messi.cpp
+  MyBitMap.cpp
   MyEdit.cpp
+  MyMenu.cpp
+  Obj.cpp
   ObjManager.cpp
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(266,111): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(266,70): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
@@ -60,19 +76,32 @@ D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArca
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(301,68): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(303,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(303,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  코드를 생성하고 있습니다...
-D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(220): warning C4715: 'CObjManager::Get_PlayerY': 모든 제어 경로에서 값을 반환하지는 않습니다.
-D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(228): warning C4715: 'CObjManager::Get_BombX': 모든 제어 경로에서 값을 반환하지는 않습니다.
-D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(212): warning C4715: 'CObjManager::Get_PlayerX': 모든 제어 경로에서 값을 반환하지는 않습니다.
-D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(236): warning C4715: 'CObjManager::Get_BombY': 모든 제어 경로에서 값을 반환하지는 않습니다.
-  컴파일하고 있습니다...
   Player.cpp
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Player.cpp(455,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Player.cpp(455,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Potion.cpp
+  Rock1.cpp
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Rock1.cpp(37,15): warning C4552: '+': 식의 결과가 사용되지 않습니다.
+  Rock2.cpp
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Rock2.cpp(37,14): warning C4552: '+': 식의 결과가 사용되지 않습니다.
+  Rock3.cpp
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Rock3.cpp(38,14): warning C4552: '+': 식의 결과가 사용되지 않습니다.
+  Scene.cpp
+  SceneManager.cpp
+  Skate.cpp
+  SoundMgr.cpp
+  코드를 생성하고 있습니다...
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(212): warning C4715: 'CObjManager::Get_PlayerX': 모든 제어 경로에서 값을 반환하지는 않습니다.
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(236): warning C4715: 'CObjManager::Get_BombY': 모든 제어 경로에서 값을 반환하지는 않습니다.
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(220): warning C4715: 'CObjManager::Get_PlayerY': 모든 제어 경로에서 값을 반환하지는 않습니다.
+D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\ObjManager.cpp(228): warning C4715: 'CObjManager::Get_BombX': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  컴파일하고 있습니다...
   Stage1.cpp
   Stage2.cpp
   Stage_Boss.cpp
+  Tile.cpp
   TileManager.cpp
+  TimeManager.cpp
   Uni.cpp
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Uni.cpp(204,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\111A_API_GameProject\Uni.cpp(204,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
