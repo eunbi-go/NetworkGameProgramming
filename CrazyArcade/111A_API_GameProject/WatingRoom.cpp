@@ -74,7 +74,9 @@ void CWatingRoom::Late_update()
 			&& 191 < pt.y && 230 > pt.y)
 		{
 			//다
-		CSceneManager::Get_Instance()->Set_Char(CHARNAME::DAO);
+			CSceneManager::Get_Instance()->Set_Char(CHARNAME::DAO);
+			
+			CClientManager::Get_Instance()->setPlayerName(CHARNAME::DAO);
 		}
 
 		if (562 < pt.x && 624 > pt.x
@@ -82,6 +84,8 @@ void CWatingRoom::Late_update()
 		{
 			// 디
 			CSceneManager::Get_Instance()->Set_Char(CHARNAME::DIGENIE);
+
+			CClientManager::Get_Instance()->setPlayerName(CHARNAME::DIGENIE);
 		}
 
 		if (633 < pt.x && 694 > pt.x
@@ -89,6 +93,8 @@ void CWatingRoom::Late_update()
 		{
 			// 배
 			CSceneManager::Get_Instance()->Set_Char(CHARNAME::BAZZI);
+
+			CClientManager::Get_Instance()->setPlayerName(CHARNAME::BAZZI);
 		}
 
 		if (704 < pt.x && 768 > pt.x
@@ -104,30 +110,90 @@ void CWatingRoom::Late_update()
 
 void CWatingRoom::Render(HDC _DC)
 {
+	HDC hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Lobby");
+	BitBlt(_DC, 0, 0, WINCX, WINCY, hMemDC, 0, 0, SRCCOPY);
+
 	// ClientID별 캐릭터 위치
 	// ClientID : 0  ->  50
 	// ClientID : 1  ->  155
 	// ClientID : 2  ->  260
 
 	int iTempPos = 0;
-	// 클라이언트 아이디 따라 위치 정해주기
-	switch (CClientManager::Get_Instance()->GetClientID())
+
+	switch (CClientManager::Get_Instance()->GetWorldInfo()[0].ClientID_Number)
 	{
-	case 0:
-		iTempPos = 50;
-		break;
 	case 1:
-		iTempPos = 155;
+		iTempPos = 50;
+		if (CClientManager::Get_Instance()->GetWorldInfo()[0].PlayerInfo.PlayerName == CHARNAME::BAZZI)
+		{
+			hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Bazzi_sumnail");
+			BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
+
+			hMemDC = CBmpManager::Get_Instance()->Find_Image(L"bazzi");
+			GdiTransparentBlt(_DC, 50, m_tRect.top
+				, 50, 60, hMemDC
+				, 0, 0
+				, 50, 60
+				, RGB(100, 100, 100));
+		}		
 		break;
 	case 2:
+		iTempPos = 155;
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Bazzi_sumnail");
+		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
+
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"bazzi");
+		GdiTransparentBlt(_DC, 50, m_tRect.top
+			, 50, 60, hMemDC
+			, 0, 0
+			, 50, 60
+			, RGB(100, 100, 100));
+
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Dao_sumanil");
+		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
+
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"dao");
+		GdiTransparentBlt(_DC, 155, m_tRect.top
+			, 50, 60, hMemDC
+			, 0, 0
+			, 50, 60
+			, RGB(100, 100, 100));
+		break;
+	case 3:
 		iTempPos = 260;
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Bazzi_sumnail");
+		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
+
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"bazzi");
+		GdiTransparentBlt(_DC, 50, m_tRect.top
+			, 50, 60, hMemDC
+			, 0, 0
+			, 50, 60
+			, RGB(100, 100, 100));
+
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Dao_sumanil");
+		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
+
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"dao");
+		GdiTransparentBlt(_DC, 155, m_tRect.top
+			, 50, 60, hMemDC
+			, 0, 0
+			, 50, 60
+			, RGB(100, 100, 100));
+
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Digenie_sumnail");
+		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
+
+		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"degenie");
+		GdiTransparentBlt(_DC, 260, m_tRect.top
+			, 50, 60, hMemDC
+			, 0, 0
+			, 50, 60
+			, RGB(100, 100, 100));
 		break;
 	}
 
-	HDC hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Lobby");
-	BitBlt(_DC, 0, 0, WINCX, WINCY, hMemDC, 0, 0, SRCCOPY);
-
-	if (CSceneManager::Get_Instance()->Get_Char() == CHARNAME::BAZZI)
+	/*if (CSceneManager::Get_Instance()->Get_Char() == CHARNAME::BAZZI)
 	{
 		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Bazzi_sumnail");
 		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
@@ -174,7 +240,7 @@ void CWatingRoom::Render(HDC _DC)
 			, 0, 0
 			, 50, 60
 			, RGB(100, 100, 100));
-	}
+	}*/
 }
 
 void CWatingRoom::Release()

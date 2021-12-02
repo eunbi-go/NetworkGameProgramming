@@ -4,7 +4,6 @@
 #include "ObjManager.h"
 #include "Player.h"
 #include "SceneManager.h"
-#include "TimeManager.h"
 
 #define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
@@ -36,7 +35,7 @@ int CClientManager::connectToServer()
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
-	
+
 	// connect() - 서버에 접속 요청
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
@@ -46,7 +45,7 @@ int CClientManager::connectToServer()
 	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 
-	
+
 	return retval;
 }
 
@@ -57,12 +56,34 @@ void CClientManager::recvClientID()
 		err_display("recv()");
 		exit(1);
 	}
-
-	
+	tClientInfo.ClientID = iClientID;
 }
 
 int CClientManager::sendInfo()
 {
+	//ZeroMemory(&tClientInfo, sizeof(CLIENTINFO));
+	// ClientID에 따라서 캐릭터를 정해서 서버로 보냄
+	// ClientID : 0 -> 배찌,	ClientID : 1 -> 다오,	ClientID : 2 -> 디즈니
+
+	switch (iClientID)
+	{
+	case 0:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::BAZZI;
+		break;
+	case 1:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::DAO;
+		break;
+	case 2:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::DIGENIE;
+		break;
+	default:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::UNI;
+		break;
+	}
+
+	// 플레이어 위치 tClientInfo에 저장
+	setPlayerInfo();
+
 	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
 	retval = send(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
@@ -87,11 +108,31 @@ int CClientManager::recvInfo()
 	// 플레이어 정보, 아이템 정보, 몬스터 정보를 담고 있는 
 	// WorldInfo 맵 컨테이너를 받는다.
 
-	// 몇 개의 ClientInfo가 있는지 알아야 한다.
-	retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
+	AllClientNum = tClientInfo.ClientID_Number;	// 총 접속한 클라이언트의 개수
+
+	if (AllClientNum == 0)
+		AllClientNum = 1;
+
+	for (int i = 0; i < AllClientNum; ++i)
+	{
+		ZeroMemory(&tClientInfo, sizeof(CLIENTINFO));
+		retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+		cout << "접속한 클라이언트 수 : " << AllClientNum << endl;
+		cout << "Player" << i << "-> X:" << tClientInfo.PlayerInfo.PlayerPos.fX
+			<< " Y:" << tClientInfo.PlayerInfo.PlayerPos.fY << endl;
+		cout << "-------------------------------------------" << endl;
+		tWorldInfo.insert({ i, tClientInfo });
+		tWorldInfo[i] = tClientInfo;
 	}
+
+	// 몇 개의 ClientInfo가 있는지 알아야 한다.
+	//retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
 	
 	// 서버로부터 받을 몬스터 개수
 	if (bisStart) {
@@ -157,30 +198,6 @@ void CClientManager::applyInfo()
 
 void CClientManager::set_buffOn()
 {
-	if (CObjManager::Get_Instance()->Get_List(OBJID::PLAYER).empty()) return;
-
-	if (tClientInfo.PlayerInfo.b_isContactPlayer) {
-		//isBuff = true;
-		OriginalBombPower = CObjManager::Get_Instance()->Get_Player()->Get_Info().iBombPower;
-		dBuffTime += CTimeManager::Get_Instance()->Get_DeltaTime();
-
-		// 효과음 추가?
-	}
-
-	if (dBuffTime > 0.0 && dBuffTime <= 5.0) {
-		// 능력 최대치 - 스피드, 물줄기
-		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->Set_PlayerSpeed(5);	// 최대치가 몇인지 몰라서 임시로 넣어둠
-		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->Set_PlayerBombMax();
-	}
-
-	else if (dBuffTime > 5.0) {
-		//isBuff = false;
-		tClientInfo.PlayerInfo.b_isContactPlayer = false;
-		dBuffTime = 0.0;
-
-		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->Set_PlayerSpeed(-5);
-		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->SetBombPower(OriginalBombPower);
-	}
 }
 
 void CClientManager::recvInitPlayerPos()
@@ -200,8 +217,8 @@ void CClientManager::recvInitMapTile()
 	if (retval == SOCKET_ERROR) {
 		err_display("recv()");
 	}
-	
-	char* pName = new char[iNameLen+1];
+
+	char* pName = new char[iNameLen + 1];
 
 	// 가변 - 파일 이름
 	retval = recvn(sock, &pName[0], iNameLen, 0);
@@ -283,8 +300,12 @@ void CClientManager::InitMonster()
 
 void CClientManager::setPlayerInfo()
 {
+	// 위치 저장
 	tClientInfo.PlayerInfo.PlayerPos.fX = CObjManager::Get_Instance()->Get_PlayerX();
 	tClientInfo.PlayerInfo.PlayerPos.fY = CObjManager::Get_Instance()->Get_PlayerY();
+
+	// 방향 저장
+	tClientInfo.PlayerInfo.PlayerDir = CObjManager::Get_Instance()->Get_PlayerDir();
 }
 
 void CClientManager::setPlayerPosToClientInfo(float fX, float fY)

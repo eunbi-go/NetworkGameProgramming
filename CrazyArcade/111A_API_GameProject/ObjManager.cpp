@@ -240,6 +240,14 @@ float CObjManager::Get_BombY()
 	}
 }
 
+OBJDIR::DIR CObjManager::Get_PlayerDir()
+{
+	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
+	{
+		return dynamic_cast<CPlayer*>(*iter)->Get_PlayerDir();
+	}
+}
+
 void CObjManager::Set_PlayerX(float fX)
 {
 	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
@@ -644,6 +652,7 @@ void CObjManager::Update_MonsterInfo(vector<MONSTERINFO> vInfo)
 		(*iter)->Change_PosY(vInfo[i].MonsterPos.fY);
 		(*iter)->SetCurDIR(vInfo[i].MonsterDir);
 		(*iter)->SetFrame(vInfo[i].Monsterframe);
+		(*iter)->SetMonsterID(i);
 		++i;
 	}
 }
