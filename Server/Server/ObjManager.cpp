@@ -151,13 +151,13 @@ void CObjManager::Update_Monster()
 		}
 	}
 
-	for (int i = 0; i < OBJID::END; ++i)
-	{
-		if (i == OBJID::MONSTER) {
-			for (auto& pObj : m_listObj[i])
-				pObj->Late_Update();
-		}
-	}
+	//for (int i = 0; i < OBJID::END; ++i)
+	//{
+	//	if (i == OBJID::MONSTER) {
+	//		for (auto& pObj : m_listObj[i])
+	//			pObj->Late_Update();
+	//	}
+	//}
 }
 
 void CObjManager::Late_Update()

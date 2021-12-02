@@ -33,6 +33,8 @@ public:
 
 	void Set_PosX(float _x) { m_tInfo.fX += _x; }
 	void Set_PosY(float _y) { m_tInfo.fY += _y; }
+	void Change_PosX(float _x) { m_tInfo.fX = _x; }
+	void Change_PosY(float _y) { m_tInfo.fY = _y; }
 	void WaveAttack(int _att) { m_tInfo.iHP -= _att; }
 
 public:

@@ -36,19 +36,19 @@ void CObjManager::Update()
 {
 	for (int i = 0; i < OBJID::END; ++i)
 	{
-		
-		for (auto& iter = m_listObj[i].begin(); iter != m_listObj[i].end();)
-		{
-			int iEvent = (*iter)->Update();
-			if (iEvent == OBJ_DEAD)
+		/*if (i != OBJID::MONSTER) {*/
+			for (auto& iter = m_listObj[i].begin(); iter != m_listObj[i].end();)
 			{
-				SAFE_DELETE(*iter);
-				iter = m_listObj[i].erase(iter);
+				int iEvent = (*iter)->Update();
+				if (iEvent == OBJ_DEAD)
+				{
+					SAFE_DELETE(*iter);
+					iter = m_listObj[i].erase(iter);
+				}
+				else
+					++iter;
 			}
-			else
-				++iter;
-		}
-
+		//}
 	}
 	for (int i = 0; i < MAPBLOCK::END; ++i)
 	{
@@ -137,10 +137,11 @@ void CObjManager::Late_Update()
 {
 	for (int i = 0; i < OBJID::END; ++i)
 	{
-		if (i != OBJID::MONSTER) {
+		//if (i != OBJID::MONSTER) {
 			for (auto& pObj : m_listObj[i])
 				pObj->Late_Update();
-		}
+		//}
+
 	}
 	for (int i = 0; i < MAPBLOCK::END; ++i)
 	{
@@ -639,9 +640,10 @@ void CObjManager::Update_MonsterInfo(vector<MONSTERINFO> vInfo)
 	int i = 0;
 	for (auto iter = m_listObj[OBJID::MONSTER].begin(); iter != m_listObj[OBJID::MONSTER].end(); ++iter)
 	{
-		(*iter)->Set_PosX(vInfo[i].MonsterPos.fX);
-		(*iter)->Set_PosY(vInfo[i].MonsterPos.fY);
+		(*iter)->Change_PosX(vInfo[i].MonsterPos.fX);
+		(*iter)->Change_PosY(vInfo[i].MonsterPos.fY);
 		(*iter)->SetCurDIR(vInfo[i].MonsterDir);
+		++i;
 	}
 }
 
