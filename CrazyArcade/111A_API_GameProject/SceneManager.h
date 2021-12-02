@@ -25,6 +25,8 @@ public:
 	CHARNAME::NAME Get_Char() { return m_eChar; }
 	void Set_Char(CHARNAME::NAME _char) { m_eChar = _char; }
 
+	SCENEID	Get_CurScene() { return m_eCurScene; }
+
 public:
 	static CSceneManager* Get_Instance()
 	{

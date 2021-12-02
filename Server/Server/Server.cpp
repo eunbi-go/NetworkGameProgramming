@@ -3,9 +3,12 @@
 #include "stdafx.h"
 #include "TileManager.h"
 #include "Obj.h"
+#include "ObjManager.h"
+#include "Mbape.h"
+#include "Messi.h"
 
 #define BUFSIZE 500
-static int iClientID = 1;				// 클라이언트의 ID
+static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
 map<USHORT, int> mapClientPort;			// 클라이언트의 포트번호와 클라이언트ID 저장
 map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
@@ -15,6 +18,7 @@ HANDLE hRecvEvent;		// 각 클라이언트와의 수신 결과를 알려주기 위한 이벤트
 HANDLE hSendEvent;		// 각 클라이언트와의 송신 결과를 알려주기 위한 이벤트
 vector<CObj*>	vecMapTile;				// 맵 타일
 vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
+vector<MONSTERINFO>	vecMonster;
 
 bool isStart = false;
 
@@ -23,6 +27,8 @@ bool isStart = false;
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
 void Send_Data(LPVOID arg);
 void Send_InitMap(LPVOID arg);
+
+void Init_Monster(LPVOID arg);
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
@@ -102,6 +108,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		// 맵 정보 전송 -> 클라이언트는 이 정보를 바탕으로 맵 초기화
 		Send_InitMap((LPVOID)client_sock);
 
+		// 몬스터 정보 전송
+		Init_Monster((LPVOID)client_sock);
+
 		//Receive_Data((LPVOID)client_sock, WorldInfo);
 
 		// 캐릭터 종류, 초기 위치 정해서 Client로 전송
@@ -113,6 +122,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	}
 
 	while (1) {
+		// 몬스터 정보 업데이트
+		CObjManager::Get_Instance()->Update_Monster();
+
 		// 데이터 받기
 		Receive_Data((LPVOID)client_sock, WorldInfo);
 
@@ -273,7 +285,9 @@ void Send_Data(LPVOID arg)
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	auto iter = mapClientPort.find(clientaddr.sin_port);
+	int iClientKey = iter->second;
 
+<<<<<<< HEAD
 	//// ClientID = 0,	위치는 왼쪽 위
 	//if (WorldInfo.find(0) != WorldInfo.end()) {
 	//	WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
@@ -300,6 +314,9 @@ void Send_Data(LPVOID arg)
 
 
 	//CLIENTINFO	tTest;
+=======
+	// 본인 클라이언트 정보
+>>>>>>> eun
 	CLIENTINFO	tTest = WorldInfo[iter->second];
 	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
@@ -327,12 +344,45 @@ void Send_Data(LPVOID arg)
 		err_display("send()");
 	}*/
 
-	else
+	//// 상대방 클라이언트 개수, 정보
+	//int nClientNum = WorldInfo.size();
+	//for (int i = 0; i < nClientNum; ++i) {
+	//	if (i != iClientKey) {
+	//		CLIENTINFO	tTest = WorldInfo[i];
+	//		retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	//		if (retval == SOCKET_ERROR) {
+	//			err_display("send()");
+	//		}
+	//	}
+	//}
+
+	// 업데이트된 몬스터들 위치
+	list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
+	int i = 0;
+	int iCnt = listMonster.size();
+
+	retval = send(client_sock, (char*)&iCnt, sizeof(int), 0);
+
+	for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
 	{
-		// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
-		auto iter = mapClientPort.find(clientaddr.sin_port);
-		mapIsRecv[iter->second] = false;
+		vecMonster[i].MonsterPos.fX = (*iter)->Get_Info().fX;
+		vecMonster[i].MonsterPos.fY = (*iter)->Get_Info().fY;
+		vecMonster[i].MonsterDir = (*iter)->GetDir();
+		vecMonster[i].Monsterframe = (*iter)->Get_Frame();
+
+		retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		++i;
 	}
+
+	//else
+	//{
+		// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
+		/*auto */iter = mapClientPort.find(clientaddr.sin_port);
+		mapIsRecv[iter->second] = false;
+	//}
 
 	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
 	{
@@ -434,4 +484,115 @@ void Send_InitMap(LPVOID arg)
 	retval = send(client_sock, &FileData[0], iSize, 0);
 	if (retval == SOCKET_ERROR)
 		err_display("send()");
+}
+
+void Init_Monster(LPVOID arg)
+{
+	SOCKET client_sock = (SOCKET)arg;
+	int retval;
+
+	CObj* pObj = nullptr;
+	MONSTERINFO	tInfo;
+
+	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 14) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MESSI;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::BOTTOM;
+	tInfo.MonsterID = 1;
+	vecMonster.emplace_back(tInfo);
+
+	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 12) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MESSI;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 12) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::BOTTOM;
+	tInfo.MonsterID = 2;
+	vecMonster.emplace_back(tInfo);
+
+	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 0) + (TILECY >> 1), OBJDIR::LEFT);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MESSI;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 8) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 0) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::LEFT;
+	tInfo.MonsterID = 3;
+	vecMonster.emplace_back(tInfo);
+
+	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 2) + (TILECY >> 1), OBJDIR::BOTTOM);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MESSI;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 8) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 2) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::BOTTOM;
+	tInfo.MonsterID = 4;
+	vecMonster.emplace_back(tInfo);
+
+	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 0) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::RIGHT);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MESSI;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 0) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::RIGHT;
+	tInfo.MonsterID = 5;
+	vecMonster.emplace_back(tInfo);
+
+	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 3) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MESSI;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 3) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::BOTTOM;
+	tInfo.MonsterID = 6;
+	vecMonster.emplace_back(tInfo);
+	//
+	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 10) + (TILECY >> 1), OBJDIR::LEFT);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MESSI;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 7) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 10) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::LEFT;
+	tInfo.MonsterID = 7;
+	vecMonster.emplace_back(tInfo);
+
+	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 12) + (TILECY >> 1), OBJDIR::TOP);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MESSI;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 7) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::TOP;
+	tInfo.MonsterID = 8;
+	vecMonster.emplace_back(tInfo);
+
+	pObj = CAbstractFactory<CMbape>::Create_Monster(MAPSTARTX + (TILECX * 4) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::TOP);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MBAPE;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 4) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::TOP;
+	tInfo.MonsterID = 9;
+	vecMonster.emplace_back(tInfo);
+
+	pObj = CAbstractFactory<CMbape>::Create_Monster(MAPSTARTX + (TILECX * 10) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
+	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	tInfo.MonsterName = MONSTERNAME::MBAPE;
+	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 10) + (TILECX >> 1);
+	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
+	tInfo.MonsterDir = OBJDIR::BOTTOM;
+	tInfo.MonsterID = 10;
+	vecMonster.emplace_back(tInfo);
+
+	int iNum = 10;
+
+	retval = send(client_sock, (char*)&iNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) err_display("send()");
+
+	for (int i = 0; i < iNum; ++i) {
+		retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+	}
 }

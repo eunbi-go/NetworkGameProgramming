@@ -41,11 +41,25 @@ typedef struct ItemInfo
 	OBJPOS				ItemPos;			// 아이템의 위치
 }ITEMINFO;
 
+typedef struct tagFrame
+{
+	int		iFrameStart;
+	int		iFrameEnd;
+	int		iFrameScene;
+	DWORD	dwFrameTime;
+	DWORD	dwFrameSpeed;
+}FRAME;
+
 typedef struct MonsterInfo
 {
 	MONSTERNAME::NAME	MonsterName;		// 몬스터의 이름(귤, 악어, 물개)
 	OBJPOS				MonsterPos;			// 몬스터의 위치
+	OBJDIR::DIR			MonsterDir;			// 몬스터 방향
+	int					MonsterID;
+	FRAME				Monsterframe;
 }MONSTERINFO;
+
+
 
 typedef struct ClientInfo					// 서버로 전송할 각 클라이언트의 정보
 {
@@ -74,12 +88,5 @@ typedef struct tagLineInfo
 	LINEPOS tRightPos;
 }LINEINFO;
 
-typedef struct tagFrame
-{
-	int		iFrameStart;
-	int		iFrameEnd;
-	int		iFrameScene;
-	DWORD	dwFrameTime;
-	DWORD	dwFrameSpeed;
-}FRAME;
+
 #endif // !__STRUCT_H__

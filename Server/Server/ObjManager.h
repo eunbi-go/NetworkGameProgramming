@@ -12,6 +12,7 @@ public:
 
 public:
 	void Update();
+	void Update_Monster();
 	void Late_Update();
 	void Render(HDC _DC);
 	void Release();
@@ -26,6 +27,8 @@ public:
 	float Get_PlayerY();
 	float Get_BombX();
 	float Get_BombY();
+
+	list<CObj*>	Get_MonsterList() { return m_listObj[OBJID::MONSTER]; }
 
 	void Set_PlayerX(float fX);
 	void Set_PlayerY(float fY);
@@ -50,14 +53,7 @@ public:
 
 	void Set_Cheat(bool _ischeat) { m_bisCheat = _ischeat; }
 	bool Get_Cheat() { return m_bisCheat; }
-
-<<<<<<< HEAD
-	CObj* Get_Player() { return m_listObj[OBJID::PLAYER].front(); }
-=======
-	void Update_MonsterInfo(vector<MONSTERINFO> vInfo);
-	void Add_Monster(MONSTERINFO info, int iNum);
->>>>>>> eun
-
+	
 public:
 	static CObjManager* Get_Instance()
 	{
