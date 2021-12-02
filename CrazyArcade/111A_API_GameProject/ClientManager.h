@@ -44,6 +44,8 @@ public:
 	int		GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
 	vector<CObj*> Get_MapTile() { return vecMapTile; }
 
+	map<int, CLIENTINFO> GetWorldInfo() { return tWorldInfo; }
+
 private:
 	void	err_quit(char* msg);		// 소켓 함수 오류 출력 후 종료
 	void	err_display(char* msg);		// 소켓 함수 오류 출력
@@ -81,5 +83,6 @@ private:
 	char buf[900] = "../111A_API_GameProject/";
 
 	bool bisStart = false;		// 게임 시작했는가
+	int AllClientNum = 0;		// 현재 접속한 모든 클라이언트의 수
 };
 

@@ -112,9 +112,12 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// mapIsReceive컨테이너에 ClientID를 key로 가진 bool변수를 false로 초기화 한 다음 삽입해준다.
 		mapIsRecv.insert({ iClientID, false });
-
+		mapIsRecv[0] = false;
+		//SetEvent(hSendEvent);
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
 
+
+		SetEvent(hSendEvent);
 	}
 
 	while (1) {
@@ -191,6 +194,7 @@ int main(int argc, char* argv[])
 		// 스레드 생성
 		hThread = CreateThread(NULL, 0, ProcessClient,
 			(LPVOID)client_sock, 0, NULL);
+
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
@@ -232,11 +236,6 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		err_display("recv()");
 	}
 
-
-
-
-
-
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iter->second, ClientInfo });
@@ -258,8 +257,8 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		else isSend = true;
 	}
 
-	//if (isSend)
-	//	SetEvent(hRecvEvent);
+	if (isSend)
+		SetEvent(hRecvEvent);
 }
 
 void Send_Data(LPVOID arg)
@@ -268,7 +267,6 @@ void Send_Data(LPVOID arg)
 	//DWORD EventRetval;
 	//EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
 	//if (EventRetval != WAIT_OBJECT_0) return;
-
 
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
@@ -279,7 +277,6 @@ void Send_Data(LPVOID arg)
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
-
 
 	for (int i = 0; i < iClientID; ++i)
 	{
@@ -296,21 +293,6 @@ void Send_Data(LPVOID arg)
 		}
 	}
 
-	//auto iter = mapClientPort.find(clientaddr.sin_port);
-
-	//CLIENTINFO	tTest = WorldInfo[iter->second];
-	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-
-	//else
-	//{
-	//	// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
-	//	auto iter = mapClientPort.find(clientaddr.sin_port);
-	//	mapIsRecv[iter->second] = false;
-	//}
-
 	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
 	{
 		if (iter->second) {
@@ -321,8 +303,8 @@ void Send_Data(LPVOID arg)
 		else isRecv = true;
 	}
 
-	//if (isRecv)
-	//	SetEvent(hSendEvent);
+	if (isRecv)
+		SetEvent(hSendEvent);
 }
 
 //void CheckBuff()

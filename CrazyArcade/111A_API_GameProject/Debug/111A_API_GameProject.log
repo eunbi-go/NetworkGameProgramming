@@ -1,9 +1,2 @@
-<<<<<<< HEAD
-﻿  111A_API_GameProject.vcxproj -> C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\Debug\111A_API_GameProject.exe
-=======
-﻿  ClientManager.cpp
-  LineManager.cpp
-  WatingRoom.cpp
-  코드를 생성하고 있습니다...
-  111A_API_GameProject.vcxproj -> C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\Debug\111A_API_GameProject.exe
->>>>>>> origin/main
+﻿  WatingRoom.cpp
+  111A_API_GameProject.vcxproj -> C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\Debug\111A_API_GameProject.exe

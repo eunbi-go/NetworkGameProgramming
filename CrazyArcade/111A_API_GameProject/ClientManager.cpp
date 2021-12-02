@@ -60,7 +60,7 @@ void CClientManager::recvClientID()
 
 int CClientManager::sendInfo()
 {
-	ZeroMemory(&tClientInfo, sizeof(CLIENTINFO));
+	//ZeroMemory(&tClientInfo, sizeof(CLIENTINFO));
 	// ClientID에 따라서 캐릭터를 정해서 서버로 보냄
 	// ClientID : 0 -> 배찌,	ClientID : 1 -> 다오,	ClientID : 2 -> 디즈니
 
@@ -81,18 +81,14 @@ int CClientManager::sendInfo()
 	//}
 
 	// 플레이어 위치 tClientInfo에 저장
-	//setPlayerInfo();
+	setPlayerInfo();
 
 	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
 	retval = send(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
-	//int k = 10;
-	//retval = send(sock, (char*)&k, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
+
 	return retval;
 }
 
@@ -103,19 +99,19 @@ int CClientManager::recvInfo()
 	// WorldInfo 맵 컨테이너를 받는다.
 
 	// 몇 개의 ClientInfo가 있는지 알아야 한다.
-	int ClientInfoNum = tClientInfo.ClientID_Number;	// 총 접속한 클라이언트의 개수
+	AllClientNum = tClientInfo.ClientID_Number;	// 총 접속한 클라이언트의 개수
 	
-	if (ClientInfoNum == 0)
-		ClientInfoNum = 1;
+	if (AllClientNum == 0)
+		AllClientNum = 1;
 
-	for (int i = 0; i < ClientInfoNum; ++i)
+	for (int i = 0; i < AllClientNum; ++i)
 	{
 		ZeroMemory(&tClientInfo, sizeof(CLIENTINFO));
 		retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
 		}
-		cout << "접속한 클라이언트 수 : " << ClientInfoNum << endl;
+		cout << "접속한 클라이언트 수 : " << AllClientNum << endl;
 		cout << "Player" << i << "-> X:" << tClientInfo.PlayerInfo.PlayerPos.fX
 			<< " Y:" << tClientInfo.PlayerInfo.PlayerPos.fY << endl;
 		cout << "-------------------------------------------" << endl;

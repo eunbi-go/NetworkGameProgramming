@@ -113,22 +113,25 @@ void CWatingRoom::Render(HDC _DC)
 	// ClientID : 2  ->  260
 
 	int iTempPos = 0;
-	// 클라이언트 아이디 따라 위치 정해주기
-	switch (CClientManager::Get_Instance()->GetClientID())
-	{
-	case 0:
-		iTempPos = 50;
-		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Bazzi_sumnail");
-		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
 
-		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"bazzi");
-		GdiTransparentBlt(_DC, 50, m_tRect.top
-			, 50, 60, hMemDC
-			, 0, 0
-			, 50, 60
-			, RGB(100, 100, 100));
-		break;
+	switch (CClientManager::Get_Instance()->GetWorldInfo()[0].ClientID_Number)
+	{
 	case 1:
+		iTempPos = 50;
+		if (CClientManager::Get_Instance()->GetWorldInfo()[0].PlayerInfo.PlayerName == CHARNAME::BAZZI)
+		{
+			hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Bazzi_sumnail");
+			BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
+
+			hMemDC = CBmpManager::Get_Instance()->Find_Image(L"bazzi");
+			GdiTransparentBlt(_DC, 50, m_tRect.top
+				, 50, 60, hMemDC
+				, 0, 0
+				, 50, 60
+				, RGB(100, 100, 100));
+		}		
+		break;
+	case 2:
 		iTempPos = 155;
 		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Bazzi_sumnail");
 		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
@@ -150,7 +153,7 @@ void CWatingRoom::Render(HDC _DC)
 			, 50, 60
 			, RGB(100, 100, 100));
 		break;
-	case 2:
+	case 3:
 		iTempPos = 260;
 		hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Bazzi_sumnail");
 		BitBlt(_DC, 490, 10, 768, 91, hMemDC, 0, 0, SRCCOPY);
