@@ -137,7 +137,7 @@ void CNetworkStage::Update()
 		CObjManager::Get_Instance()->Set_Cheat(true);
 
 	CObjManager::Get_Instance()->Update();
-	if (CObjManager::Get_Instance()->Get_Stage1Clear() >= 6)
+	if (CObjManager::Get_Instance()->Get_Stage1Clear() >= 10)
 	{
 		CSoundMgr::Get_Instance()->StopAll();
 		CSoundMgr::Get_Instance()->PlaySound(L"win.mp3", CSoundMgr::PLAYER_WIN);

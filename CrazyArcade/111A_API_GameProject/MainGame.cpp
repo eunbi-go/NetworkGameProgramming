@@ -43,8 +43,6 @@ void CMainGame::Initialize()
 	CTileManager::Get_Instance()->Initialize();
 
 	if (isInit) {
-		
-
 		// 적용한다.
 		//CClientManager::Get_Instance()->applyInfo();
 

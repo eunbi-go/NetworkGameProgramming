@@ -74,7 +74,9 @@ void CWatingRoom::Late_update()
 			&& 191 < pt.y && 230 > pt.y)
 		{
 			//´Ù
-		CSceneManager::Get_Instance()->Set_Char(CHARNAME::DAO);
+			CSceneManager::Get_Instance()->Set_Char(CHARNAME::DAO);
+			
+			CClientManager::Get_Instance()->setPlayerName(CHARNAME::DAO);
 		}
 
 		if (562 < pt.x && 624 > pt.x
@@ -82,6 +84,8 @@ void CWatingRoom::Late_update()
 		{
 			// µð
 			CSceneManager::Get_Instance()->Set_Char(CHARNAME::DIGENIE);
+
+			CClientManager::Get_Instance()->setPlayerName(CHARNAME::DIGENIE);
 		}
 
 		if (633 < pt.x && 694 > pt.x
@@ -89,6 +93,8 @@ void CWatingRoom::Late_update()
 		{
 			// ¹è
 			CSceneManager::Get_Instance()->Set_Char(CHARNAME::BAZZI);
+
+			CClientManager::Get_Instance()->setPlayerName(CHARNAME::BAZZI);
 		}
 
 		if (704 < pt.x && 768 > pt.x

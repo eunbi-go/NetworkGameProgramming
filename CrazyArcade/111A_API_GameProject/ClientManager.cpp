@@ -64,21 +64,21 @@ int CClientManager::sendInfo()
 	// ClientID에 따라서 캐릭터를 정해서 서버로 보냄
 	// ClientID : 0 -> 배찌,	ClientID : 1 -> 다오,	ClientID : 2 -> 디즈니
 
-	//switch (iClientID)
-	//{
-	//case 0:
-	//	tClientInfo.PlayerInfo.PlayerName = CHARNAME::BAZZI;
-	//	break;
-	//case 1:
-	//	tClientInfo.PlayerInfo.PlayerName = CHARNAME::DAO;
-	//	break;
-	//case 2:
-	//	tClientInfo.PlayerInfo.PlayerName = CHARNAME::DIGENIE;
-	//	break;
-	//default:
-	//	tClientInfo.PlayerInfo.PlayerName = CHARNAME::UNI;
-	//	break;
-	//}
+	switch (iClientID)
+	{
+	case 0:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::BAZZI;
+		break;
+	case 1:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::DAO;
+		break;
+	case 2:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::DIGENIE;
+		break;
+	default:
+		tClientInfo.PlayerInfo.PlayerName = CHARNAME::UNI;
+		break;
+	}
 
 	// 플레이어 위치 tClientInfo에 저장
 	setPlayerInfo();

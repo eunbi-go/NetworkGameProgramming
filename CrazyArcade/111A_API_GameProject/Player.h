@@ -43,6 +43,8 @@ private:
 public:
 	void Scene_Change();
 
+	map<int, CLIENTINFO> WorldInfo;
+
 };
 
 

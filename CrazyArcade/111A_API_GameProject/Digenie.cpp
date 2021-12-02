@@ -94,8 +94,6 @@ int CDigenie::Update()
 	Scene_Change();
 	Frame_Move();
 
-	CClientManager::Get_Instance()->setPlayerPosToClientInfo(m_tInfo.fX, m_tInfo.fY);
-
 	return OBJ_NOEVENET;
 }
 
