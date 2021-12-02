@@ -123,7 +123,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (1) {
 		// 몬스터 정보 업데이트
-		CObjManager::Get_Instance()->Update_Monster();
+		//CObjManager::Get_Instance()->Update_Monster();
 
 		// 데이터 받기
 		Receive_Data((LPVOID)client_sock, WorldInfo);
@@ -290,30 +290,6 @@ void Send_Data(LPVOID arg)
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	int iClientKey = iter->second;
 
-	//// ClientID = 0,	위치는 왼쪽 위
-	//if (WorldInfo.find(0) != WorldInfo.end()) {
-	//	WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-	//	WorldInfo[0].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	//}
-
-	//// ClientID = 1,	위치는 오른쪽 위
-	//if (WorldInfo.find(1) != WorldInfo.end()) {
-	//	WorldInfo[1].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-	//	WorldInfo[1].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY >> 1);
-	//}
-
-	//// ClientID = 2,	위치는 왼쪽 아래
-	//if (WorldInfo.find(2) != WorldInfo.end()) {
-	//	WorldInfo[2].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
-	//	WorldInfo[2].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	//}
-
-	//// ClientID = 3,	위치는 오른쪽 아래
-	//if (WorldInfo.find(3) != WorldInfo.end()) {
-	//	WorldInfo[3].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-	//	WorldInfo[3].PlayerInfo.PlayerPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	//}
-
 
 	//CLIENTINFO	tTest;
 	// 본인 클라이언트 정보
@@ -356,26 +332,26 @@ void Send_Data(LPVOID arg)
 	//	}
 	//}
 
-	// 업데이트된 몬스터들 위치
-	list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
-	int i = 0;
-	int iCnt = listMonster.size();
+	//// 업데이트된 몬스터들 위치
+	//list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
+	//int i = 0;
+	//int iCnt = listMonster.size();
 
-	retval = send(client_sock, (char*)&iCnt, sizeof(int), 0);
+	//retval = send(client_sock, (char*)&iCnt, sizeof(int), 0);
 
-	for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
-	{
-		vecMonster[i].MonsterPos.fX = (*iter)->Get_Info().fX;
-		vecMonster[i].MonsterPos.fY = (*iter)->Get_Info().fY;
-		vecMonster[i].MonsterDir = (*iter)->GetDir();
-		vecMonster[i].Monsterframe = (*iter)->Get_Frame();
+	//for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
+	//{
+	//	vecMonster[i].MonsterPos.fX = (*iter)->Get_Info().fX;
+	//	vecMonster[i].MonsterPos.fY = (*iter)->Get_Info().fY;
+	//	vecMonster[i].MonsterDir = (*iter)->GetDir();
+	//	vecMonster[i].Monsterframe = (*iter)->Get_Frame();
 
-		retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		++i;
-	}
+	//	retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
+	//	++i;
+	//}
 
 	//else
 	//{
@@ -589,10 +565,50 @@ void Init_Monster(LPVOID arg)
 	retval = send(client_sock, (char*)&iNum, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) err_display("send()");
 
-	for (int i = 0; i < iNum; ++i) {
-		retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
+	//for (int i = 0; i < iNum; ++i) {
+	//	retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
+	//}
+	retval = send(client_sock, (char*)&vecMonster[0], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	retval = send(client_sock, (char*)&vecMonster[1], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	retval = send(client_sock, (char*)&vecMonster[2], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	retval = send(client_sock, (char*)&vecMonster[3], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	retval = send(client_sock, (char*)&vecMonster[4], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	retval = send(client_sock, (char*)&vecMonster[5], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	retval = send(client_sock, (char*)&vecMonster[6], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	retval = send(client_sock, (char*)&vecMonster[7], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	retval = send(client_sock, (char*)&vecMonster[8], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	retval = send(client_sock, (char*)&vecMonster[9], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
 	}
 }

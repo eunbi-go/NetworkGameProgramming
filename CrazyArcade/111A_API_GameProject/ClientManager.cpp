@@ -316,21 +316,21 @@ int CClientManager::recvInfo()
 	
 	// 서버로부터 받을 몬스터 개수
 
-	int iMonsterCnt = 0;
-	retval = recvn(sock, (char*)&iMonsterCnt, sizeof(int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	for (int i = 0; i < iMonsterCnt; ++i) {
-		retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
-	}
+	//int iMonsterCnt = 0;
+	//retval = recvn(sock, (char*)&iMonsterCnt, sizeof(int), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
+	//for (int i = 0; i < 10; ++i) {
+	//	retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("recv()");
+	//	}
+	//}
 
-	if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
-		CObjManager::Get_Instance()->Update_MonsterInfo(tMonsterInfo);
-	}
+	//if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
+	//	CObjManager::Get_Instance()->Update_MonsterInfo(tMonsterInfo);
+	//}
 
 	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fX);
 	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fY);
@@ -427,11 +427,51 @@ void CClientManager::recvInitMonster()
 
 	tMonsterInfo.resize(iNum);
 
-	for (int i = 0; i < tMonsterInfo.size(); ++i) {
-		retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
+	//for (int i = 0; i < tMonsterInfo.size(); ++i) {
+	//	retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("recv()");
+	//	}
+	//}
+	retval = recvn(sock, (char*)&tMonsterInfo[0], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[1], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[2], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[3], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[4], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[5], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[6], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[7], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[8], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[9], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
 	}
 }
 
