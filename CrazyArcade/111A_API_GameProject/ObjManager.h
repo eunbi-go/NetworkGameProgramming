@@ -26,6 +26,7 @@ public:
 	float Get_PlayerY();
 	float Get_BombX();
 	float Get_BombY();
+	OBJDIR::DIR Get_PlayerDir();
 
 	void Set_PlayerX(float fX);
 	void Set_PlayerY(float fY);

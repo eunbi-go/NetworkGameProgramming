@@ -26,6 +26,7 @@
 #include "Digenie.h"
 #include "Uni.h"
 #include "KeyManager.h"
+#include "ClientManager.h"
 
 CNetworkStage::CNetworkStage()
 {
@@ -38,6 +39,7 @@ CNetworkStage::~CNetworkStage()
 
 void CNetworkStage::Initialize()
 {
+	isCreate = false;
 	CSoundMgr::Get_Instance()->PlaySound(L"game_start.mp3", CSoundMgr::GAMESTART);
 	CSoundMgr::Get_Instance()->PlaySound(L"Stage.mp3", CSoundMgr::STAGE1);
 
@@ -133,6 +135,24 @@ void CNetworkStage::Initialize()
 
 void CNetworkStage::Update()
 {
+	//// 모든 클라이언트의 정보를 프레임마다 받아온다
+	//worldinfo = CClientManager::Get_Instance()->GetWorldInfo();
+
+	//if (!isCreate) {
+	//	if (curPlayerNum < worldinfo[0].ClientID_Number)
+	//	{
+	//		CObj* pObj = nullptr;
+	//		CObj* pObj = CAbstractFactory<CBazzi>::Create();
+	//		CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MULTI1);
+	//		isCreate = true;
+	//	}
+
+	//	curPlayerNum = worldinfo[0].ClientID_Number;
+	//}
+	//if (curPlayerNum == worldinfo[0].ClientID_Number)
+	//	isCreate = false;
+
+
 	if (CKeyManager::Get_Instance()->Key_Down('C'))
 		CObjManager::Get_Instance()->Set_Cheat(true);
 
@@ -157,7 +177,7 @@ void CNetworkStage::Render(HDC _DC)
 	BitBlt(_DC, 0, 0, WINCX, WINCY, hMemDC, 0, 0, SRCCOPY);
 
 	CTileManager::Get_Instance()->Render(_DC);
-	CObjManager::Get_Instance()->Render(_DC);
+	CObjManager::Get_Instance()->Render(_DC);	
 }
 
 void CNetworkStage::Release()

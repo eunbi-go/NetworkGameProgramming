@@ -32,6 +32,7 @@ public:
 	void Set_PlayerBombMax() { m_tInfo.iBombPower = 7; }
 	void Set_PlayerBombPower(int _potionitem) { m_tInfo.iBombPower += _potionitem; }
 
+	void SetPlayerInfo(PLAYERINFO _PlayerInfo);
 
 private:
 	void Key_Check();

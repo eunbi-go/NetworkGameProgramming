@@ -191,8 +191,12 @@ void CClientManager::recvInitMapTile()
 
 void CClientManager::setPlayerInfo()
 {
+	// 위치 저장
 	tClientInfo.PlayerInfo.PlayerPos.fX = CObjManager::Get_Instance()->Get_PlayerX();
 	tClientInfo.PlayerInfo.PlayerPos.fY = CObjManager::Get_Instance()->Get_PlayerY();	
+
+	// 방향 저장
+	tClientInfo.PlayerInfo.PlayerDir = CObjManager::Get_Instance()->Get_PlayerDir();
 }
 
 void CClientManager::setPlayerPosToClientInfo(float fX, float fY)

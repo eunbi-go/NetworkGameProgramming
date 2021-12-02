@@ -16,6 +16,8 @@ typedef struct tagInfo
 
 	float		fSpeed;
 	bool		bisDead;
+
+	OBJDIR::DIR			PlayerDir;
 }INFO;
 
 /////////////////// 네트워크 구현을 위한 패킷 정보 ///////////////////////////
