@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
 		mapIsCollision.insert({ iClientID, false });
 	}
 
-	// 이벤트 제거
+	// 이벤트 제거 
 	CloseHandle(hRecvEvent);
 	CloseHandle(hSendEvent);
 
@@ -247,6 +247,10 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iter->second, ClientInfo });
+	//if (iter != mapClientPort.end())
+	//	WorldInfo[iter->second] = ClientInfo;
+	//else
+	//	WorldInfo.insert({ iter->second, ClientInfo });
 
 	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
 	mapIsRecv[iter->second] = true;
@@ -272,7 +276,6 @@ void Send_Data(LPVOID arg)
 	DWORD EventRetval;
 	EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
 	if (EventRetval != WAIT_OBJECT_0) return;
-
 
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
