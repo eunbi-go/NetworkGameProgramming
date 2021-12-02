@@ -28,6 +28,7 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
 void Send_Data(LPVOID arg);
 void Send_InitMap(LPVOID arg);
 
+void CheckBuff();
 void Init_Monster(LPVOID arg);
 
 // 소켓 함수 오류 출력 후 종료
@@ -127,6 +128,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// 데이터 받기
 		Receive_Data((LPVOID)client_sock, WorldInfo);
+
+		// 버프 확인
+		//CheckBuff();
 
 		// 데이터 보내기
 		Send_Data((LPVOID)client_sock);
