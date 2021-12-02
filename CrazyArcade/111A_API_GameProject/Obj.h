@@ -31,6 +31,7 @@ public:
 	void SetState(OBJSTATE::STATE _State) { m_eState = _State; }
 	void SetCurDIR(OBJDIR::DIR _Dir) { m_eCurDir = _Dir; }
 	void SetFrame(FRAME tFrame) { m_tFrame = tFrame; }
+	void SetMonsterID(int iID) { m_tInfo.iMonsterID = iID; }
 
 	void Set_PosX(float _x) { m_tInfo.fX += _x; }
 	void Set_PosY(float _y) { m_tInfo.fY += _y; }

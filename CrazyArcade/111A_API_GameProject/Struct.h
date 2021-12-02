@@ -16,6 +16,8 @@ typedef struct tagInfo
 
 	float		fSpeed;
 	bool		bisDead;
+
+	int			iMonsterID;
 }INFO;
 
 /////////////////// 네트워크 구현을 위한 패킷 정보 ///////////////////////////

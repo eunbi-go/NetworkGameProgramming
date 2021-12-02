@@ -644,6 +644,7 @@ void CObjManager::Update_MonsterInfo(vector<MONSTERINFO> vInfo)
 		(*iter)->Change_PosY(vInfo[i].MonsterPos.fY);
 		(*iter)->SetCurDIR(vInfo[i].MonsterDir);
 		(*iter)->SetFrame(vInfo[i].Monsterframe);
+		(*iter)->SetMonsterID(i);
 		++i;
 	}
 }

@@ -206,7 +206,7 @@ int main(int argc, char* argv[])
 		mapIsCollision.insert({ iClientID, false });
 	}
 
-	// 이벤트 제거 
+	// 이벤트 제거
 	CloseHandle(hRecvEvent);
 	CloseHandle(hSendEvent);
 
@@ -258,10 +258,6 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iter->second, ClientInfo });
-	//if (iter != mapClientPort.end())
-	//	WorldInfo[iter->second] = ClientInfo;
-	//else
-	//	WorldInfo.insert({ iter->second, ClientInfo });
 
 	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
 	mapIsRecv[iter->second] = true;
@@ -287,6 +283,7 @@ void Send_Data(LPVOID arg)
 	DWORD EventRetval;
 	EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
 	if (EventRetval != WAIT_OBJECT_0) return;
+
 
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
@@ -390,8 +387,8 @@ void Send_Data(LPVOID arg)
 	//else
 	//{
 		// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
-		/*auto */iter = mapClientPort.find(clientaddr.sin_port);
-		mapIsRecv[iter->second] = false;
+	/*auto */iter = mapClientPort.find(clientaddr.sin_port);
+	mapIsRecv[iter->second] = false;
 	//}
 
 	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
@@ -417,11 +414,11 @@ void CheckBuff()
 	bool isBuffOn = false;
 
 	// 충돌 판단
-	for (auto Src = WorldInfo.begin(); Src != WorldInfo.end(); ++Src) 
+	for (auto Src = WorldInfo.begin(); Src != WorldInfo.end(); ++Src)
 	{
-		if (Src != WorldInfo.begin()) 
+		if (Src != WorldInfo.begin())
 		{
-			if (IntersectRect(&rc, &Dst->second.PlayerInfo.PlayerSize, &Src->second.PlayerInfo.PlayerSize)) 
+			if (IntersectRect(&rc, &Dst->second.PlayerInfo.PlayerSize, &Src->second.PlayerInfo.PlayerSize))
 			{
 				auto iter = mapIsCollision.find(Dst->first);
 				iter->second = true;
@@ -432,7 +429,7 @@ void CheckBuff()
 	}
 
 	// 모든 플레이어가 충돌했다면 isBuffOn을 true로 설정
-	for (auto iter = mapIsCollision.begin(); iter != mapIsCollision.end(); ++iter) 
+	for (auto iter = mapIsCollision.begin(); iter != mapIsCollision.end(); ++iter)
 	{
 		if (iter->second)
 		{

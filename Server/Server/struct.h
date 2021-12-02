@@ -16,6 +16,8 @@ typedef struct tagInfo
 
 	float		fSpeed;
 	bool		bisDead;
+
+	int			iMonsterID;
 }INFO;
 
 typedef struct ObjPos
