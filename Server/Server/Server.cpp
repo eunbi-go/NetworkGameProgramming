@@ -29,6 +29,7 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
 void Send_Data(LPVOID arg);
 void Send_InitMap(LPVOID arg);
 
+void CheckBuff();
 void Init_Monster(LPVOID arg);
 
 // 소켓 함수 오류 출력 후 종료
@@ -113,8 +114,15 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		Init_Monster((LPVOID)client_sock);
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
+
+		// mapIsReceive컨테이너에 ClientID를 key로 가진 bool변수를 false로 초기화 한 다음 삽입해준다.
+		mapIsRecv.insert({ iClientID, false });
+		mapIsRecv[0] = false;
+		//SetEvent(hSendEvent);
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
 
+
+		SetEvent(hSendEvent);
 	}
 
 	while (1) {
@@ -124,6 +132,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// 데이터 받기
 		Receive_Data((LPVOID)client_sock, WorldInfo);
+
+		// 버프 확인
+		//CheckBuff();
 
 		// 데이터 보내기
 		Send_Data((LPVOID)client_sock);
@@ -198,6 +209,7 @@ int main(int argc, char* argv[])
 		// 스레드 생성
 		hThread = CreateThread(NULL, 0, ProcessClient,
 			(LPVOID)client_sock, 0, NULL);
+
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 
@@ -220,10 +232,10 @@ int main(int argc, char* argv[])
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 {
-	// 전송 완료 대기
-	DWORD EventRetval;
-	EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
-	if (EventRetval != WAIT_OBJECT_0) return;
+	//// 전송 완료 대기
+	//DWORD EventRetval;
+	//EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
+	//if (EventRetval != WAIT_OBJECT_0) return;
 
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
 	SOCKET client_sock = (SOCKET)arg;
@@ -258,6 +270,9 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iter->second, ClientInfo });
+
+	// 실시간으로 값을 ClientInfo 값을 바꿔준다1
+	WorldInfo[iter->second] = ClientInfo;
 
 	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
 	mapIsRecv[iter->second] = true;
@@ -295,17 +310,31 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-	auto iter = mapClientPort.find(clientaddr.sin_port);
-	int iClientKey = iter->second;
+	for (int i = 0; i < iClientID; ++i)
+	{
+		WorldInfo[i].ClientID_Number = iClientID;
+		retval = send(client_sock, (char*)&WorldInfo[i], sizeof(CLIENTINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		else
+		{
+			// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
+			auto iter = mapClientPort.find(clientaddr.sin_port);
+			mapIsRecv[iter->second] = false;
+		}
+	}
+	//auto iter = mapClientPort.find(clientaddr.sin_port);
+	//int iClientKey = iter->second;
 
 
 	//CLIENTINFO	tTest;
 	// 본인 클라이언트 정보
-	CLIENTINFO	tTest = WorldInfo[iter->second];
-	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
+	//CLIENTINFO	tTest = WorldInfo[iter->second];
+	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
 	//int k = 0;
 	//retval = send(client_sock, (char*)&k, sizeof(int), 0);
 	//if (retval == SOCKET_ERROR) {

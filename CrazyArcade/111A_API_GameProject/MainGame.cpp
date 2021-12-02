@@ -35,7 +35,9 @@ void CMainGame::Initialize()
 	CSoundMgr::Get_Instance()->Initialize();
 	CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENEID::SCENE_MENU);
 	CTileManager::Get_Instance()->Initialize();
+
 	CTimeManager::Get_Instance()->Ready_CTimeManager();
+
 }
 
 void CMainGame::Update()
@@ -65,8 +67,6 @@ void CMainGame::Late_Update()
 
 void CMainGame::Render()
 {
-
-
 	HDC HMemDC = CBmpManager::Get_Instance()->Find_Image(L"Stage1Back");
 	HDC HBackBuffer = CBmpManager::Get_Instance()->Find_Image(L"BackBuffer");
 
@@ -75,8 +75,6 @@ void CMainGame::Render()
 	CSceneManager::Get_Instance()->Render(HBackBuffer);
 
 	BitBlt(m_DC, 0, 0, WINCX, WINCY, HBackBuffer, 0, 0, SRCCOPY);
-
-
 
 	//CClientManager::Get_Instance()->applyInfo();
 }

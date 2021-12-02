@@ -15,6 +15,12 @@ public:
 	virtual void Late_update() override;
 	virtual void Render(HDC _DC) override;
 	virtual void Release() override;
+
+private:
+	map<int, CLIENTINFO> worldinfo;
+
+	bool isCreate;
+	int curPlayerNum;
 };
 
 #endif // !__NETWORKSTAGE_H__

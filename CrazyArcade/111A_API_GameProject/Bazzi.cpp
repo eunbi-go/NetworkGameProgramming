@@ -65,6 +65,7 @@ void CBazzi::Initialize()
 
 int CBazzi::Update()
 {
+	WorldInfo = CClientManager::Get_Instance()->GetWorldInfo();
 
 	if (OBJSTATE::BUBBLE == m_eState)
 	{
@@ -96,8 +97,6 @@ int CBazzi::Update()
 	Update_Rect();
 	Scene_Change();
 	Frame_Move();
-
-	CClientManager::Get_Instance()->setPlayerPosToClientInfo(m_tInfo.fX, m_tInfo.fY);
 
 	return OBJ_NOEVENET;
 }
@@ -153,12 +152,13 @@ void CBazzi::Render(HDC _DC)
 			, RGB(255, 0, 255));
 		break;
 	}
-
-	if (CKeyManager::Get_Instance()->Key_Pressing(VK_LCONTROL))
-		Rectangle(_DC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
 }
 
 void CBazzi::Release()
+{
+}
+
+void CBazzi::SetPlayerInfo(PLAYERINFO _PlayerInfo)
 {
 }
 
@@ -168,21 +168,25 @@ void CBazzi::Key_Check()
 	{
 		m_tInfo.fX -= m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::LEFT;
+		m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else if (CKeyManager::Get_Instance()->Key_Pressing(VK_RIGHT))
 	{
 		m_tInfo.fX += m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::RIGHT;
+		m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else if (CKeyManager::Get_Instance()->Key_Pressing(VK_UP))
 	{
 		m_tInfo.fY -= m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::TOP;
+		m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else if (CKeyManager::Get_Instance()->Key_Pressing(VK_DOWN))
 	{
 		m_tInfo.fY += m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::BOTTOM;
+		m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else
 		m_eCurDir = OBJDIR::IDLE;
