@@ -24,8 +24,6 @@ private:
 	//DWORD			m_dwTime;
 	//TCHAR			m_szFPS[16];
 	bool	m_bInitMonster = false;
-
-	bool	isInit = true;
 };
 
 

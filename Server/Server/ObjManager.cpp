@@ -18,6 +18,7 @@
 #include "Mbape.h"
 //#include "HMSon.h"
 //#include "BossBomb.h"
+#include "TimeManager.h"
 
 CObjManager* CObjManager::m_pInstance = nullptr;
 
@@ -151,13 +152,14 @@ void CObjManager::Update_Monster()
 		}
 	}
 
-	//for (int i = 0; i < OBJID::END; ++i)
-	//{
-	//	if (i == OBJID::MONSTER) {
-	//		for (auto& pObj : m_listObj[i])
-	//			pObj->Late_Update();
-	//	}
-	//}
+	for (int i = 0; i < OBJID::END; ++i)
+	{
+		if (i == OBJID::MONSTER) {
+			for (auto& pObj : m_listObj[i])
+				pObj->Late_Update();
+		}
+	}
+	//CTimeManager::Get_Instance()->Update_CTimeManager();
 }
 
 void CObjManager::Late_Update()

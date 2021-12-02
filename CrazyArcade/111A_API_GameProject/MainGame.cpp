@@ -36,15 +36,6 @@ void CMainGame::Initialize()
 	CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENEID::SCENE_MENU);
 	CTileManager::Get_Instance()->Initialize();
 	CTimeManager::Get_Instance()->Ready_CTimeManager();
-
-	if (isInit) {
-		
-
-		// 적용한다.
-		//CClientManager::Get_Instance()->applyInfo();
-
-		isInit = false;
-	}
 }
 
 void CMainGame::Update()
@@ -52,6 +43,7 @@ void CMainGame::Update()
 	if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
 		if (!m_bInitMonster) {
 			m_bInitMonster = true;
+			CClientManager::Get_Instance()->setGameStart();
 			CClientManager::Get_Instance()->InitMonster();
 		}
 	}

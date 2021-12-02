@@ -6,6 +6,7 @@
 #include "ObjManager.h"
 #include "Mbape.h"
 #include "Messi.h"
+#include "TimeManager.h"
 
 #define BUFSIZE 500
 static int iClientID = 0;				// Å¬¶óÀÌ¾ðÆ®ÀÇ ID
@@ -21,7 +22,7 @@ vector<USHORT> vecIsFirstConnect;		// Å¬¶óÀÌ¾ðÆ®°¡ Á¢¼ÓÇÏ¸é Å¬¶óÀÌ¾ðÆ®ÀÇ Æ÷Æ®¹øÈ
 vector<MONSTERINFO>	vecMonster;
 
 bool isStart = false;
-
+bool isSetTimer = false;
 #define SERVERPORT 9000
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
@@ -112,11 +113,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		// ¸ó½ºÅÍ Á¤º¸ Àü¼Û
 		Init_Monster((LPVOID)client_sock);
 
-		//Receive_Data((LPVOID)client_sock, WorldInfo);
-
-		// Ä³¸¯ÅÍ Á¾·ù, ÃÊ±â À§Ä¡ Á¤ÇØ¼­ Client·Î Àü¼Û
-		//Send_Data((LPVOID)client_sock);
-
 		printf("Æ÷Æ® ¹øÈ£=%d ¿¡°Ô ClientID: %d Àü¼Û ¼º°ø\n", ntohs(clientaddr.sin_port), iClientID);
 		iClientID++;		// ´ÙÀ½ Á¢¼ÓÇÒ Å¬¶óÀÌ¾ðÆ® ID´Â +1 ÇØ¼­ °ü¸®
 
@@ -124,7 +120,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (1) {
 		// ¸ó½ºÅÍ Á¤º¸ ¾÷µ¥ÀÌÆ®
-		//CObjManager::Get_Instance()->Update_Monster();
+		if (isStart)
+			CObjManager::Get_Instance()->Update_Monster();
 
 		// µ¥ÀÌÅÍ ¹Þ±â
 		Receive_Data((LPVOID)client_sock, WorldInfo);
@@ -134,6 +131,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// µ¥ÀÌÅÍ º¸³»±â
 		Send_Data((LPVOID)client_sock);
+
+		CTimeManager::Get_Instance()->Update_CTimeManager();
 	}
 
 	closesocket(client_sock);
@@ -248,6 +247,18 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		err_display("recv()");
 	}
 
+	// °ÔÀÓ ½ÃÀÛÇß´ÂÁö È®ÀÎÇÏ´Â º¯¼ö ¹Þ¾Æ¿À±â
+	int iStart;
+	retval = recvn(client_sock, (char*)&iStart, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	if (iStart == 1 && !isSetTimer) {
+		isStart = true;
+		isSetTimer = true;
+		CTimeManager::Get_Instance()->Ready_CTimeManager();
+	}
+
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfoÀÇ ClientID Å°°ª¿¡ ClientInfo¸¦ ÀúÀåÇÑ´Ù.
 	WorldInfo.insert({ iter->second, ClientInfo });
@@ -313,12 +324,7 @@ void Send_Data(LPVOID arg)
 	//if (retval == SOCKET_ERROR) {
 	//	err_display("send()");
 	//}
-	int k = 100;
-	retval = send(client_sock, (char*)&k, sizeof(int), 0);
 
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
 	/*retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
@@ -336,26 +342,54 @@ void Send_Data(LPVOID arg)
 	//	}
 	//}
 
-	//// ¾÷µ¥ÀÌÆ®µÈ ¸ó½ºÅÍµé À§Ä¡
-	//list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
-	//int i = 0;
-	//int iCnt = listMonster.size();
+	if (isStart) {
+		// ¾÷µ¥ÀÌÆ®µÈ ¸ó½ºÅÍµé À§Ä¡
+		list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
+		int i = 0;
+		int iCnt = listMonster.size();
 
-	//retval = send(client_sock, (char*)&iCnt, sizeof(int), 0);
+		for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
+		{
+			vecMonster[i].MonsterPos.fX = (*iter)->Get_Info().fX;
+			vecMonster[i].MonsterPos.fY = (*iter)->Get_Info().fY;
+			vecMonster[i].MonsterDir = (*iter)->GetDir();
+			vecMonster[i].Monsterframe = (*iter)->Get_Frame();
+			++i;
+		}
 
-	//for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
-	//{
-	//	vecMonster[i].MonsterPos.fX = (*iter)->Get_Info().fX;
-	//	vecMonster[i].MonsterPos.fY = (*iter)->Get_Info().fY;
-	//	vecMonster[i].MonsterDir = (*iter)->GetDir();
-	//	vecMonster[i].Monsterframe = (*iter)->Get_Frame();
-
-	//	retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("send()");
-	//	}
-	//	++i;
-	//}
+		retval = send(client_sock, (char*)&vecMonster[0], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		retval = send(client_sock, (char*)&vecMonster[1], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		retval = send(client_sock, (char*)&vecMonster[2], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		retval = send(client_sock, (char*)&vecMonster[3], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		retval = send(client_sock, (char*)&vecMonster[4], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		retval = send(client_sock, (char*)&vecMonster[5], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		retval = send(client_sock, (char*)&vecMonster[6], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+		retval = send(client_sock, (char*)&vecMonster[7], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+	}
 
 	//else
 	//{
@@ -546,35 +580,11 @@ void Init_Monster(LPVOID arg)
 	tInfo.MonsterID = 8;
 	vecMonster.emplace_back(tInfo);
 
-	pObj = CAbstractFactory<CMbape>::Create_Monster(MAPSTARTX + (TILECX * 4) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::TOP);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MBAPE;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 4) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::TOP;
-	tInfo.MonsterID = 9;
-	vecMonster.emplace_back(tInfo);
-
-	pObj = CAbstractFactory<CMbape>::Create_Monster(MAPSTARTX + (TILECX * 10) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MBAPE;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 10) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::BOTTOM;
-	tInfo.MonsterID = 10;
-	vecMonster.emplace_back(tInfo);
-
-	int iNum = 10;
+	int iNum = 8;
 
 	retval = send(client_sock, (char*)&iNum, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) err_display("send()");
 
-	//for (int i = 0; i < iNum; ++i) {
-	//	retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("send()");
-	//	}
-	//}
 	retval = send(client_sock, (char*)&vecMonster[0], sizeof(MONSTERINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
@@ -604,14 +614,6 @@ void Init_Monster(LPVOID arg)
 		err_display("send()");
 	}
 	retval = send(client_sock, (char*)&vecMonster[7], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	retval = send(client_sock, (char*)&vecMonster[8], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	retval = send(client_sock, (char*)&vecMonster[9], sizeof(MONSTERINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
