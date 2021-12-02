@@ -346,6 +346,8 @@ void CClientManager::applyInfo()
 
 void CClientManager::set_buffOn()
 {
+	if (CObjManager::Get_Instance()->Get_List(OBJID::PLAYER).empty()) return;
+
 	if (tClientInfo.PlayerInfo.b_isContactPlayer) {
 		//isBuff = true;
 		OriginalBombPower = CObjManager::Get_Instance()->Get_Player()->Get_Info().iBombPower;

@@ -51,6 +51,7 @@ public:
 	void Set_Cheat(bool _ischeat) { m_bisCheat = _ischeat; }
 	bool Get_Cheat() { return m_bisCheat; }
 
+	list<CObj*>& Get_List(OBJID::ID _eID) { return m_listObj[_eID]; }
 	CObj* Get_Player() { return m_listObj[OBJID::PLAYER].front(); }
 	void Update_MonsterInfo(vector<MONSTERINFO> vInfo);
 	void Add_Monster(MONSTERINFO info, int iNum);
