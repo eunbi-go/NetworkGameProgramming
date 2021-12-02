@@ -3,6 +3,7 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Player.h"
+#include "SceneManager.h"
 
 #define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
@@ -108,6 +109,24 @@ int CClientManager::recvInfo()
 		err_display("recv()");
 	}
 	
+	// 서버로부터 받을 몬스터 개수
+
+	int iMonsterCnt = 0;
+	retval = recvn(sock, (char*)&iMonsterCnt, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	for (int i = 0; i < iMonsterCnt; ++i) {
+		retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+	}
+
+	if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
+		CObjManager::Get_Instance()->Update_MonsterInfo(tMonsterInfo);
+	}
+
 	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fX);
 	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fY);
 
@@ -169,6 +188,31 @@ void CClientManager::recvInitMapTile()
 
 	strcat_s(buf, pName);
 	CTileManager::Get_Instance()->Set_DataFile(buf, strlen(buf));
+}
+
+void CClientManager::recvInitMonster()
+{
+	int iNum = 0;
+	retval = recvn(sock, (char*)&iNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	tMonsterInfo.resize(iNum);
+
+	for (int i = 0; i < tMonsterInfo.size(); ++i) {
+		retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+	}
+}
+
+void CClientManager::InitMonster()
+{
+	for (int i = 0; i < tMonsterInfo.size(); ++i) {
+		CObjManager::Get_Instance()->Add_Monster(tMonsterInfo[i], i);
+	}
 }
 
 void CClientManager::setPlayerInfo()

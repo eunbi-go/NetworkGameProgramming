@@ -35,6 +35,8 @@ public:
 
 	void	recvInitPlayerPos();
 	void	recvInitMapTile();
+	void	recvInitMonster();
+	void	InitMonster();
 
 public:
 	void	setPlayerInfo();		// 네트워크 통신용 플레이어 위치 전송
@@ -62,7 +64,7 @@ private:
 
 	PLAYERINFO	tPlayerInfo;	// 플레이어
 	ITEMINFO	tItemInfo;		// 아이템
-	MONSTERINFO	tMonsterInfo;	// 몬스터
+	//MONSTERINFO	tMonsterInfo;	// 몬스터
 	CLIENTINFO	tClientInfo;	// 클라이언트 정보
 
 	bool		isBuff = false;	// 버프 효과 판단
@@ -71,6 +73,7 @@ private:
 	// 서버로부터 받는 패킷 
 	// - 플레이어, 상대 플레이어, 몬스터, 아이템 정보가 모두 들어있음
 	map<int, CLIENTINFO>	tWorldInfo;
+	vector<MONSTERINFO>		tMonsterInfo;
 
 	// 서버로부터 받은 맵 정보
 	vector<CObj*> vecMapTile;

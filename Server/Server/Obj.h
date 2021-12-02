@@ -17,8 +17,13 @@ public:
 	virtual void Release() = 0;
 
 public:
+	void Update_Rect();
+	void Frame_Move();
+
+public:
 	const INFO& Get_Info() const { return m_tInfo; }
 	const RECT& Get_Rect() const { return m_tRect; }
+	const FRAME& Get_Frame() const { return m_tFrame; }
 
 public:
 	void Set_Pos(float _x, float _y) { m_tInfo.fX = _x, m_tInfo.fY = _y; }
@@ -33,6 +38,7 @@ public:
 
 public:
 	OBJSTATE::STATE GetState() { return m_eState; }
+	OBJDIR::DIR	GetDir() { return m_eCurDir; }
 
 public:
 	MAPBLOCK::BLOCK& Get_BlockType() { return m_eBlock; }

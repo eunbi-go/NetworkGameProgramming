@@ -140,8 +140,10 @@ void CMessi::Late_Update()
 
 void CMessi::Render(HDC _DC)
 {
-	HDC hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Messi");;
+	HDC hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Messi");
 	Update_Rect();
+
+	int fX = m_tInfo.fX;
 
 	if (OBJSTATE::IDLE == m_eState)
 	{

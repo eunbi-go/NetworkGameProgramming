@@ -48,7 +48,15 @@ public:
 		return pObj;
 	}
 
+	static CObj* Create_Monster(float _x, float _y, OBJDIR::DIR _Dir)
+	{
+		CObj* pObj = new T;
+		pObj->Initialize();
+		pObj->Set_Pos(_x, _y);
+		pObj->SetCurDIR(_Dir);
 
+		return pObj;
+	}
 };
 
 #endif // !__ABSTRACTFACTORY_H__
