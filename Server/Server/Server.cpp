@@ -287,7 +287,6 @@ void Send_Data(LPVOID arg)
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	int iClientKey = iter->second;
 
-<<<<<<< HEAD
 	//// ClientID = 0,	위치는 왼쪽 위
 	//if (WorldInfo.find(0) != WorldInfo.end()) {
 	//	WorldInfo[0].PlayerInfo.PlayerPos.fX = MAPSTARTX + (TILECX >> 1);
@@ -314,9 +313,7 @@ void Send_Data(LPVOID arg)
 
 
 	//CLIENTINFO	tTest;
-=======
 	// 본인 클라이언트 정보
->>>>>>> eun
 	CLIENTINFO	tTest = WorldInfo[iter->second];
 	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
