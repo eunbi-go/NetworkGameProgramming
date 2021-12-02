@@ -30,9 +30,12 @@ public:
 	void SetBombPower(int _power) { m_tInfo.iBombPower = _power; }
 	void SetState(OBJSTATE::STATE _State) { m_eState = _State; }
 	void SetCurDIR(OBJDIR::DIR _Dir) { m_eCurDir = _Dir; }
+	void SetFrame(FRAME tFrame) { m_tFrame = tFrame; }
 
 	void Set_PosX(float _x) { m_tInfo.fX += _x; }
 	void Set_PosY(float _y) { m_tInfo.fY += _y; }
+	void Change_PosX(float _x) { m_tInfo.fX = _x; }
+	void Change_PosY(float _y) { m_tInfo.fY = _y; }
 	void WaveAttack(int _att) { m_tInfo.iHP -= _att; }
 
 public:

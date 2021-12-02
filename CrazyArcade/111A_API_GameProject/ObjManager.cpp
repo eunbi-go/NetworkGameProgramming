@@ -36,16 +36,18 @@ void CObjManager::Update()
 {
 	for (int i = 0; i < OBJID::END; ++i)
 	{
-		for (auto& iter = m_listObj[i].begin(); iter != m_listObj[i].end();)
-		{
-			int iEvent = (*iter)->Update();
-			if (iEvent == OBJ_DEAD)
+		if (i != OBJID::MONSTER) {
+			for (auto& iter = m_listObj[i].begin(); iter != m_listObj[i].end();)
 			{
-				SAFE_DELETE(*iter);
-				iter = m_listObj[i].erase(iter);
+				int iEvent = (*iter)->Update();
+				if (iEvent == OBJ_DEAD)
+				{
+					SAFE_DELETE(*iter);
+					iter = m_listObj[i].erase(iter);
+				}
+				else
+					++iter;
 			}
-			else
-				++iter;
 		}
 	}
 	for (int i = 0; i < MAPBLOCK::END; ++i)
@@ -135,8 +137,11 @@ void CObjManager::Late_Update()
 {
 	for (int i = 0; i < OBJID::END; ++i)
 	{
-		for (auto& pObj : m_listObj[i])
-			pObj->Late_Update();
+		if (i != OBJID::MONSTER) {
+			for (auto& pObj : m_listObj[i])
+				pObj->Late_Update();
+		}
+
 	}
 	for (int i = 0; i < MAPBLOCK::END; ++i)
 	{
@@ -636,4 +641,28 @@ void CObjManager::Load_Object_Boss()
 
 	CloseHandle(hFile);
 	//MessageBox(g_hWnd, L"오브젝트 불러오기 성공", L"성공", MB_OK);
+}
+
+void CObjManager::Update_MonsterInfo(vector<MONSTERINFO> vInfo)
+{
+	int i = 0;
+	for (auto iter = m_listObj[OBJID::MONSTER].begin(); iter != m_listObj[OBJID::MONSTER].end(); ++iter)
+	{
+		(*iter)->Change_PosX(vInfo[i].MonsterPos.fX);
+		(*iter)->Change_PosY(vInfo[i].MonsterPos.fY);
+		(*iter)->SetCurDIR(vInfo[i].MonsterDir);
+		(*iter)->SetFrame(vInfo[i].Monsterframe);
+		++i;
+	}
+}
+
+void CObjManager::Add_Monster(MONSTERINFO info, int iNum)
+{
+	CObj* pObj = nullptr;
+	if (info.MonsterName == MONSTERNAME::NAME::MESSI)
+		pObj = CAbstractFactory<CMessi>::Create_Monster(info.MonsterPos.fX, info.MonsterPos.fY, info.MonsterDir);
+	if (info.MonsterName == MONSTERNAME::NAME::MBAPE)
+		pObj = CAbstractFactory<CMbape>::Create_Monster(info.MonsterPos.fX, info.MonsterPos.fY, info.MonsterDir);
+	
+	Add_Object(pObj, OBJID::MONSTER);
 }

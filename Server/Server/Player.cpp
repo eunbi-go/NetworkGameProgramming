@@ -1,4 +1,3 @@
-
 //#include "stdafx.h"
 //#include "Player.h"
 //#include "Bomb.h"
@@ -239,17 +238,16 @@
 //		m_ePreDir = m_eCurDir;
 //	}
 //}
-
 #include "stdafx.h"
 #include "Player.h"
-#include "Bomb.h"
+//#include "Bomb.h"
 #include "ObjManager.h"
-#include "KeyManager.h"
-#include "LineManager.h"
-#include "BmpManager.h"
-#include "SoundMgr.h"
-#include "SceneManager.h"
-#include "ClientManager.h"
+//#include "KeyManager.h"
+//#include "LineManager.h"
+//#include "BmpManager.h"
+//#include "SoundMgr.h"
+//#include "SceneManager.h"
+//#include "ClientManager.h"
 
 
 CPlayer::CPlayer()
@@ -264,36 +262,31 @@ CPlayer::~CPlayer()
 
 void CPlayer::Initialize()
 {
-	//50 60
-	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Character/Bazzi/bazzi.bmp", L"Bazzi");
-	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Character/Bazzi/bazzi_bubble.bmp", L"BazziBubble");
-	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Character/Bazzi/die.bmp", L"BazziPop");
+	////50 60
+	//CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Character/Bazzi/bazzi.bmp", L"Bazzi");
+	//CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Character/Bazzi/bazzi_bubble.bmp", L"BazziBubble");
+	//CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Character/Bazzi/die.bmp", L"BazziPop");
 
-	m_tInfo.fX = MAPSTARTX + (TILECX >> 1);
-	m_tInfo.fY = MAPSTARTY + (TILECY >> 1);
-	m_tInfo.iCX = 25;
-	m_tInfo.iCY = 25;
-
-	//ClientID = 0, 위치는 왼쪽 위
-	if (CClientManager::Get_Instance()->GetClientID() == 0) {
-		m_tInfo.fX = MAPSTARTX + (TILECX >> 1);
-		m_tInfo.fY = MAPSTARTY + (TILECY >> 1);
-	}
-	// ClientID = 1,	위치는 오른쪽 위
-	if (CClientManager::Get_Instance()->GetClientID() == 1) {
-		m_tInfo.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-		m_tInfo.fY = MAPSTARTY + (TILECY >> 1);
-	}
-	// ClientID = 2,	위치는 왼쪽 아래
-	if (CClientManager::Get_Instance()->GetClientID() == 2) {
-		m_tInfo.fX = MAPSTARTX + (TILECX >> 1);
-		m_tInfo.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	}
-	// ClientID = 3,	위치는 오른쪽 아래
-	if (CClientManager::Get_Instance()->GetClientID() == 3) {
-		m_tInfo.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-		m_tInfo.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	}
+	////ClientID = 0, 위치는 왼쪽 위
+	//if (CClientManager::Get_Instance()->GetClientID() == 0) {
+	//	m_tInfo.fX = MAPSTARTX + (TILECX >> 1);
+	//	m_tInfo.fY = MAPSTARTY + (TILECY >> 1);
+	//}
+	//// ClientID = 1,	위치는 오른쪽 위
+	//if (CClientManager::Get_Instance()->GetClientID() == 1) {
+	//	m_tInfo.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+	//	m_tInfo.fY = MAPSTARTY + (TILECY >> 1);
+	//}
+	//// ClientID = 2,	위치는 왼쪽 아래
+	//if (CClientManager::Get_Instance()->GetClientID() == 2) {
+	//	m_tInfo.fX = MAPSTARTX + (TILECX >> 1);
+	//	m_tInfo.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	//}
+	//// ClientID = 3,	위치는 오른쪽 아래
+	//if (CClientManager::Get_Instance()->GetClientID() == 3) {
+	//	m_tInfo.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
+	//	m_tInfo.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
+	//}
 
 
 	m_tInfo.iCX = 25;
@@ -311,7 +304,6 @@ void CPlayer::Initialize()
 	m_eState = OBJSTATE::IDLE;
 	m_eCurDir = OBJDIR::IDLE;
 
-	//CClientManager::Get_Instance()->setPlayerInfo(m_tInfo);
 
 	//CClientManager::Get_Instance()->setPlayerInfo();
 }
@@ -327,7 +319,7 @@ int CPlayer::Update()
 		}
 		
 	}
-	if (OBJSTATE::DEAD == m_eState)
+	/*if (OBJSTATE::DEAD == m_eState)
 	{
 		if (m_dwTime + 2000 < GetTickCount())
 		{
@@ -337,7 +329,8 @@ int CPlayer::Update()
 			CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENE_MENU);
 			return OBJ_DEAD;
 		}
-	}
+	}*/
+
 
 	if (OBJSTATE::IDLE == m_eState)
 		Key_Check();
@@ -365,7 +358,7 @@ void CPlayer::Late_Update()
 
 void CPlayer::Render(HDC _DC)
 {
-	Update_Rect();
+	/*Update_Rect();
 	HDC hMemDC;
 	switch (m_eState)
 	{
@@ -402,7 +395,7 @@ void CPlayer::Render(HDC _DC)
 	}
 
 	if (CKeyManager::Get_Instance()->Key_Pressing(VK_LCONTROL))
-		Rectangle(_DC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
+		Rectangle(_DC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);*/
 }
 
 void CPlayer::Release()
@@ -413,7 +406,7 @@ void CPlayer::Release()
 void CPlayer::Key_Check()
 {
 
-	if (CKeyManager::Get_Instance()->Key_Pressing(VK_LEFT))
+	/*if (CKeyManager::Get_Instance()->Key_Pressing(VK_LEFT))
 	{
 		m_tInfo.fX -= m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::LEFT;
@@ -455,7 +448,7 @@ void CPlayer::Key_Check()
 			CObj* pObj = CAbstractFactory<CBomb>::Create(fBombX, fBombY + 15, m_tInfo.iBombPower, false);
 			CObjManager::Get_Instance()->Add_Object(pObj, OBJID::BOMB);
 		}
-	}
+	}*/
 
 }
 

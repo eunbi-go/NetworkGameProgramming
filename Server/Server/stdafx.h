@@ -4,9 +4,13 @@
 #pragma comment(lib, "ws2_32")
 #include <WinSock2.h>
 #include <stdlib.h>
+#include <malloc.h>
+#include <memory.h>
+#include <tchar.h>
 #include <stdio.h>
 #include <map>
 #include <vector>
+#include <list>
 #include <algorithm>
 #include <fstream>
 #include <iostream>

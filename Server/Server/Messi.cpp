@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Messi.h"
 #include "ObjManager.h"
-#include "BmpManager.h"
+//#include "BmpManager.h"
 #include "TileManager.h"
-#include "KeyManager.h"
+//#include "KeyManager.h"
 
 CMessi::CMessi()
 {
@@ -17,7 +17,7 @@ CMessi::~CMessi()
 
 void CMessi::Initialize()
 {
-	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Monster/Messi.bmp", L"Messi");
+	//CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/Obj/Monster/Messi.bmp", L"Messi");
 
 	m_tInfo.iCX = 40;
 	m_tInfo.iCY = 40;
@@ -140,62 +140,60 @@ void CMessi::Late_Update()
 
 void CMessi::Render(HDC _DC)
 {
-	HDC hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Messi");
-	Update_Rect();
+	//HDC hMemDC = CBmpManager::Get_Instance()->Find_Image(L"Messi");;
+	//Update_Rect();
 
-	int fX = m_tInfo.fX;
+	//if (OBJSTATE::IDLE == m_eState)
+	//{
+	//	switch (m_eCurDir)
+	//	{
+	//	case OBJDIR::TOP:
+	//		// 0 1
+	//		GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
+	//			, 54, 56, hMemDC
+	//			, m_tFrame.iFrameStart * 54, 0
+	//			, 54, 56
+	//			, RGB(255, 255, 255));
+	//		break;
+	//	case OBJDIR::BOTTOM:
+	//		// 2 3
+	//		GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
+	//			, 54, 56, hMemDC
+	//			, 54 * 2 + m_tFrame.iFrameStart * 54, 0
+	//			, 54, 56
+	//			, RGB(255, 255, 255));
+	//		break;
+	//	case OBJDIR::LEFT:
+	//		// 4 5
+	//		GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
+	//			, 54, 56, hMemDC
+	//			, 54 * 4 + m_tFrame.iFrameStart * 54, 0
+	//			, 54, 56
+	//			, RGB(255, 255, 255));
+	//		break;
+	//	case OBJDIR::RIGHT:
+	//		// 6 7
+	//		GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
+	//			, 54, 56, hMemDC
+	//			, 54 * 6 + m_tFrame.iFrameStart * 54, 0
+	//			, 54, 56
+	//			, RGB(255, 255, 255));
+	//		break;
+	//	}
+	//}
 
-	if (OBJSTATE::IDLE == m_eState)
-	{
-		switch (m_eCurDir)
-		{
-		case OBJDIR::TOP:
-			// 0 1
-			GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
-				, 54, 56, hMemDC
-				, m_tFrame.iFrameStart * 54, 0
-				, 54, 56
-				, RGB(255, 255, 255));
-			break;
-		case OBJDIR::BOTTOM:
-			// 2 3
-			GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
-				, 54, 56, hMemDC
-				, 54 * 2 + m_tFrame.iFrameStart * 54, 0
-				, 54, 56
-				, RGB(255, 255, 255));
-			break;
-		case OBJDIR::LEFT:
-			// 4 5
-			GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
-				, 54, 56, hMemDC
-				, 54 * 4 + m_tFrame.iFrameStart * 54, 0
-				, 54, 56
-				, RGB(255, 255, 255));
-			break;
-		case OBJDIR::RIGHT:
-			// 6 7
-			GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
-				, 54, 56, hMemDC
-				, 54 * 6 + m_tFrame.iFrameStart * 54, 0
-				, 54, 56
-				, RGB(255, 255, 255));
-			break;
-		}
-	}
+	//if (OBJSTATE::HIT == m_eState)
+	//{
+	//	m_tFrame.dwFrameSpeed = 800;
+	//	GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
+	//		, 45, 51, hMemDC
+	//		, m_tFrame.iFrameStart * 45, 60
+	//		, 45, 51
+	//		, RGB(255, 255, 255));
+	//}
 
-	if (OBJSTATE::HIT == m_eState)
-	{
-		m_tFrame.dwFrameSpeed = 800;
-		GdiTransparentBlt(_DC, m_tRect.left - 12, m_tRect.top - 20
-			, 45, 51, hMemDC
-			, m_tFrame.iFrameStart * 45, 60
-			, 45, 51
-			, RGB(255, 255, 255));
-	}
-
-	if (CKeyManager::Get_Instance()->Key_Pressing(VK_LCONTROL))
-		Rectangle(_DC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
+	//if (CKeyManager::Get_Instance()->Key_Pressing(VK_LCONTROL))
+	//	Rectangle(_DC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
 }
 
 void CMessi::Release()

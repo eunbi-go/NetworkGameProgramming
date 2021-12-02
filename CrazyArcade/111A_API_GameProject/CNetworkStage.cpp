@@ -102,35 +102,35 @@ void CNetworkStage::Initialize()
 	}
 
 	//몬스터 생성
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 14) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	//pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 14) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
 
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 12) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	//pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 12) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
 
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 0) + (TILECY >> 1), OBJDIR::LEFT);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	//pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 0) + (TILECY >> 1), OBJDIR::LEFT);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
 
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 2) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	//pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 2) + (TILECY >> 1), OBJDIR::BOTTOM);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
 
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 0) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::RIGHT);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	//pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 0) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::RIGHT);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	////
+	//pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 3) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	////
+	//pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 10) + (TILECY >> 1), OBJDIR::LEFT);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
 
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 3) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	//pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 12) + (TILECY >> 1), OBJDIR::TOP);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
 
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 10) + (TILECY >> 1), OBJDIR::LEFT);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	//pObj = CAbstractFactory<CMbape>::Create_Monster(MAPSTARTX + (TILECX * 4) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::TOP);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
 
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 12) + (TILECY >> 1), OBJDIR::TOP);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-
-	pObj = CAbstractFactory<CMbape>::Create_Monster(MAPSTARTX + (TILECX * 4) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::TOP);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-
-	pObj = CAbstractFactory<CMbape>::Create_Monster(MAPSTARTX + (TILECX * 10) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
+	//pObj = CAbstractFactory<CMbape>::Create_Monster(MAPSTARTX + (TILECX * 10) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
+	//CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
 }
 
 void CNetworkStage::Update()

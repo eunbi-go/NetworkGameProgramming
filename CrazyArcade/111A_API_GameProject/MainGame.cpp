@@ -8,6 +8,7 @@
 #include "TileManager.h"
 #include "SoundMgr.h"
 #include "ClientManager.h"
+#include "TimeManager.h"
 
 CMainGame::CMainGame()
 {
@@ -15,7 +16,8 @@ CMainGame::CMainGame()
 	CClientManager::Get_Instance()->recvClientID();
 	// 맵 정보를 받아온다.
 	CClientManager::Get_Instance()->recvInitMapTile();
-
+	// 몬스터 정보를 받아온다
+	CClientManager::Get_Instance()->recvInitMonster();
 }
 
 
@@ -34,17 +36,22 @@ void CMainGame::Initialize()
 	CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENEID::SCENE_MENU);
 	CTileManager::Get_Instance()->Initialize();
 
-	if (isInit) {
-		// 적용한다.
-		//CClientManager::Get_Instance()->applyInfo();
+	CTimeManager::Get_Instance()->Ready_CTimeManager();
 
-		isInit = false;
-	}
 }
 
 void CMainGame::Update()
 {
-
+	if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
+		if (!m_bInitMonster) {
+			m_bInitMonster = true;
+			CClientManager::Get_Instance()->setGameStart();
+			CClientManager::Get_Instance()->InitMonster();
+		}
+	}
+	// 서버 통신
+	CClientManager::Get_Instance()->sendInfo();
+	CClientManager::Get_Instance()->recvInfo();
 
 	CSceneManager::Get_Instance()->Update();
 
@@ -55,15 +62,11 @@ void CMainGame::Late_Update()
 {
 	CSceneManager::Get_Instance()->Late_Update();
 	CKeyManager::Get_Instance()->Key_Update();
+	CTimeManager::Get_Instance()->Update_CTimeManager();
 }
 
 void CMainGame::Render()
 {
-	// 서버 통신
-	CClientManager::Get_Instance()->sendInfo();
-	CClientManager::Get_Instance()->recvInfo();
-	
-
 	HDC HMemDC = CBmpManager::Get_Instance()->Find_Image(L"Stage1Back");
 	HDC HBackBuffer = CBmpManager::Get_Instance()->Find_Image(L"BackBuffer");
 
@@ -72,8 +75,6 @@ void CMainGame::Render()
 	CSceneManager::Get_Instance()->Render(HBackBuffer);
 
 	BitBlt(m_DC, 0, 0, WINCX, WINCY, HBackBuffer, 0, 0, SRCCOPY);
-
-
 
 	//CClientManager::Get_Instance()->applyInfo();
 }
@@ -87,6 +88,7 @@ void CMainGame::Release()
 
 	CObjManager::Destroy_Instance();
 	CSoundMgr::Destroy_Instance();
+	CTimeManager::Destroy_Instance();
 
 	CClientManager::Destroy_Instance();
 

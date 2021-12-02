@@ -3,6 +3,8 @@
 #include "TileManager.h"
 #include "ObjManager.h"
 #include "Player.h"
+#include "SceneManager.h"
+#include "TimeManager.h"
 
 #define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
@@ -44,6 +46,7 @@ int CClientManager::connectToServer()
 	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 
+	
 	return retval;
 }
 
@@ -89,6 +92,15 @@ int CClientManager::sendInfo()
 		err_display("send()");
 	}
 
+	int iStart = -1;
+	if (bisStart)	iStart = 1;
+	else	iStart = 2;
+	// 게임 시작했는지 확인
+	retval = send(sock, (char*)&iStart, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
 	return retval;
 }
 
@@ -98,9 +110,8 @@ int CClientManager::recvInfo()
 	// 플레이어 정보, 아이템 정보, 몬스터 정보를 담고 있는 
 	// WorldInfo 맵 컨테이너를 받는다.
 
-	// 몇 개의 ClientInfo가 있는지 알아야 한다.
 	AllClientNum = tClientInfo.ClientID_Number;	// 총 접속한 클라이언트의 개수
-	
+
 	if (AllClientNum == 0)
 		AllClientNum = 1;
 
@@ -119,15 +130,64 @@ int CClientManager::recvInfo()
 		tWorldInfo[i] = tClientInfo;
 	}
 
-	
+	// 몇 개의 ClientInfo가 있는지 알아야 한다.
 	//retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
 	//if (retval == SOCKET_ERROR) {
 	//	err_display("recv()");
 	//}
 	
+	// 서버로부터 받을 몬스터 개수
+	if (bisStart) {
+		int iMonsterCnt = 0;
+		//retval = recvn(sock, (char*)&iMonsterCnt, sizeof(int), 0);
+		//if (retval == SOCKET_ERROR) {
+		//	err_display("recv()");
+		//}
+		//for (int i = 0; i < 10; ++i) {
+		//	retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
+		//	if (retval == SOCKET_ERROR) {
+		//		err_display("recv()");
+		//	}
+		//}
+		retval = recvn(sock, (char*)&tMonsterInfo[0], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+		retval = recvn(sock, (char*)&tMonsterInfo[1], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+		retval = recvn(sock, (char*)&tMonsterInfo[2], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+		retval = recvn(sock, (char*)&tMonsterInfo[3], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+		retval = recvn(sock, (char*)&tMonsterInfo[4], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+		retval = recvn(sock, (char*)&tMonsterInfo[5], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+		retval = recvn(sock, (char*)&tMonsterInfo[6], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+		retval = recvn(sock, (char*)&tMonsterInfo[7], sizeof(MONSTERINFO), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+
+		if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
+			CObjManager::Get_Instance()->Update_MonsterInfo(tMonsterInfo);
+		}
+	}
 	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fX);
 	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fY);
-
 
 	return retval;
 }
@@ -140,6 +200,30 @@ void CClientManager::applyInfo()
 
 void CClientManager::set_buffOn()
 {
+	if (CObjManager::Get_Instance()->Get_List(OBJID::PLAYER).empty()) return;
+
+	if (tClientInfo.PlayerInfo.b_isContactPlayer) {
+		//isBuff = true;
+		OriginalBombPower = CObjManager::Get_Instance()->Get_Player()->Get_Info().iBombPower;
+		dBuffTime += CTimeManager::Get_Instance()->Get_DeltaTime();
+
+		// 효과음 추가?
+	}
+
+	if (dBuffTime > 0.0 && dBuffTime <= 5.0) {
+		// 능력 최대치 - 스피드, 물줄기
+		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->Set_PlayerSpeed(5);	// 최대치가 몇인지 몰라서 임시로 넣어둠
+		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->Set_PlayerBombMax();
+	}
+
+	else if (dBuffTime > 5.0) {
+		//isBuff = false;
+		tClientInfo.PlayerInfo.b_isContactPlayer = false;
+		dBuffTime = 0.0;
+
+		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->Set_PlayerSpeed(-5);
+		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->SetBombPower(OriginalBombPower);
+	}
 }
 
 void CClientManager::recvInitPlayerPos()
@@ -189,11 +273,62 @@ void CClientManager::recvInitMapTile()
 	CTileManager::Get_Instance()->Set_DataFile(buf, strlen(buf));
 }
 
+void CClientManager::recvInitMonster()
+{
+	int iNum = 0;
+	retval = recvn(sock, (char*)&iNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	tMonsterInfo.resize(iNum);
+
+	retval = recvn(sock, (char*)&tMonsterInfo[0], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[1], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[2], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[3], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[4], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[5], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[6], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	retval = recvn(sock, (char*)&tMonsterInfo[7], sizeof(MONSTERINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+}
+
+void CClientManager::InitMonster()
+{
+	for (int i = 0; i < tMonsterInfo.size(); ++i) {
+		CObjManager::Get_Instance()->Add_Monster(tMonsterInfo[i], i);
+	}
+}
+
 void CClientManager::setPlayerInfo()
 {
 	// 위치 저장
 	tClientInfo.PlayerInfo.PlayerPos.fX = CObjManager::Get_Instance()->Get_PlayerX();
-	tClientInfo.PlayerInfo.PlayerPos.fY = CObjManager::Get_Instance()->Get_PlayerY();	
+	tClientInfo.PlayerInfo.PlayerPos.fY = CObjManager::Get_Instance()->Get_PlayerY();
 
 	// 방향 저장
 	tClientInfo.PlayerInfo.PlayerDir = CObjManager::Get_Instance()->Get_PlayerDir();

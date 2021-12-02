@@ -30,7 +30,7 @@ typedef struct PlayerInfo
 	OBJDIR::DIR			PlayerDir;			// 플레이어의 방향 정보
 	OBJPOS				PlayerPos;			// 플레이어의 위치
 	//FRAME				PlayerFrame;		// 플레이어 현재 프레임
-	//RECT				PlayerSize;			// 플레이어 사이즈(크기)
+	RECT				PlayerSize;			// 플레이어 사이즈(크기)
 	bool				b_isContactPlayer;	// 플레이어가 모두 충돌했는가? 서버에서 판단
 }PLAYERINFO;
 
@@ -40,10 +40,22 @@ typedef struct ItemInfo
 	OBJPOS				ItemPos;			// 아이템의 위치
 }ITEMINFO;
 
+typedef struct tagFrame
+{
+	int		iFrameStart;
+	int		iFrameEnd;
+	int		iFrameScene;
+	DWORD	dwFrameTime;
+	DWORD	dwFrameSpeed;
+}FRAME;
+
 typedef struct MonsterInfo
 {
 	MONSTERNAME::NAME	MonsterName;		// 몬스터의 이름(귤, 악어, 물개)
 	OBJPOS				MonsterPos;			// 몬스터의 위치
+	OBJDIR::DIR			MonsterDir;			// 몬스터 방향
+	int					MonsterID;
+	FRAME				Monsterframe;
 }MONSTERINFO;
 
 typedef struct ClientInfo					// 서버로 전송할 각 클라이언트의 정보
@@ -56,13 +68,6 @@ typedef struct ClientInfo					// 서버로 전송할 각 클라이언트의 정보
 	int					ClientID_Number;	// 통신하는 클라이언트의 수
 }CLIENTINFO;
 
-typedef struct tagFrame
-{
-	int		iFrameStart;
-	int		iFrameEnd;
-	int		iFrameScene;
-	DWORD	dwFrameTime;
-	DWORD	dwFrameSpeed;
-}FRAME;
+
 
 #endif // !__STRUCT_H__
