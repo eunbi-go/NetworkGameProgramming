@@ -324,6 +324,49 @@ void Send_Data(LPVOID arg)
 			mapIsRecv[iter->second] = false;
 		}
 	}
+	//auto iter = mapClientPort.find(clientaddr.sin_port);
+	//int iClientKey = iter->second;
+
+
+	// 본인 클라이언트 정보
+	CLIENTINFO	tTest = WorldInfo[iter->second];
+	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	//CLIENTINFO	tTest = WorldInfo[iter->second];
+	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
+	//int k = 0;
+	//retval = send(client_sock, (char*)&k, sizeof(int), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
+	// 
+	//CLIENTINFO	tTest;
+	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("send()");
+	//}
+
+	/*retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}*/
+
+	//// 상대방 클라이언트 개수, 정보
+	//int nClientNum = WorldInfo.size();
+	//for (int i = 0; i < nClientNum; ++i) {
+	//	if (i != iClientKey) {
+	//		CLIENTINFO	tTest = WorldInfo[i];
+	//		retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	//		if (retval == SOCKET_ERROR) {
+	//			err_display("send()");
+	//		}
+	//	}
+	//}
 
 	if (isStart) {
 		// 업데이트된 몬스터들 위치
