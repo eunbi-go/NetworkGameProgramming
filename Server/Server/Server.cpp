@@ -262,10 +262,6 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iter->second, ClientInfo });
-	//if (iter != mapClientPort.end())
-	//	WorldInfo[iter->second] = ClientInfo;
-	//else
-	//	WorldInfo.insert({ iter->second, ClientInfo });
 
 	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
 	mapIsRecv[iter->second] = true;
@@ -306,41 +302,12 @@ void Send_Data(LPVOID arg)
 	int iClientKey = iter->second;
 
 
-	//CLIENTINFO	tTest;
 	// 본인 클라이언트 정보
 	CLIENTINFO	tTest = WorldInfo[iter->second];
 	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
-	//int k = 0;
-	//retval = send(client_sock, (char*)&k, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-	// 
-	//CLIENTINFO	tTest;
-	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-
-	/*retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}*/
-
-	//// 상대방 클라이언트 개수, 정보
-	//int nClientNum = WorldInfo.size();
-	//for (int i = 0; i < nClientNum; ++i) {
-	//	if (i != iClientKey) {
-	//		CLIENTINFO	tTest = WorldInfo[i];
-	//		retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//		if (retval == SOCKET_ERROR) {
-	//			err_display("send()");
-	//		}
-	//	}
-	//}
 
 	if (isStart) {
 		// 업데이트된 몬스터들 위치
