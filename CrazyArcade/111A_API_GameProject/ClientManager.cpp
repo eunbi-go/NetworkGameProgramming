@@ -4,6 +4,7 @@
 #include "ObjManager.h"
 #include "Player.h"
 #include "SceneManager.h"
+#include "TimeManager.h"
 
 #define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
@@ -156,6 +157,30 @@ void CClientManager::applyInfo()
 
 void CClientManager::set_buffOn()
 {
+	if (CObjManager::Get_Instance()->Get_List(OBJID::PLAYER).empty()) return;
+
+	if (tClientInfo.PlayerInfo.b_isContactPlayer) {
+		//isBuff = true;
+		OriginalBombPower = CObjManager::Get_Instance()->Get_Player()->Get_Info().iBombPower;
+		dBuffTime += CTimeManager::Get_Instance()->Get_DeltaTime();
+
+		// 효과음 추가?
+	}
+
+	if (dBuffTime > 0.0 && dBuffTime <= 5.0) {
+		// 능력 최대치 - 스피드, 물줄기
+		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->Set_PlayerSpeed(5);	// 최대치가 몇인지 몰라서 임시로 넣어둠
+		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->Set_PlayerBombMax();
+	}
+
+	else if (dBuffTime > 5.0) {
+		//isBuff = false;
+		tClientInfo.PlayerInfo.b_isContactPlayer = false;
+		dBuffTime = 0.0;
+
+		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->Set_PlayerSpeed(-5);
+		dynamic_cast<CPlayer*>(CObjManager::Get_Instance()->Get_Player())->SetBombPower(OriginalBombPower);
+	}
 }
 
 void CClientManager::recvInitPlayerPos()
