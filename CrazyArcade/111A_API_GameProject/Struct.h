@@ -17,6 +17,7 @@ typedef struct tagInfo
 	float		fSpeed;
 	bool		bisDead;
 
+	int			iMonsterID;
 	OBJDIR::DIR			PlayerDir;
 }INFO;
 

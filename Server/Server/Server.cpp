@@ -218,7 +218,7 @@ int main(int argc, char* argv[])
 		mapIsCollision.insert({ iClientID, false });
 	}
 
-	// 이벤트 제거 
+	// 이벤트 제거
 	CloseHandle(hRecvEvent);
 	CloseHandle(hSendEvent);
 
@@ -270,10 +270,6 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iter->second, ClientInfo });
-	//if (iter != mapClientPort.end())
-	//	WorldInfo[iter->second] = ClientInfo;
-	//else
-	//	WorldInfo.insert({ iter->second, ClientInfo });
 
 	// 실시간으로 값을 ClientInfo 값을 바꿔준다1
 	WorldInfo[iter->second] = ClientInfo;
@@ -303,6 +299,7 @@ void Send_Data(LPVOID arg)
 	//EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
 	//if (EventRetval != WAIT_OBJECT_0) return;
 
+
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
 	SOCKADDR_IN clientaddr;
@@ -331,8 +328,12 @@ void Send_Data(LPVOID arg)
 	//int iClientKey = iter->second;
 
 
-	//CLIENTINFO	tTest;
 	// 본인 클라이언트 정보
+	CLIENTINFO	tTest = WorldInfo[iter->second];
+	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
 	//CLIENTINFO	tTest = WorldInfo[iter->second];
 	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
 	//if (retval == SOCKET_ERROR) {
@@ -416,6 +417,7 @@ void Send_Data(LPVOID arg)
 		}
 	}
 
+<<<<<<< HEAD
 	else
 	{
 		 //전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
@@ -423,6 +425,8 @@ void Send_Data(LPVOID arg)
 		mapIsRecv[iter->second] = false;
 	}
 
+=======
+>>>>>>> origin/main
 	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
 	{
 		if (iter->second) {
@@ -446,11 +450,11 @@ void CheckBuff()
 	bool isBuffOn = false;
 
 	// 충돌 판단
-	for (auto Src = WorldInfo.begin(); Src != WorldInfo.end(); ++Src) 
+	for (auto Src = WorldInfo.begin(); Src != WorldInfo.end(); ++Src)
 	{
-		if (Src != WorldInfo.begin()) 
+		if (Src != WorldInfo.begin())
 		{
-			if (IntersectRect(&rc, &Dst->second.PlayerInfo.PlayerSize, &Src->second.PlayerInfo.PlayerSize)) 
+			if (IntersectRect(&rc, &Dst->second.PlayerInfo.PlayerSize, &Src->second.PlayerInfo.PlayerSize))
 			{
 				auto iter = mapIsCollision.find(Dst->first);
 				iter->second = true;
@@ -461,7 +465,7 @@ void CheckBuff()
 	}
 
 	// 모든 플레이어가 충돌했다면 isBuffOn을 true로 설정
-	for (auto iter = mapIsCollision.begin(); iter != mapIsCollision.end(); ++iter) 
+	for (auto iter = mapIsCollision.begin(); iter != mapIsCollision.end(); ++iter)
 	{
 		if (iter->second)
 		{
