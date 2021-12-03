@@ -298,10 +298,10 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 
 void Send_Data(LPVOID arg)
 {
-	// 수신 완료 대기
-	DWORD EventRetval;
-	EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
-	if (EventRetval != WAIT_OBJECT_0) return;
+	//// 수신 완료 대기
+	//DWORD EventRetval;
+	//EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
+	//if (EventRetval != WAIT_OBJECT_0) return;
 
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
@@ -416,12 +416,12 @@ void Send_Data(LPVOID arg)
 		}
 	}
 
-	//else
-	//{
-		// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
-		/*auto */iter = mapClientPort.find(clientaddr.sin_port);
+	else
+	{
+		 //전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
+		auto iter = mapClientPort.find(clientaddr.sin_port);
 		mapIsRecv[iter->second] = false;
-	//}
+	}
 
 	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
 	{
