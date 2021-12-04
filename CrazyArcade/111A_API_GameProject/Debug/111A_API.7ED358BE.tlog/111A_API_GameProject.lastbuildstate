@@ -1,17 +1,2 @@
-<<<<<<< HEAD
 PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.29.30037:VCServicingVersionMFC=14.29.30038:VCServicingVersionATL=14.29.30038:VCServicingVersionCrtHeaders=14.29.30040:VCServicingVersionCompilers=14.29.30040:TargetPlatformVersion=10.0.19041.0:
 Debug|Win32|C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\|
-=======
-<<<<<<< HEAD
-PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.29.30037:VCServicingVersionCrtHeaders=14.29.30040:VCServicingVersionCompilers=14.29.30040:TargetPlatformVersion=10.0.19041.0:
-Debug|Win32|C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\|
-=======
-<<<<<<< HEAD
-PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.29.30037:VCServicingVersionMFC=14.29.30038:VCServicingVersionATL=14.29.30038:VCServicingVersionCrtHeaders=14.29.30040:VCServicingVersionCompilers=14.29.30040:TargetPlatformVersion=10.0.19041.0:
-Debug|Win32|C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\|
-=======
-PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.29.30133:TargetPlatformVersion=10.0.19041.0:
-Debug|Win32|D:\학교\2021 2학기\네트워크 게임 프로그래밍\TermProject\CrazyArcade\|
->>>>>>> origin/main
->>>>>>> f30a9f5a546c65b2d8a044093404ea6307266a23
->>>>>>> origin/main

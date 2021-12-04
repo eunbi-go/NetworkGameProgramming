@@ -111,7 +111,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		Send_InitMap((LPVOID)client_sock);
 
 		// 몬스터 정보 전송
-		Init_Monster((LPVOID)client_sock);
+		//Init_Monster((LPVOID)client_sock);
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 
@@ -126,9 +126,10 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	}
 
 	while (1) {
+
 		// 몬스터 정보 업데이트
-		if (isStart)
-			CObjManager::Get_Instance()->Update_Monster();
+		//if (isStart)
+			//CObjManager::Get_Instance()->Update_Monster();
 
 		// 데이터 받기
 		Receive_Data((LPVOID)client_sock, WorldInfo);
@@ -232,11 +233,6 @@ int main(int argc, char* argv[])
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 {
-	//// 전송 완료 대기
-	//DWORD EventRetval;
-	//EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
-	//if (EventRetval != WAIT_OBJECT_0) return;
-
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
@@ -256,16 +252,16 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	}
 
 	// 게임 시작했는지 확인하는 변수 받아오기
-	int iStart;
-	retval = recvn(client_sock, (char*)&iStart, sizeof(int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	if (iStart == 1 && !isSetTimer) {
-		isStart = true;
-		isSetTimer = true;
-		CTimeManager::Get_Instance()->Ready_CTimeManager();
-	}
+	//int iStart;
+	//retval = recvn(client_sock, (char*)&iStart, sizeof(int), 0);
+	//if (retval == SOCKET_ERROR) {
+	//	err_display("recv()");
+	//}
+	//if (iStart == 1 && !isSetTimer) {
+	//	isStart = true;
+	//	isSetTimer = true;
+	//	CTimeManager::Get_Instance()->Ready_CTimeManager();
+	//}
 
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
@@ -273,33 +269,10 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 
 	// 실시간으로 값을 ClientInfo 값을 바꿔준다1
 	WorldInfo[iter->second] = ClientInfo;
-
-	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
-	mapIsRecv[iter->second] = true;
-
-	// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
-	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
-	{
-		if (!iter->second) {
-			isSend = false;
-			break;
-		}
-
-		else isSend = true;
-	}
-
-	if (isSend)
-		SetEvent(hRecvEvent);
 }
 
 void Send_Data(LPVOID arg)
 {
-	//// 수신 완료 대기
-	//DWORD EventRetval;
-	//EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
-	//if (EventRetval != WAIT_OBJECT_0) return;
-
-
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
 	SOCKADDR_IN clientaddr;
@@ -317,128 +290,56 @@ void Send_Data(LPVOID arg)
 		if (retval == SOCKET_ERROR) {
 			err_display("send()");
 		}
-		else
-		{
-			// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
-			auto iter = mapClientPort.find(clientaddr.sin_port);
-			mapIsRecv[iter->second] = false;
-		}
 	}
-	//auto iter = mapClientPort.find(clientaddr.sin_port);
-	//int iClientKey = iter->second;
 
+	//if (isStart) {
+	//	// 업데이트된 몬스터들 위치
+	//	list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
+	//	int i = 0;
+	//	int iCnt = listMonster.size();
 
-	// 본인 클라이언트 정보
-	CLIENTINFO	tTest = WorldInfo[iter->second];
-	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	//CLIENTINFO	tTest = WorldInfo[iter->second];
-	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-	//int k = 0;
-	//retval = send(client_sock, (char*)&k, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-	// 
-	//CLIENTINFO	tTest;
-	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
+	//	for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
+	//	{
+	//		vecMonster[i].MonsterPos.fX = (*iter)->Get_Info().fX;
+	//		vecMonster[i].MonsterPos.fY = (*iter)->Get_Info().fY;
+	//		vecMonster[i].MonsterDir = (*iter)->GetDir();
+	//		vecMonster[i].Monsterframe = (*iter)->Get_Frame();
+	//		++i;
+	//	}
 
-	/*retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}*/
-
-	//// 상대방 클라이언트 개수, 정보
-	//int nClientNum = WorldInfo.size();
-	//for (int i = 0; i < nClientNum; ++i) {
-	//	if (i != iClientKey) {
-	//		CLIENTINFO	tTest = WorldInfo[i];
-	//		retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//		if (retval == SOCKET_ERROR) {
-	//			err_display("send()");
-	//		}
+	//	retval = send(client_sock, (char*)&vecMonster[0], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
+	//	retval = send(client_sock, (char*)&vecMonster[1], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
+	//	retval = send(client_sock, (char*)&vecMonster[2], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
+	//	retval = send(client_sock, (char*)&vecMonster[3], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
+	//	retval = send(client_sock, (char*)&vecMonster[4], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
+	//	retval = send(client_sock, (char*)&vecMonster[5], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
+	//	retval = send(client_sock, (char*)&vecMonster[6], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
+	//	retval = send(client_sock, (char*)&vecMonster[7], sizeof(MONSTERINFO), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
 	//	}
 	//}
-
-	if (isStart) {
-		// 업데이트된 몬스터들 위치
-		list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
-		int i = 0;
-		int iCnt = listMonster.size();
-
-		for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
-		{
-			vecMonster[i].MonsterPos.fX = (*iter)->Get_Info().fX;
-			vecMonster[i].MonsterPos.fY = (*iter)->Get_Info().fY;
-			vecMonster[i].MonsterDir = (*iter)->GetDir();
-			vecMonster[i].Monsterframe = (*iter)->Get_Frame();
-			++i;
-		}
-
-		retval = send(client_sock, (char*)&vecMonster[0], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[1], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[2], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[3], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[4], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[5], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[6], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[7], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-	}
-
-<<<<<<< HEAD
-	else
-	{
-		 //전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
-		auto iter = mapClientPort.find(clientaddr.sin_port);
-		mapIsRecv[iter->second] = false;
-	}
-
-=======
->>>>>>> origin/main
-	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
-	{
-		if (iter->second) {
-			isRecv = false;
-			break;
-		}
-
-		else isRecv = true;
-	}
-
-	if (isRecv)
-		SetEvent(hSendEvent);
 }
 
 void CheckBuff()

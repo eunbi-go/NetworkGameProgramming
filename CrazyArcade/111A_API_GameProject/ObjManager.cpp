@@ -18,6 +18,10 @@
 #include "Mbape.h"
 #include "HMSon.h"
 #include "BossBomb.h"
+#include "Bazzi.h"
+#include "Dao.h"
+#include "Digenie.h"
+#include "Uni.h"
 
 CObjManager* CObjManager::m_pInstance = nullptr;
 
@@ -39,6 +43,8 @@ void CObjManager::Update()
 		if (i != OBJID::MONSTER) {
 			for (auto& iter = m_listObj[i].begin(); iter != m_listObj[i].end();)
 			{
+				if (!(*iter))
+					continue;
 				int iEvent = (*iter)->Update();
 				if (iEvent == OBJ_DEAD)
 				{
@@ -191,8 +197,10 @@ void CObjManager::Release()
 {
 	for (int i = 0; i < OBJID::END; ++i)
 	{
-		for_each(m_listObj[i].begin(), m_listObj[i].end(), Safe_Delete<CObj*>);
-		m_listObj[i].clear();
+		if (i != OBJID::MULTIPLAYER) {
+			for_each(m_listObj[i].begin(), m_listObj[i].end(), Safe_Delete<CObj*>);
+			m_listObj[i].clear();
+		}
 	}
 
 	for (int i = 0; i < MAPBLOCK::END; ++i)
@@ -666,4 +674,50 @@ void CObjManager::Add_Monster(MONSTERINFO info, int iNum)
 		pObj = CAbstractFactory<CMbape>::Create_Monster(info.MonsterPos.fX, info.MonsterPos.fY, info.MonsterDir);
 	
 	Add_Object(pObj, OBJID::MONSTER);
+}
+
+void CObjManager::Add_NetWorkPlayer(CLIENTINFO _playerinfo)
+{
+	CObj* pObj = nullptr;
+	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::BAZZI) {
+		pObj = CAbstractFactory<CBazzi>::Create();
+		pObj->Set_ClientID(_playerinfo.ClientID);
+	}
+	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::DAO) {
+		pObj = CAbstractFactory<CDao>::Create();
+		pObj->Set_ClientID(_playerinfo.ClientID);
+}
+	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::DIGENIE) {
+		pObj = CAbstractFactory<CDigenie>::Create();
+		pObj->Set_ClientID(_playerinfo.ClientID);
+	}
+	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::UNI) {
+		pObj = CAbstractFactory<CUni>::Create();
+		pObj->Set_ClientID(_playerinfo.ClientID);
+	}
+
+	m_listObj[OBJID::MULTIPLAYER].emplace_back(pObj);
+	//Add_Object(pObj, OBJID::MULTIPLAYER);
+}
+
+void CObjManager::Update_NetWorkPlayer(CLIENTINFO _playerinfo)
+{
+	//for (auto iter = m_listObj[OBJID::MULTIPLAYER].begin(); iter != m_listObj[OBJID::MULTIPLAYER].end(); ++iter)
+	//{
+	//	if ((*iter)->Get_ClientID() == _playerinfo.ClientID)
+	//	{
+	//		(*iter)->Change_PosX(_playerinfo.PlayerInfo.PlayerPos.fX);
+	//		(*iter)->Change_PosY(_playerinfo.PlayerInfo.PlayerPos.fY);
+	//		(*iter)->SetCurDIR(_playerinfo.PlayerInfo.PlayerDir);
+	//	}
+	//}
+	for (auto& player : m_listObj[OBJID::MULTIPLAYER])
+	{
+		if (player->Get_ClientID() == _playerinfo.ClientID)
+		{
+			player->Change_PosX(_playerinfo.PlayerInfo.PlayerPos.fX);
+			player->Change_PosY(_playerinfo.PlayerInfo.PlayerPos.fY);
+			//player->SetCurDIR(_playerinfo.PlayerInfo.PlayerDir);
+		}
+	}
 }

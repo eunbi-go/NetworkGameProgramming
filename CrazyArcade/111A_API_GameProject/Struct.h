@@ -19,6 +19,8 @@ typedef struct tagInfo
 
 	int			iMonsterID;
 	OBJDIR::DIR			PlayerDir;
+
+	int			iClientID;
 }INFO;
 
 /////////////////// 네트워크 구현을 위한 패킷 정보 ///////////////////////////

@@ -23,6 +23,7 @@ protected:
 public:
 	const INFO& Get_Info() const { return m_tInfo; }
 	const RECT& Get_Rect() const { return m_tRect; }
+	const int Get_ClientID() const { return m_tInfo.iClientID; }
 
 public:
 	void Set_Pos(float _x, float _y) { m_tInfo.fX = _x, m_tInfo.fY = _y; }
@@ -38,6 +39,8 @@ public:
 	void Change_PosX(float _x) { m_tInfo.fX = _x; }
 	void Change_PosY(float _y) { m_tInfo.fY = _y; }
 	void WaveAttack(int _att) { m_tInfo.iHP -= _att; }
+
+	void Set_ClientID(int _id) { m_tInfo.iClientID = _id; }
 
 public:
 	OBJSTATE::STATE GetState() { return m_eState; }

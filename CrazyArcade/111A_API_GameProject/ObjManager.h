@@ -57,6 +57,9 @@ public:
 	void Update_MonsterInfo(vector<MONSTERINFO> vInfo);
 	void Add_Monster(MONSTERINFO info, int iNum);
 
+	void Add_NetWorkPlayer(CLIENTINFO _playerinfo);
+	void Update_NetWorkPlayer(CLIENTINFO _playerinfo);
+
 public:
 	static CObjManager* Get_Instance()
 	{
