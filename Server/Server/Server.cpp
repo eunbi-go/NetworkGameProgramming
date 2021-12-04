@@ -12,14 +12,15 @@
 static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
 map<USHORT, int> mapClientPort;			// 클라이언트의 포트번호와 클라이언트ID 저장
-map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
+//map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
 map<int, bool> mapIsCollision;			// 버프 판단을 위한 충돌 확인 맵
 
-HANDLE hRecvEvent;		// 각 클라이언트와의 수신 결과를 알려주기 위한 이벤트
-HANDLE hSendEvent;		// 각 클라이언트와의 송신 결과를 알려주기 위한 이벤트
 vector<CObj*>	vecMapTile;				// 맵 타일
 vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
 vector<MONSTERINFO>	vecMonster;
+
+HANDLE hRecvEvent;
+HANDLE hSendEvent;
 
 bool isStart = false;
 bool isSetTimer = false;
@@ -90,17 +91,19 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	int addrlen;
 	char buf[BUFSIZE + 1];
 
+	CLIENTINFO ClientInfo;
+
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	// 현재 클라이언트가 처음 접속했는지 확인
-	//auto iter = find(mapClientPort.begin(), mapClientPort.end(), clientaddr.sin_port);
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 	if (iter == mapClientPort.end())
 	{
 		// 처음 접속이면 포트 번호를 저장
 		mapClientPort.insert({ clientaddr.sin_port, iClientID });
+
 		// ClientID 보내기 (후에 처음 들어왔을때만 보내게 처리)
 		retval = send(client_sock, (char*)&iClientID, sizeof(int), 0);
 		if (retval == SOCKET_ERROR) {
@@ -115,14 +118,11 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 
-		// mapIsReceive컨테이너에 ClientID를 key로 가진 bool변수를 false로 초기화 한 다음 삽입해준다.
-		mapIsRecv.insert({ iClientID, false });
-		mapIsRecv[0] = false;
-		//SetEvent(hSendEvent);
+		// 각 map에 insert
+		mapIsCollision.insert({ iClientID, false });
+		WorldInfo.insert({ iClientID, ClientInfo });
+
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
-
-
-		SetEvent(hSendEvent);
 	}
 
 	while (1) {
@@ -186,10 +186,10 @@ int main(int argc, char* argv[])
 	HANDLE hThread;
 
 	// 이벤트 생성
-	// TRUE로 신호상태로 놔야할듯
-	hRecvEvent = CreateEvent(NULL, FALSE, FALSE, NULL);	// 자동 리셋, 비신호
+	hRecvEvent = CreateEvent(NULL, FALSE, TRUE, NULL);		// 자동 리셋, 신호
 	if (hRecvEvent == NULL) return 1;
-	hSendEvent = CreateEvent(NULL, FALSE, TRUE, NULL);	// 자동 리셋, 신호
+
+	hSendEvent = CreateEvent(NULL, FALSE, TRUE, NULL);		// 자동 리셋, 비신호
 	if (hSendEvent == NULL) return 1;
 
 	while (1)
@@ -212,10 +212,6 @@ int main(int argc, char* argv[])
 
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
-
-		// mapIsReceive컨테이너에 ClientID를 key로 가진 bool변수를 false로 초기화 한 다음 삽입해준다.
-		mapIsRecv.insert({ iClientID, false });
-		mapIsCollision.insert({ iClientID, false });
 	}
 
 	// 이벤트 제거
@@ -232,18 +228,14 @@ int main(int argc, char* argv[])
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 {
-	//// 전송 완료 대기
-	//DWORD EventRetval;
-	//EventRetval = WaitForSingleObject(hSendEvent, INFINITE);
-	//if (EventRetval != WAIT_OBJECT_0) return;
-
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
 	SOCKADDR_IN clientaddr;
 	int addrlen;
 	CLIENTINFO ClientInfo;
-	bool isSend = false;
+
+	bool isFinishRecv = false;
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -267,44 +259,19 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		CTimeManager::Get_Instance()->Ready_CTimeManager();
 	}
 
+	// 받아온 데이터 map에 저장
 	auto iter = mapClientPort.find(clientaddr.sin_port);
-	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
-	WorldInfo.insert({ iter->second, ClientInfo });
-
-	// 실시간으로 값을 ClientInfo 값을 바꿔준다1
 	WorldInfo[iter->second] = ClientInfo;
-
-	// 클라이언트로부터 수신이 끝나면 mapIsReceive컨테이너에 ClientID에 맞는 value를 true로 바꿔준다.
-	mapIsRecv[iter->second] = true;
-
-	// mapIsRecv 안의 모든 값이 true이면 Send 이벤트 신호 상태로 변경
-	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
-	{
-		if (!iter->second) {
-			isSend = false;
-			break;
-		}
-
-		else isSend = true;
-	}
-
-	if (isSend)
-		SetEvent(hRecvEvent);
 }
 
 void Send_Data(LPVOID arg)
 {
-	// 수신 완료 대기
-	DWORD EventRetval;
-	EventRetval = WaitForSingleObject(hRecvEvent, INFINITE);
-	if (EventRetval != WAIT_OBJECT_0) return;
-
-
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
 	SOCKADDR_IN clientaddr;
 	int addrlen;
-	bool isRecv = false;
+
+	bool isFinishSend = false;
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
@@ -312,62 +279,16 @@ void Send_Data(LPVOID arg)
 
 	for (int i = 0; i < iClientID; ++i)
 	{
+		auto iter = mapClientPort.find(clientaddr.sin_port);
 		WorldInfo[i].ClientID_Number = iClientID;
+
 		retval = send(client_sock, (char*)&WorldInfo[i], sizeof(CLIENTINFO), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("send()");
 		}
-		else
-		{
-			// 전송 성공 -> mapIsReceive의 현재 ClientID의 value값을 false로 설정
-			auto iter = mapClientPort.find(clientaddr.sin_port);
-			mapIsRecv[iter->second] = false;
-		}
 	}
-	//auto iter = mapClientPort.find(clientaddr.sin_port);
-	//int iClientKey = iter->second;
 
-
-	// 본인 클라이언트 정보
-	CLIENTINFO	tTest = WorldInfo[iter->second];
-	retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	//CLIENTINFO	tTest = WorldInfo[iter->second];
-	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-	//int k = 0;
-	//retval = send(client_sock, (char*)&k, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-	// 
-	//CLIENTINFO	tTest;
-	//retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-
-	/*retval = send(client_sock, (char*)&WorldInfo, sizeof(WorldInfo), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}*/
-
-	//// 상대방 클라이언트 개수, 정보
-	//int nClientNum = WorldInfo.size();
-	//for (int i = 0; i < nClientNum; ++i) {
-	//	if (i != iClientKey) {
-	//		CLIENTINFO	tTest = WorldInfo[i];
-	//		retval = send(client_sock, (char*)&tTest, sizeof(CLIENTINFO), 0);
-	//		if (retval == SOCKET_ERROR) {
-	//			err_display("send()");
-	//		}
-	//	}
-	//}
-
+	// 몬스터 부분
 	if (isStart) {
 		// 업데이트된 몬스터들 위치
 		list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
@@ -416,19 +337,6 @@ void Send_Data(LPVOID arg)
 			err_display("send()");
 		}
 	}
-
-	for (auto iter = mapIsRecv.begin(); iter != mapIsRecv.end(); ++iter)
-	{
-		if (iter->second) {
-			isRecv = false;
-			break;
-		}
-
-		else isRecv = true;
-	}
-
-	if (isRecv)
-		SetEvent(hSendEvent);
 }
 
 void CheckBuff()
