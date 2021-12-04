@@ -83,6 +83,8 @@ int CClientManager::sendInfo()
 	}
 
 	// 플레이어 위치 tClientInfo에 저장
+	tClientInfo.BombPos.fX = 0.f;
+	tClientInfo.BombPos.fY = 0.f;
 	setPlayerInfo();
 
 	// 왠지 모르겠는데 ClientID가 초기화됨; 다시 설정해줌
@@ -319,6 +321,10 @@ void CClientManager::setPlayerInfo()
 
 	// 방향 저장
 	tClientInfo.PlayerInfo.PlayerDir = CObjManager::Get_Instance()->Get_PlayerDir();
+
+	// 폭탄 위치 저장
+	tClientInfo.BombPos.fX = CObjManager::Get_Instance()->Get_BombX();
+	tClientInfo.BombPos.fY = CObjManager::Get_Instance()->Get_BombY();
 }
 
 void CClientManager::setPlayerPosToClientInfo(float fX, float fY)

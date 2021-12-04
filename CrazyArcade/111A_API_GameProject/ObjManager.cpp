@@ -22,6 +22,7 @@
 #include "Dao.h"
 #include "Digenie.h"
 #include "Uni.h"
+#include "Bomb.h"
 
 CObjManager* CObjManager::m_pInstance = nullptr;
 
@@ -702,22 +703,33 @@ void CObjManager::Add_NetWorkPlayer(CLIENTINFO _playerinfo)
 
 void CObjManager::Update_NetWorkPlayer(CLIENTINFO _playerinfo)
 {
-	//for (auto iter = m_listObj[OBJID::MULTIPLAYER].begin(); iter != m_listObj[OBJID::MULTIPLAYER].end(); ++iter)
-	//{
-	//	if ((*iter)->Get_ClientID() == _playerinfo.ClientID)
-	//	{
-	//		(*iter)->Change_PosX(_playerinfo.PlayerInfo.PlayerPos.fX);
-	//		(*iter)->Change_PosY(_playerinfo.PlayerInfo.PlayerPos.fY);
-	//		(*iter)->SetCurDIR(_playerinfo.PlayerInfo.PlayerDir);
-	//	}
-	//}
 	for (auto& player : m_listObj[OBJID::MULTIPLAYER])
 	{
 		if (player->Get_ClientID() == _playerinfo.ClientID)
 		{
+			Add_Bomb(_playerinfo.BombPos, player->Get_BombPower());
+			
 			player->Change_PosX(_playerinfo.PlayerInfo.PlayerPos.fX);
 			player->Change_PosY(_playerinfo.PlayerInfo.PlayerPos.fY);
-			//player->SetCurDIR(_playerinfo.PlayerInfo.PlayerDir);
+			player->SetCurDIR(_playerinfo.PlayerInfo.PlayerDir);
+
+			_playerinfo.BombPos.fX = 0.f;
+			_playerinfo.BombPos.fY = 0.f;
 		}
 	}
+}
+
+void CObjManager::Add_Bomb(OBJPOS _pos, int _bombPower)
+{
+	CObj* pObj = nullptr;
+
+	if (isnan(_pos.fX) || isnan(_pos.fY))
+		return;
+
+	if (_pos.fX == 0.f && _pos.fY == 0.f)
+		return;
+
+	pObj = CAbstractFactory<CBomb>::Create(_pos.fX, _pos.fY, _bombPower, false);
+	Add_Object(pObj, OBJID::BOMB);
+	
 }

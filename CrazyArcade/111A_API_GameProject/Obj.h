@@ -24,6 +24,7 @@ public:
 	const INFO& Get_Info() const { return m_tInfo; }
 	const RECT& Get_Rect() const { return m_tRect; }
 	const int Get_ClientID() const { return m_tInfo.iClientID; }
+	const int Get_BombPower() const { return m_tInfo.iBombPower; }
 
 public:
 	void Set_Pos(float _x, float _y) { m_tInfo.fX = _x, m_tInfo.fY = _y; }
