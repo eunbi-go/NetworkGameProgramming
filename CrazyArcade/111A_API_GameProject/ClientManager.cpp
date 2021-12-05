@@ -320,7 +320,7 @@ void CClientManager::setPlayerInfo()
 	tClientInfo.PlayerInfo.PlayerPos.fY = CObjManager::Get_Instance()->Get_PlayerY();
 
 	// 规氢 历厘
-	//tClientInfo.PlayerInfo.PlayerDir = CObjManager::Get_Instance()->Get_PlayerDir();
+	tClientInfo.PlayerInfo.PlayerDir = CObjManager::Get_Instance()->Get_PlayerDir();
 
 	// 气藕 困摹 历厘
 	tClientInfo.BombPos.fX = CObjManager::Get_Instance()->Get_BombX();

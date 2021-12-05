@@ -21,7 +21,7 @@ public:
 public:
 	float Get_PlayerX() { return m_tInfo.fX; }
 	float Get_PlayerY() { return m_tInfo.fY; }
-	//OBJDIR::DIR Get_PlayerDir() { return m_tInfo.PlayerDir; }
+	OBJDIR::DIR Get_PlayerDir() { return m_tInfo.PlayerDir; }
 
 	void Set_PlayerX(float fX) { m_tInfo.fX = fX; }
 	void Set_PlayerY(float fY) { m_tInfo.fY = fY; }

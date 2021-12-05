@@ -125,7 +125,8 @@ void CObjManager::Update()
 	CCollidManager::Collision_Rect_BombWaveToMonster(m_listObj[OBJID::BOMBWAVE], m_listObj[OBJID::BOSS]);
 
 	///////////////////////////////// 치트
-	if (!m_bisCheat)
+	// 테스트용으로 치트 켜놓은 상태
+	if (m_bisCheat)
 	{
 		CCollidManager::Collision_Rect_PlayerToBoss(m_listObj[OBJID::PLAYER], m_listObj[OBJID::BOSS]);
 		CCollidManager::Collision_Rect_PlayerToMonster(m_listObj[OBJID::PLAYER], m_listObj[OBJID::MONSTER]);
@@ -137,6 +138,11 @@ void CObjManager::Update()
 	CCollidManager::Collision_Rect_PlayerToSkate(m_listObj[OBJID::PLAYER], m_listItem[GAMEITEM::SKATE]);
 	CCollidManager::Collision_Rect_PlayerToPotion(m_listObj[OBJID::PLAYER], m_listItem[GAMEITEM::POTION]);
 	CCollidManager::Collision_Rect_PlayerToMaxPotion(m_listObj[OBJID::PLAYER], m_listItem[GAMEITEM::MAXPOTION]);
+
+	CCollidManager::Collision_Rect_PlayerToBallon(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::BALLON]);
+	CCollidManager::Collision_Rect_PlayerToSkate(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::SKATE]);
+	CCollidManager::Collision_Rect_PlayerToPotion(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::POTION]);
+	CCollidManager::Collision_Rect_PlayerToMaxPotion(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::MAXPOTION]);
 	
 }
 
@@ -259,6 +265,14 @@ bool CObjManager::Get_isBombPos(float _x, float _y)
 			dynamic_cast<CBomb*>(*iter)->Get_BombY() == _y)
 			return true;
 		return false;
+	}
+}
+
+OBJDIR::DIR CObjManager::Get_PlayerDir()
+{
+	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
+	{
+		return dynamic_cast<CPlayer*>(*iter)->Get_PlayerDir();
 	}
 }
 
