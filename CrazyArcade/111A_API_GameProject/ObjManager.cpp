@@ -249,13 +249,13 @@ float CObjManager::Get_BombY()
 	}
 }
 
-OBJDIR::DIR CObjManager::Get_PlayerDir()
-{
-	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
-	{
-		return dynamic_cast<CPlayer*>(*iter)->Get_PlayerDir();
-	}
-}
+//OBJDIR::DIR CObjManager::Get_PlayerDir()
+//{
+//	//for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
+//	//{
+//	//	return dynamic_cast<CPlayer*>(*iter)->Get_PlayerDir();
+//	//}
+//}
 
 void CObjManager::Set_PlayerX(float fX)
 {

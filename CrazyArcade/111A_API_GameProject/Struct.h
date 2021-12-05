@@ -18,7 +18,6 @@ typedef struct tagInfo
 	bool		bisDead;
 
 	int			iMonsterID;
-	OBJDIR::DIR			PlayerDir;
 
 	int			iClientID;
 }INFO;
