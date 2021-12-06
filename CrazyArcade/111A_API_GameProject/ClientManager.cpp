@@ -106,35 +106,35 @@ int CClientManager::sendInfo()
 		err_display("send()");
 	}
 
-	// 변화된 몬스터 정보 전송
-	if (bisStart) {
-		int iNum = 0;
-		list<CObj*> monsterList = CObjManager::Get_Instance()->Get_MonsterList();
-		for (auto iter = monsterList.begin(); iter != monsterList.end(); ++iter) {
-			if ((*iter)->GetState() == OBJSTATE::HIT) {
-				//tMonsterInfo.erase(tMonsterInfo.begin() + iNum);
-				tMonsterInfo[iNum].MonsterDead = true;
-				SAFE_DELETE(*iter);
-				iter = monsterList.erase(iter);
-			}
-			++iNum;
-		}
-		iMonsterCnt = monsterList.size();
-		CObjManager::Get_Instance()->Set_MonsterList(monsterList);
+	//// 변화된 몬스터 정보 전송
+	//if (bisStart) {
+	//	int iNum = 0;
+	//	list<CObj*> monsterList = CObjManager::Get_Instance()->Get_MonsterList();
+	//	for (auto iter = monsterList.begin(); iter != monsterList.end(); ++iter) {
+	//		if ((*iter)->GetState() == OBJSTATE::HIT) {
+	//			//tMonsterInfo.erase(tMonsterInfo.begin() + iNum);
+	//			tMonsterInfo[iNum].MonsterDead = true;
+	//			SAFE_DELETE(*iter);
+	//			iter = monsterList.erase(iter);
+	//		}
+	//		++iNum;
+	//	}
+	//	iMonsterCnt = monsterList.size();
+	//	CObjManager::Get_Instance()->Set_MonsterList(monsterList);
 
 
-		retval = send(sock, (char*)&iNum, sizeof(int), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
+	//	retval = send(sock, (char*)&iNum, sizeof(int), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
 
-		for (int i = 0; i < iNum; ++i) {
-			retval = send(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
-			if (retval == SOCKET_ERROR) {
-				err_display("send()");
-			}
-		}
-	}
+	//	for (int i = 0; i < iNum; ++i) {
+	//		retval = send(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
+	//		if (retval == SOCKET_ERROR) {
+	//			err_display("send()");
+	//		}
+	//	}
+	//}
 
 	return retval;
 }
@@ -182,24 +182,24 @@ int CClientManager::recvInfo()
 		}
 	}
 	
-	// 서버로부터 받을 몬스터 개수
-	if (bisStart) {
-		retval = recvn(sock, (char*)&iMonsterCnt, sizeof(int), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
+	//// 서버로부터 받을 몬스터 개수
+	//if (bisStart) {
+	//	retval = recvn(sock, (char*)&iMonsterCnt, sizeof(int), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("recv()");
+	//	}
 
-		for (int i = 0; i < iMonsterCnt; ++i) {
-			retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
-			if (retval == SOCKET_ERROR) {
-				err_display("recv()");
-			}
-		}
+	//	for (int i = 0; i < iMonsterCnt; ++i) {
+	//		retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
+	//		if (retval == SOCKET_ERROR) {
+	//			err_display("recv()");
+	//		}
+	//	}
 
-		if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
-			CObjManager::Get_Instance()->Update_MonsterInfo(tMonsterInfo);
-		}
-	}
+	//	if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
+	//		CObjManager::Get_Instance()->Update_MonsterInfo(tMonsterInfo);
+	//	}
+	//}
 
 	return retval;
 }

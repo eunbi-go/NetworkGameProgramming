@@ -17,7 +17,7 @@ CMainGame::CMainGame()
 	// 맵 정보를 받아온다.
 	CClientManager::Get_Instance()->recvInitMapTile();
 	// 몬스터 정보를 받아온다
-	CClientManager::Get_Instance()->recvInitMonster();
+	//CClientManager::Get_Instance()->recvInitMonster();
 }
 
 
