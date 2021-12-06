@@ -135,11 +135,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-<<<<<<< HEAD
       <AdditionalOptions>/FS </AdditionalOptions>
-=======
       <Optimization>Disabled</Optimization>
->>>>>>> EB
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
