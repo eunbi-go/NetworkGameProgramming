@@ -26,6 +26,8 @@ bool isStart = false;
 bool isSetTimer = false;
 #define SERVERPORT 9000
 
+CRITICAL_SECTION cs;
+
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
 void Send_Data(LPVOID arg);
 void Send_InitMap(LPVOID arg);
@@ -121,7 +123,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		// 각 map에 insert
 		mapIsCollision.insert({ iClientID, false });
 		WorldInfo.insert({ iClientID, ClientInfo });
-
+		WorldInfo[iClientID] = ClientInfo;
 		iClientID++;		// 다음 접속할 클라이언트 ID는 +1 해서 관리
 	}
 
@@ -152,6 +154,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 int main(int argc, char* argv[])
 {
+	InitializeCriticalSection(&cs);
+
 	int retval;
 
 	// 맵 생성
@@ -219,6 +223,8 @@ int main(int argc, char* argv[])
 	CloseHandle(hRecvEvent);
 	CloseHandle(hSendEvent);
 
+	DeleteCriticalSection(&cs);
+
 	closesocket(listen_sock);
 
 	// 윈속 종료
@@ -229,6 +235,8 @@ int main(int argc, char* argv[])
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 {
+	EnterCriticalSection(&cs);
+
 	// 연결된 클라이언트로부터 각 플레이어의 ClientInfo를 받는다.
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
@@ -295,10 +303,14 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ Portiter->second, ClientInfo });
 	WorldInfo[Portiter->second] = ClientInfo;
+
+	LeaveCriticalSection(&cs);
 }
 
 void Send_Data(LPVOID arg)
 {
+	EnterCriticalSection(&cs);
+
 	SOCKET client_sock = (SOCKET)arg;
 	int retval;
 	SOCKADDR_IN clientaddr;
@@ -312,7 +324,7 @@ void Send_Data(LPVOID arg)
 
 	for (int i = 0; i < iClientID; ++i)
 	{
-		auto iter = mapClientPort.find(clientaddr.sin_port);
+		//auto iter = mapClientPort.find(clientaddr.sin_port);
 		WorldInfo[i].ClientID_Number = iClientID;
 
 		retval = send(client_sock, (char*)&WorldInfo[i], sizeof(CLIENTINFO), 0);
@@ -349,6 +361,8 @@ void Send_Data(LPVOID arg)
 			}
 		}
 	}
+
+	LeaveCriticalSection(&cs);
 }
 
 void CheckBuff()
