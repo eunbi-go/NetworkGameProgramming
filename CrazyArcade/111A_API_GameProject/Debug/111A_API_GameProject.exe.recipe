@@ -2,7 +2,11 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
+<<<<<<< HEAD
       <FullPath>C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\Debug\111A_API_GameProject.exe</FullPath>
+=======
+      <FullPath>C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\Debug\111A_API_GameProject.exe</FullPath>
+>>>>>>> b0d1f324454ff9ca4af60f9d586c09719af53109
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

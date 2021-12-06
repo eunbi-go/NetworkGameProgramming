@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  stdafx.cpp
   ClientManager.cpp
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ClientManager.cpp(310,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
@@ -114,3 +115,7 @@ C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GamePro
   WatingRoom.cpp
   코드를 생성하고 있습니다...
   111A_API_GameProject.vcxproj -> C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\Debug\111A_API_GameProject.exe
+=======
+﻿  MainGame.cpp
+  111A_API_GameProject.vcxproj -> C:\Users\wc542\OneDrive\문서\6TeamNetworkGameProgramming\CrazyArcade\Debug\111A_API_GameProject.exe
+>>>>>>> b0d1f324454ff9ca4af60f9d586c09719af53109
