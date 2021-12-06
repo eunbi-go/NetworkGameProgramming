@@ -18,6 +18,10 @@ typedef struct tagInfo
 	bool		bisDead;
 
 	int			iMonsterID;
+
+	int			iClientID;
+
+	OBJDIR::DIR PlayerDir;
 }INFO;
 
 typedef struct ObjPos
@@ -58,6 +62,7 @@ typedef struct MonsterInfo
 	OBJDIR::DIR			MonsterDir;			// 몬스터 방향
 	int					MonsterID;
 	FRAME				Monsterframe;
+	bool				MonsterDead;
 }MONSTERINFO;
 
 typedef struct ClientInfo					// 서버로 전송할 각 클라이언트의 정보

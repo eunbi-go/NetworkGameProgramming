@@ -29,6 +29,7 @@ public:
 	float Get_BombY();
 
 	list<CObj*>	Get_MonsterList() { return m_listObj[OBJID::MONSTER]; }
+	void Set_MonsterList(list<CObj*>& listM) { m_listObj[OBJID::MONSTER] = listM; }
 
 	void Set_PlayerX(float fX);
 	void Set_PlayerY(float fY);
