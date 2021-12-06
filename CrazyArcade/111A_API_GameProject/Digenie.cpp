@@ -163,25 +163,25 @@ void CDigenie::Key_Check()
 	{
 		m_tInfo.fX -= m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::LEFT;
-		m_tInfo.PlayerDir = m_eCurDir;
+		//m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else if (CKeyManager::Get_Instance()->Key_Pressing(VK_RIGHT))
 	{
 		m_tInfo.fX += m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::RIGHT;
-		m_tInfo.PlayerDir = m_eCurDir;
+		//m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else if (CKeyManager::Get_Instance()->Key_Pressing(VK_UP))
 	{
 		m_tInfo.fY -= m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::TOP;
-		m_tInfo.PlayerDir = m_eCurDir;
+		//m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else if (CKeyManager::Get_Instance()->Key_Pressing(VK_DOWN))
 	{
 		m_tInfo.fY += m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::BOTTOM;
-		m_tInfo.PlayerDir = m_eCurDir;
+		//m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else
 		m_eCurDir = OBJDIR::IDLE;

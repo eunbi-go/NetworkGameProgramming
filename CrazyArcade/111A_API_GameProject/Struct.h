@@ -18,7 +18,10 @@ typedef struct tagInfo
 	bool		bisDead;
 
 	int			iMonsterID;
-	OBJDIR::DIR			PlayerDir;
+
+	int			iClientID;
+
+	OBJDIR::DIR PlayerDir;
 }INFO;
 
 /////////////////// 네트워크 구현을 위한 패킷 정보 ///////////////////////////
@@ -60,6 +63,7 @@ typedef struct MonsterInfo
 	OBJDIR::DIR			MonsterDir;			// 몬스터 방향
 	int					MonsterID;
 	FRAME				Monsterframe;
+	bool				MonsterDead;
 }MONSTERINFO;
 
 
@@ -69,7 +73,7 @@ typedef struct ClientInfo					// 서버로 전송할 각 클라이언트의 정보
 	PLAYERINFO			PlayerInfo;			// 플레이어의 정보(이름, 방향, 위치
 	ITEMINFO			ItemInfo[10];		// 아이템의 정보(이름, 위치) MAX=10
 	MONSTERINFO			MonsterInfo[10];	// 몬스터의 정보(이름, 위치) MAX=10	
-	OBJPOS				BombPos[10];		// 폭탄의 정보(위치)		 MAX=10
+	OBJPOS				BombPos;			// 폭탄의 정보(위치)		
 	int					ClientID;
 	int					ClientID_Number;	// 통신하는 클라이언트의 수
 }CLIENTINFO;

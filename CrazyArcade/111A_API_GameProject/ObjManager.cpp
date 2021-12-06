@@ -18,6 +18,11 @@
 #include "Mbape.h"
 #include "HMSon.h"
 #include "BossBomb.h"
+#include "Bazzi.h"
+#include "Dao.h"
+#include "Digenie.h"
+#include "Uni.h"
+#include "Bomb.h"
 
 CObjManager* CObjManager::m_pInstance = nullptr;
 
@@ -39,6 +44,8 @@ void CObjManager::Update()
 		if (i != OBJID::MONSTER) {
 			for (auto& iter = m_listObj[i].begin(); iter != m_listObj[i].end();)
 			{
+				if (!(*iter))
+					continue;
 				int iEvent = (*iter)->Update();
 				if (iEvent == OBJ_DEAD)
 				{
@@ -118,7 +125,8 @@ void CObjManager::Update()
 	CCollidManager::Collision_Rect_BombWaveToMonster(m_listObj[OBJID::BOMBWAVE], m_listObj[OBJID::BOSS]);
 
 	///////////////////////////////// 치트
-	if (!m_bisCheat)
+	// 테스트용으로 치트 켜놓은 상태
+	if (m_bisCheat)
 	{
 		CCollidManager::Collision_Rect_PlayerToBoss(m_listObj[OBJID::PLAYER], m_listObj[OBJID::BOSS]);
 		CCollidManager::Collision_Rect_PlayerToMonster(m_listObj[OBJID::PLAYER], m_listObj[OBJID::MONSTER]);
@@ -130,6 +138,11 @@ void CObjManager::Update()
 	CCollidManager::Collision_Rect_PlayerToSkate(m_listObj[OBJID::PLAYER], m_listItem[GAMEITEM::SKATE]);
 	CCollidManager::Collision_Rect_PlayerToPotion(m_listObj[OBJID::PLAYER], m_listItem[GAMEITEM::POTION]);
 	CCollidManager::Collision_Rect_PlayerToMaxPotion(m_listObj[OBJID::PLAYER], m_listItem[GAMEITEM::MAXPOTION]);
+
+	CCollidManager::Collision_Rect_PlayerToBallon(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::BALLON]);
+	CCollidManager::Collision_Rect_PlayerToSkate(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::SKATE]);
+	CCollidManager::Collision_Rect_PlayerToPotion(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::POTION]);
+	CCollidManager::Collision_Rect_PlayerToMaxPotion(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::MAXPOTION]);
 	
 }
 
@@ -191,8 +204,10 @@ void CObjManager::Release()
 {
 	for (int i = 0; i < OBJID::END; ++i)
 	{
-		for_each(m_listObj[i].begin(), m_listObj[i].end(), Safe_Delete<CObj*>);
-		m_listObj[i].clear();
+		if (i != OBJID::MULTIPLAYER) {
+			for_each(m_listObj[i].begin(), m_listObj[i].end(), Safe_Delete<CObj*>);
+			m_listObj[i].clear();
+		}
 	}
 
 	for (int i = 0; i < MAPBLOCK::END; ++i)
@@ -237,6 +252,19 @@ float CObjManager::Get_BombY()
 	for (auto& iter = m_listObj[OBJID::BOMB].begin(); iter != m_listObj[OBJID::BOMB].end(); ++iter)
 	{
 		return dynamic_cast<CBomb*>(*iter)->Get_BombY();
+	}
+}
+
+bool CObjManager::Get_isBombPos(float _x, float _y)
+{
+	for (auto& iter = m_listObj[OBJID::MULTIBOMB].begin(); iter != m_listObj[OBJID::MULTIBOMB].end(); ++iter)
+	{
+		int tempx = dynamic_cast<CBomb*>(*iter)->Get_BombX();
+		int tempy = dynamic_cast<CBomb*>(*iter)->Get_BombY();
+		if (dynamic_cast<CBomb*>(*iter)->Get_BombX() == _x &&
+			dynamic_cast<CBomb*>(*iter)->Get_BombY() == _y)
+			return true;
+		return false;
 	}
 }
 
@@ -666,4 +694,54 @@ void CObjManager::Add_Monster(MONSTERINFO info, int iNum)
 		pObj = CAbstractFactory<CMbape>::Create_Monster(info.MonsterPos.fX, info.MonsterPos.fY, info.MonsterDir);
 	
 	Add_Object(pObj, OBJID::MONSTER);
+}
+
+void CObjManager::Add_NetWorkPlayer(CLIENTINFO _playerinfo)
+{
+	CObj* pObj = nullptr;
+	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::BAZZI) {
+		pObj = CAbstractFactory<CBazzi>::Create();
+		pObj->Set_ClientID(_playerinfo.ClientID);
+	}
+	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::DAO) {
+		pObj = CAbstractFactory<CDao>::Create();
+		pObj->Set_ClientID(_playerinfo.ClientID);
+}
+	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::DIGENIE) {
+		pObj = CAbstractFactory<CDigenie>::Create();
+		pObj->Set_ClientID(_playerinfo.ClientID);
+	}
+	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::UNI) {
+		pObj = CAbstractFactory<CUni>::Create();
+		pObj->Set_ClientID(_playerinfo.ClientID);
+	}
+
+	m_listObj[OBJID::MULTIPLAYER].emplace_back(pObj);
+	//Add_Object(pObj, OBJID::MULTIPLAYER);
+}
+
+void CObjManager::Update_NetWorkPlayer(CLIENTINFO _playerinfo)
+{
+	for (auto& player : m_listObj[OBJID::MULTIPLAYER])
+	{
+		if (player->Get_ClientID() == _playerinfo.ClientID)
+		{
+			if (!isnan(_playerinfo.BombPos.fX) && !isnan(_playerinfo.BombPos.fY)) {
+				if (!Get_isBombPos(_playerinfo.BombPos.fX, _playerinfo.BombPos.fY))
+					Add_Bomb(_playerinfo.BombPos, player->Get_BombPower());
+			}
+			player->Change_PosX(_playerinfo.PlayerInfo.PlayerPos.fX);
+			player->Change_PosY(_playerinfo.PlayerInfo.PlayerPos.fY);
+			player->SetCurDIR(_playerinfo.PlayerInfo.PlayerDir);
+
+		}
+	}
+}
+
+void CObjManager::Add_Bomb(OBJPOS _pos, int _bombPower)
+{
+	CObj* pObj = nullptr;
+	pObj = CAbstractFactory<CBomb>::Create(_pos.fX, _pos.fY, _bombPower, false);
+	Add_Object(pObj, OBJID::MULTIBOMB);
+	
 }

@@ -43,6 +43,7 @@ public:
 	void	setPlayerPosToClientInfo(float fX, float fY);
 	void	setGameStart() { bisStart = true; }
 	void	setPlayerName(CHARNAME::NAME _CharName) { tClientInfo.PlayerInfo.PlayerName = _CharName; } // WaitingRoom에서 캐릭터 정해줌
+	void	recvIsGameStart();
 
 	int		GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
 	vector<CObj*> Get_MapTile() { return vecMapTile; }
@@ -78,6 +79,7 @@ private:
 	// - 플레이어, 상대 플레이어, 몬스터, 아이템 정보가 모두 들어있음
 	map<int, CLIENTINFO>	tWorldInfo;
 	vector<MONSTERINFO>		tMonsterInfo;
+	int						iMonsterCnt = -1;
 
 	// 서버로부터 받은 맵 정보
 	vector<CObj*> vecMapTile;
@@ -88,6 +90,9 @@ private:
 	char buf[900] = "../111A_API_GameProject/";
 
 	bool bisStart = false;		// 게임 시작했는가
+	bool bisAnoterPlayerGameStart = false;
 	int AllClientNum = 0;		// 현재 접속한 모든 클라이언트의 수
+
+	vector<int> vecClientID;
 };
 

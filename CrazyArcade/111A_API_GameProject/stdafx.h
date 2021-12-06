@@ -26,6 +26,8 @@
 #include <algorithm>
 #include <time.h>
 #include <fstream>
+#include <cmath>
+//#include <math.h>
 
 using namespace std;
 

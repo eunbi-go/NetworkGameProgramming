@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "SceneManager.h"
 
+
 #define SERVERIP   "127.0.0.1"
 #define SERVERPORT 9000
 
@@ -82,13 +83,19 @@ int CClientManager::sendInfo()
 	}
 
 	// 플레이어 위치 tClientInfo에 저장
+	tClientInfo.BombPos.fX = 0.f;
+	tClientInfo.BombPos.fY = 0.f;
 	setPlayerInfo();
+
+	// 왠지 모르겠는데 ClientID가 초기화됨; 다시 설정해줌
+	tClientInfo.ClientID = iClientID;
 
 	// 서버에 잘 전송됐는지 시험해보기 위해 (성공 후 삭제할 것)
 	retval = send(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
+
 
 	int iStart = -1;
 	if (bisStart)	iStart = 1;
@@ -97,6 +104,36 @@ int CClientManager::sendInfo()
 	retval = send(sock, (char*)&iStart, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
+	}
+
+	// 변화된 몬스터 정보 전송
+	if (bisStart) {
+		int iNum = 0;
+		list<CObj*> monsterList = CObjManager::Get_Instance()->Get_MonsterList();
+		for (auto iter = monsterList.begin(); iter != monsterList.end(); ++iter) {
+			if ((*iter)->GetState() == OBJSTATE::HIT) {
+				//tMonsterInfo.erase(tMonsterInfo.begin() + iNum);
+				tMonsterInfo[iNum].MonsterDead = true;
+				SAFE_DELETE(*iter);
+				iter = monsterList.erase(iter);
+			}
+			++iNum;
+		}
+		iMonsterCnt = monsterList.size();
+		CObjManager::Get_Instance()->Set_MonsterList(monsterList);
+
+
+		retval = send(sock, (char*)&iNum, sizeof(int), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+		}
+
+		for (int i = 0; i < iNum; ++i) {
+			retval = send(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
+		}
 	}
 
 	return retval;
@@ -121,71 +158,48 @@ int CClientManager::recvInfo()
 			err_display("recv()");
 		}
 		cout << "접속한 클라이언트 수 : " << AllClientNum << endl;
-		cout << "Player" << i << "-> X:" << tClientInfo.PlayerInfo.PlayerPos.fX
+		cout << "Player" << tClientInfo.ClientID << "-> X:" << tClientInfo.PlayerInfo.PlayerPos.fX
 			<< " Y:" << tClientInfo.PlayerInfo.PlayerPos.fY << endl;
 		cout << "-------------------------------------------" << endl;
-		tWorldInfo.insert({ i, tClientInfo });
-		tWorldInfo[i] = tClientInfo;
-	}
+		tWorldInfo.insert({ tClientInfo.ClientID, tClientInfo });
+		tWorldInfo[tClientInfo.ClientID] = tClientInfo;
 
-	// 몇 개의 ClientInfo가 있는지 알아야 한다.
-	//retval = recvn(sock, (char*)&tClientInfo, sizeof(CLIENTINFO), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
+		// 접속한 다른 클라이언트를 objManager를 이용하여 obj목록에 저장
+		if (iClientID != tClientInfo.ClientID)
+		{
+			auto iter = find(vecClientID.begin(), vecClientID.end(), tClientInfo.ClientID);
+			// 처음에는 리스트에 추가하고 저장
+			if (iter == vecClientID.end())
+			{
+				CObjManager::Get_Instance()->Add_NetWorkPlayer(tClientInfo);
+				vecClientID.push_back(tClientInfo.ClientID);
+			}
+			// 두번째부턴 플레이어 정보 업데이트
+			else
+			{
+				CObjManager::Get_Instance()->Update_NetWorkPlayer(tClientInfo);
+			}
+		}
+	}
 	
 	// 서버로부터 받을 몬스터 개수
 	if (bisStart) {
-		int iMonsterCnt = 0;
-		//retval = recvn(sock, (char*)&iMonsterCnt, sizeof(int), 0);
-		//if (retval == SOCKET_ERROR) {
-		//	err_display("recv()");
-		//}
-		//for (int i = 0; i < 10; ++i) {
-		//	retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
-		//	if (retval == SOCKET_ERROR) {
-		//		err_display("recv()");
-		//	}
-		//}
-		retval = recvn(sock, (char*)&tMonsterInfo[0], sizeof(MONSTERINFO), 0);
+		retval = recvn(sock, (char*)&iMonsterCnt, sizeof(int), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
 		}
-		retval = recvn(sock, (char*)&tMonsterInfo[1], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
-		retval = recvn(sock, (char*)&tMonsterInfo[2], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
-		retval = recvn(sock, (char*)&tMonsterInfo[3], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
-		retval = recvn(sock, (char*)&tMonsterInfo[4], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
-		retval = recvn(sock, (char*)&tMonsterInfo[5], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
-		retval = recvn(sock, (char*)&tMonsterInfo[6], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
-		retval = recvn(sock, (char*)&tMonsterInfo[7], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
+
+		for (int i = 0; i < iMonsterCnt; ++i) {
+			retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+			}
 		}
 
 		if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
 			CObjManager::Get_Instance()->Update_MonsterInfo(tMonsterInfo);
 		}
 	}
-	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fX);
-	//CObjManager::Get_Instance()->Set_PlayerX(tClientInfo.PlayerInfo.PlayerPos.fY);
 
 	return retval;
 }
@@ -306,12 +320,21 @@ void CClientManager::setPlayerInfo()
 
 	// 방향 저장
 	tClientInfo.PlayerInfo.PlayerDir = CObjManager::Get_Instance()->Get_PlayerDir();
+
+	// 폭탄 위치 저장
+	tClientInfo.BombPos.fX = CObjManager::Get_Instance()->Get_BombX();
+	tClientInfo.BombPos.fY = CObjManager::Get_Instance()->Get_BombY();
 }
 
 void CClientManager::setPlayerPosToClientInfo(float fX, float fY)
 {
 	tClientInfo.PlayerInfo.PlayerPos.fX = fX;
 	tClientInfo.PlayerInfo.PlayerPos.fY = fY;
+}
+
+void CClientManager::recvIsGameStart()
+{
+	recvn(sock, (char*)&bisAnoterPlayerGameStart, sizeof(bool), 0);
 }
 
 void CClientManager::err_quit(char* msg)

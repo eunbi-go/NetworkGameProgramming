@@ -126,6 +126,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	}
 
 	while (1) {
+
 		// 몬스터 정보 업데이트
 		if (isStart)
 			CObjManager::Get_Instance()->Update_Monster();
@@ -247,7 +248,6 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		err_display("recv()");
 	}
 
-	// 게임 시작했는지 확인하는 변수 받아오기
 	int iStart;
 	retval = recvn(client_sock, (char*)&iStart, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
@@ -256,12 +256,44 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	if (iStart == 1 && !isSetTimer) {
 		isStart = true;
 		isSetTimer = true;
-		CTimeManager::Get_Instance()->Ready_CTimeManager();
+		//CTimeManager::Get_Instance()->Ready_CTimeManager();
 	}
 
 	// 받아온 데이터 map에 저장
 	auto iter = mapClientPort.find(clientaddr.sin_port);
-	WorldInfo[iter->second] = ClientInfo;
+
+	// # 3. 몬스터 정보 
+	if (isStart) {
+		int iMonsterCnt = -1;
+		retval = recvn(client_sock, (char*)&iMonsterCnt, sizeof(int), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+		}
+
+		for (int i = 0; i < iMonsterCnt; ++i) {
+			retval = recvn(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+			}
+		}
+
+		list<CObj*> monsterList = CObjManager::Get_Instance()->Get_MonsterList();
+		int iNum = 0;
+		for (auto iter = monsterList.begin(); iter != monsterList.end(); ++iter) {
+			if (vecMonster[iNum].MonsterDead) {
+				vecMonster.erase(vecMonster.begin() + iNum);
+				SAFE_DELETE(*iter);
+				iter = monsterList.erase(iter);
+			}
+			++iNum;
+		}
+
+		CObjManager::Get_Instance()->Set_MonsterList(monsterList);
+	}
+
+	auto iter = mapClientPort.find(clientaddr.sin_port);
+	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
+	WorldInfo.insert({ iter->second, ClientInfo });
 }
 
 void Send_Data(LPVOID arg)
@@ -292,49 +324,28 @@ void Send_Data(LPVOID arg)
 	if (isStart) {
 		// 업데이트된 몬스터들 위치
 		list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
-		int i = 0;
+		int iNum = 0, iSendCnt = 0;
 		int iCnt = listMonster.size();
 
 		for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
 		{
-			vecMonster[i].MonsterPos.fX = (*iter)->Get_Info().fX;
-			vecMonster[i].MonsterPos.fY = (*iter)->Get_Info().fY;
-			vecMonster[i].MonsterDir = (*iter)->GetDir();
-			vecMonster[i].Monsterframe = (*iter)->Get_Frame();
-			++i;
+			vecMonster[iNum].MonsterPos.fX = (*iter)->Get_Info().fX;
+			vecMonster[iNum].MonsterPos.fY = (*iter)->Get_Info().fY;
+			vecMonster[iNum].MonsterDir = (*iter)->GetDir();
+			vecMonster[iNum].Monsterframe = (*iter)->Get_Frame();
+			++iNum;
 		}
 
-		retval = send(client_sock, (char*)&vecMonster[0], sizeof(MONSTERINFO), 0);
+		retval = send(client_sock, (char*)&iNum, sizeof(int), 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("send()");
 		}
-		retval = send(client_sock, (char*)&vecMonster[1], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[2], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[3], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[4], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[5], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[6], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
-		retval = send(client_sock, (char*)&vecMonster[7], sizeof(MONSTERINFO), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
+
+		for (int i = 0; i < iNum; ++i) {
+			retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
 		}
 	}
 }
@@ -392,7 +403,7 @@ void Send_InitMap(LPVOID arg)
 	int retval;
 	char buf[BUFSIZE + 1];
 
-	ifstream    in{ "Tile.dat", ios::in | ios::binary }; // video.mp4
+	ifstream    in{ "newTile2.dat", ios::in | ios::binary }; 
 	if (!in) {
 		printf("파일 열기 실패\n");
 		exit(0);
@@ -401,8 +412,8 @@ void Send_InitMap(LPVOID arg)
 	int iSize = in.tellg();
 	in.seekg(0, ios::beg);
 
-	int len = strlen("Tile.dat");
-	strncpy_s(buf, "Tile.dat", len);
+	int len = strlen("newTile2.dat");
+	strncpy_s(buf, "newTile2.dat", len);
 
 	// 고정 - 파일 제목 크기
 	retval = send(client_sock, (char*)&len, sizeof(int), 0);
@@ -442,6 +453,7 @@ void Init_Monster(LPVOID arg)
 	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
 	tInfo.MonsterDir = OBJDIR::BOTTOM;
 	tInfo.MonsterID = 1;
+	tInfo.MonsterDead = false;
 	vecMonster.emplace_back(tInfo);
 
 	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 12) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
@@ -451,6 +463,7 @@ void Init_Monster(LPVOID arg)
 	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
 	tInfo.MonsterDir = OBJDIR::BOTTOM;
 	tInfo.MonsterID = 2;
+	tInfo.MonsterDead = false;
 	vecMonster.emplace_back(tInfo);
 
 	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 0) + (TILECY >> 1), OBJDIR::LEFT);
@@ -460,6 +473,7 @@ void Init_Monster(LPVOID arg)
 	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 0) + (TILECY >> 1);
 	tInfo.MonsterDir = OBJDIR::LEFT;
 	tInfo.MonsterID = 3;
+	tInfo.MonsterDead = false;
 	vecMonster.emplace_back(tInfo);
 
 	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 2) + (TILECY >> 1), OBJDIR::BOTTOM);
@@ -469,6 +483,7 @@ void Init_Monster(LPVOID arg)
 	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 2) + (TILECY >> 1);
 	tInfo.MonsterDir = OBJDIR::BOTTOM;
 	tInfo.MonsterID = 4;
+	tInfo.MonsterDead = false;
 	vecMonster.emplace_back(tInfo);
 
 	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 0) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::RIGHT);
@@ -478,6 +493,7 @@ void Init_Monster(LPVOID arg)
 	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
 	tInfo.MonsterDir = OBJDIR::RIGHT;
 	tInfo.MonsterID = 5;
+	tInfo.MonsterDead = false;
 	vecMonster.emplace_back(tInfo);
 
 	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 3) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
@@ -487,6 +503,7 @@ void Init_Monster(LPVOID arg)
 	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
 	tInfo.MonsterDir = OBJDIR::BOTTOM;
 	tInfo.MonsterID = 6;
+	tInfo.MonsterDead = false;
 	vecMonster.emplace_back(tInfo);
 	//
 	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 10) + (TILECY >> 1), OBJDIR::LEFT);
@@ -496,6 +513,7 @@ void Init_Monster(LPVOID arg)
 	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 10) + (TILECY >> 1);
 	tInfo.MonsterDir = OBJDIR::LEFT;
 	tInfo.MonsterID = 7;
+	tInfo.MonsterDead = false;
 	vecMonster.emplace_back(tInfo);
 
 	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 12) + (TILECY >> 1), OBJDIR::TOP);
@@ -505,6 +523,7 @@ void Init_Monster(LPVOID arg)
 	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
 	tInfo.MonsterDir = OBJDIR::TOP;
 	tInfo.MonsterID = 8;
+	tInfo.MonsterDead = false;
 	vecMonster.emplace_back(tInfo);
 
 	int iNum = 8;

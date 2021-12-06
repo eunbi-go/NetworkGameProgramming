@@ -26,6 +26,7 @@ public:
 	float Get_PlayerY();
 	float Get_BombX();
 	float Get_BombY();
+	bool Get_isBombPos(float _x, float _y);
 	OBJDIR::DIR Get_PlayerDir();
 
 	void Set_PlayerX(float fX);
@@ -54,8 +55,18 @@ public:
 
 	list<CObj*>& Get_List(OBJID::ID _eID) { return m_listObj[_eID]; }
 	CObj* Get_Player() { return m_listObj[OBJID::PLAYER].front(); }
+	
 	void Update_MonsterInfo(vector<MONSTERINFO> vInfo);
 	void Add_Monster(MONSTERINFO info, int iNum);
+	list<CObj*> Get_MonsterList() { return m_listObj[OBJID::MONSTER]; }
+	void Set_MonsterList(list<CObj*>& listM) { m_listObj[OBJID::MONSTER] = listM; }
+
+	// 모든 클라이언트의 플레이어 동기화
+	void Add_NetWorkPlayer(CLIENTINFO _playerinfo);
+	void Update_NetWorkPlayer(CLIENTINFO _playerinfo);
+
+	// 모든 클라이언트의 폭탄 동기화
+	void Add_Bomb(OBJPOS _pos, int _bombPower);
 
 public:
 	static CObjManager* Get_Instance()
