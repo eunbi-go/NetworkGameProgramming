@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\111a_api_gameproject.pch
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\vc142.pdb
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\vc142.idb
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\stdafx.obj
-c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\line.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\leaf2.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\leaf1.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\keymanager.obj
@@ -12,10 +10,8 @@ c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gamepro
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\flower.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\digenie.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\dao.obj
-c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\crazyarcade.obj
+c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\timemanager.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\collidmanager.obj
-c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\clientmanager.obj
-c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\cnetworkstage.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\bossbomb.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\bombwave.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\bomb.obj
@@ -23,7 +19,9 @@ c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gamepro
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\bazzi.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\basket.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\ballon.obj
-c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\soundmgr.obj
+c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\crazyarcade.obj
+c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\cnetworkstage.obj
+c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\clientmanager.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\skate.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\scenemanager.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\scene.obj
@@ -43,16 +41,17 @@ c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gamepro
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\maingame.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\logo.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\linemanager.obj
+c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\line.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\watingroom.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\uni.obj
-c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\timemanager.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\tilemanager.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\tile.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\stage_boss.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\stage2.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\stage1.obj
-c:\users\고은비\documents\networkgameprogramming\crazyarcade\debug\111a_api_gameproject.exe
+c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\soundmgr.obj
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\111a_api_gameproject.ilk
+c:\users\고은비\documents\networkgameprogramming\crazyarcade\debug\111a_api_gameproject.exe
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\debug\111a_api_gameproject.pdb
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\111a_api_gameproject.res
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\111a_api.7ed358be.tlog\cl.command.1.tlog
@@ -64,5 +63,3 @@ c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gamepro
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\111a_api.7ed358be.tlog\rc.command.1.tlog
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\111a_api.7ed358be.tlog\rc.read.1.tlog
 c:\users\고은비\documents\networkgameprogramming\crazyarcade\111a_api_gameproject\debug\111a_api.7ed358be.tlog\rc.write.1.tlog
-=======
->>>>>>> b0d1f324454ff9ca4af60f9d586c09719af53109
