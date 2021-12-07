@@ -291,7 +291,7 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		CObjManager::Get_Instance()->Set_MonsterList(monsterList);
 	}
 
-	auto iter = mapClientPort.find(clientaddr.sin_port);
+	iter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
 	WorldInfo.insert({ iter->second, ClientInfo });
 }
