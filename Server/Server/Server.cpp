@@ -24,7 +24,9 @@ HANDLE hSendEvent;
 
 bool isStart = false;
 bool isSetTimer = false;
+bool isUpdateMonster = false;
 #define SERVERPORT 9000
+
 
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
 void Send_Data(LPVOID arg);
@@ -114,7 +116,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		Send_InitMap((LPVOID)client_sock);
 
 		// 몬스터 정보 전송
-		Init_Monster((LPVOID)client_sock);
+		//Init_Monster((LPVOID)client_sock);
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 
@@ -127,9 +129,11 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (1) {
 
-		// 몬스터 정보 업데이트
-		if (isStart)
-			CObjManager::Get_Instance()->Update_Monster();
+		//// 몬스터 정보 업데이트
+		//if (isStart && !isUpdateMonster) {
+		//	CObjManager::Get_Instance()->Update_Monster();
+		//	isUpdateMonster = true;
+		//}
 
 		// 데이터 받기
 		Receive_Data((LPVOID)client_sock, WorldInfo);
@@ -139,6 +143,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// 데이터 보내기
 		Send_Data((LPVOID)client_sock);
+		isUpdateMonster = false;
 
 		CTimeManager::Get_Instance()->Update_CTimeManager();
 	}
@@ -262,38 +267,45 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	// 받아온 데이터 map에 저장
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 
-	// # 3. 몬스터 정보 
-	if (isStart) {
-		int iMonsterCnt = -1;
-		retval = recvn(client_sock, (char*)&iMonsterCnt, sizeof(int), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
-		}
 
-		for (int i = 0; i < iMonsterCnt; ++i) {
-			retval = recvn(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
-			if (retval == SOCKET_ERROR) {
-				err_display("recv()");
-			}
-		}
-
-		list<CObj*> monsterList = CObjManager::Get_Instance()->Get_MonsterList();
-		int iNum = 0;
-		for (auto iter = monsterList.begin(); iter != monsterList.end(); ++iter) {
-			if (vecMonster[iNum].MonsterDead) {
-				vecMonster.erase(vecMonster.begin() + iNum);
-				SAFE_DELETE(*iter);
-				iter = monsterList.erase(iter);
-			}
-			++iNum;
-		}
-
-		CObjManager::Get_Instance()->Set_MonsterList(monsterList);
 	}
 
 	iter = mapClientPort.find(clientaddr.sin_port);
+
+	//// # 3. 몬스터 정보 
+	//if (isStart) {
+	//	int iMonsterCnt = -1;
+	//	retval = recvn(client_sock, (char*)&iMonsterCnt, sizeof(int), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("recv()");
+	//	}
+
+	//	for (int i = 0; i < iMonsterCnt; ++i) {
+	//		retval = recvn(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
+	//		if (retval == SOCKET_ERROR) {
+	//			err_display("recv()");
+	//		}
+	//	}
+
+	//	list<CObj*> monsterList = CObjManager::Get_Instance()->Get_MonsterList();
+	//	int iNum = 0;
+	//	for (auto iter = monsterList.begin(); iter != monsterList.end(); ++iter) {
+	//		if (vecMonster[iNum].MonsterDead) {
+	//			vecMonster.erase(vecMonster.begin() + iNum);
+	//			SAFE_DELETE(*iter);
+	//			iter = monsterList.erase(iter);
+	//		}
+	//		++iNum;
+	//	}
+
+	//	CObjManager::Get_Instance()->Set_MonsterList(monsterList);
+	//}
+	
+
+	auto Portiter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
-	WorldInfo.insert({ iter->second, ClientInfo });
+	WorldInfo.insert({ Portiter->second, ClientInfo });
+	WorldInfo[Portiter->second] = ClientInfo;
 }
 
 void Send_Data(LPVOID arg)
@@ -320,34 +332,34 @@ void Send_Data(LPVOID arg)
 		}
 	}
 
-	// 몬스터 부분
-	if (isStart) {
-		// 업데이트된 몬스터들 위치
-		list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
-		int iNum = 0, iSendCnt = 0;
-		int iCnt = listMonster.size();
+	//// 몬스터 부분
+	//if (isStart) {
+	//	// 업데이트된 몬스터들 위치
+	//	list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
+	//	int iNum = 0, iSendCnt = 0;
+	//	int iCnt = listMonster.size();
 
-		for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
-		{
-			vecMonster[iNum].MonsterPos.fX = (*iter)->Get_Info().fX;
-			vecMonster[iNum].MonsterPos.fY = (*iter)->Get_Info().fY;
-			vecMonster[iNum].MonsterDir = (*iter)->GetDir();
-			vecMonster[iNum].Monsterframe = (*iter)->Get_Frame();
-			++iNum;
-		}
+	//	for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
+	//	{
+	//		vecMonster[iNum].MonsterPos.fX = (*iter)->Get_Info().fX;
+	//		vecMonster[iNum].MonsterPos.fY = (*iter)->Get_Info().fY;
+	//		vecMonster[iNum].MonsterDir = (*iter)->GetDir();
+	//		vecMonster[iNum].Monsterframe = (*iter)->Get_Frame();
+	//		++iNum;
+	//	}
 
-		retval = send(client_sock, (char*)&iNum, sizeof(int), 0);
-		if (retval == SOCKET_ERROR) {
-			err_display("send()");
-		}
+	//	retval = send(client_sock, (char*)&iNum, sizeof(int), 0);
+	//	if (retval == SOCKET_ERROR) {
+	//		err_display("send()");
+	//	}
 
-		for (int i = 0; i < iNum; ++i) {
-			retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
-			if (retval == SOCKET_ERROR) {
-				err_display("send()");
-			}
-		}
-	}
+	//	for (int i = 0; i < iNum; ++i) {
+	//		retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
+	//		if (retval == SOCKET_ERROR) {
+	//			err_display("send()");
+	//		}
+	//	}
+	//}
 }
 
 void CheckBuff()
@@ -403,7 +415,7 @@ void Send_InitMap(LPVOID arg)
 	int retval;
 	char buf[BUFSIZE + 1];
 
-	ifstream    in{ "newTile2.dat", ios::in | ios::binary }; 
+	ifstream    in{ "newTile2.dat", ios::in | ios::binary };
 	if (!in) {
 		printf("파일 열기 실패\n");
 		exit(0);
