@@ -7,6 +7,8 @@
 #include "Player.h"
 #include "SoundMgr.h"
 #include "Mbape.h"
+#include "TileManager.h"
+#include "Tile.h"
 
 CCollidManager::CCollidManager()
 {
@@ -121,6 +123,9 @@ void CCollidManager::Collision_Rect_BombWaveToBlock(list<CObj*>& _Dst, list<CObj
 				//Dst->Set_Dead();
 
 				Src->SetState(OBJSTATE::BUBBLE);
+
+				int nKey = Src->Get_ObjNum();
+				CTileManager::Get_Instance()->CollByBomb(nKey);
 
 				//dynamic_cast<CBombWave*>(Dst)->SetCollid();
 			}
@@ -267,20 +272,20 @@ void CCollidManager::Collision_Rect_NoPush(list<CObj*>& _Dst, list<CObj*>& _Src)
 		{
 			if (Check_Rect(Dst, Src, &fX, &fY))
 			{
-					if (fX > fY)
-					{
-						if (Dst->Get_Info().fY < Src->Get_Info().fY)
-							Dst->Set_PosY(-fY);
-						else
-							Dst->Set_PosY(fY);
-					}
+				if (fX > fY)
+				{
+					if (Dst->Get_Info().fY < Src->Get_Info().fY)
+						Dst->Set_PosY(-fY);
 					else
-					{
-						if (Dst->Get_Info().fX < Src->Get_Info().fX)
-							Dst->Set_PosX(-fX);
-						else
-							Dst->Set_PosX(fX);
-					}
+						Dst->Set_PosY(fY);
+				}
+				else
+				{
+					if (Dst->Get_Info().fX < Src->Get_Info().fX)
+						Dst->Set_PosX(-fX);
+					else
+						Dst->Set_PosX(fX);
+				}
 
 			}
 		}
@@ -330,7 +335,7 @@ void CCollidManager::Collision_Sphere(list<CObj*>& _Dst, list<CObj*>& _Src)
 	}
 }
 
-bool CCollidManager::Check_Sphere(CObj * _Dst, CObj * _Src)
+bool CCollidManager::Check_Sphere(CObj* _Dst, CObj* _Src)
 {
 	float fX = abs(_Dst->Get_Info().fX - _Src->Get_Info().fX);
 	float fY = _Dst->Get_Info().fY - _Src->Get_Info().fY;
@@ -343,7 +348,7 @@ bool CCollidManager::Check_Sphere(CObj * _Dst, CObj * _Src)
 	return false;
 }
 
-bool CCollidManager::Check_Rect(CObj * _Dst, CStageMap * _Src, float * _x, float * _y)
+bool CCollidManager::Check_Rect(CObj* _Dst, CStageMap* _Src, float* _x, float* _y)
 {
 	float fDisX = abs(_Dst->Get_Info().fX - _Src->Get_Info().fX);
 	float fDisY = abs(_Dst->Get_Info().fY - _Src->Get_Info().fY);
@@ -360,7 +365,7 @@ bool CCollidManager::Check_Rect(CObj * _Dst, CStageMap * _Src, float * _x, float
 	return false;
 }
 
-bool CCollidManager::Check_Rect(CObj * _Dst, CObj * _Src, float * _x, float * _y)
+bool CCollidManager::Check_Rect(CObj* _Dst, CObj* _Src, float* _x, float* _y)
 {
 	float fDisX = abs(_Dst->Get_Info().fX - _Src->Get_Info().fX);
 	float fDisY = abs(_Dst->Get_Info().fY - _Src->Get_Info().fY);
@@ -387,7 +392,7 @@ bool CCollidManager::isCollid(list<CObj*>& _Dst, list<CObj*>& _Src)
 		{
 			if (IntersectRect(&rc, &Dst->Get_Rect(), &Src->Get_Rect()))
 			{
-				
+
 				return true;
 			}
 		}

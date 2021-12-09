@@ -25,6 +25,7 @@ public:
 	const RECT& Get_Rect() const { return m_tRect; }
 	const int Get_ClientID() const { return m_tInfo.iClientID; }
 	const int Get_BombPower() const { return m_tInfo.iBombPower; }
+	const int			Get_ObjNum() const { return m_nObjNum; }
 
 public:
 	void Set_Pos(float _x, float _y) { m_tInfo.fX = _x, m_tInfo.fY = _y; }
@@ -42,12 +43,13 @@ public:
 	void WaveAttack(int _att) { m_tInfo.iHP -= _att; }
 
 	void Set_ClientID(int _id) { m_tInfo.iClientID = _id; }
+	void Set_ObjNum(int _id) { m_nObjNum = _id; }
 
 public:
 	OBJSTATE::STATE GetState() { return m_eState; }
 
 public:
-	MAPBLOCK::BLOCK& Get_BlockType()  { return m_eBlock; }
+	MAPBLOCK::BLOCK& Get_BlockType() { return m_eBlock; }
 
 
 
@@ -64,7 +66,7 @@ protected:
 
 	MAPBLOCK::BLOCK		m_eBlock;
 
-
+	int					m_nObjNum;
 };
 
 

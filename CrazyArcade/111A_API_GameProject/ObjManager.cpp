@@ -143,7 +143,7 @@ void CObjManager::Update()
 	CCollidManager::Collision_Rect_PlayerToSkate(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::SKATE]);
 	CCollidManager::Collision_Rect_PlayerToPotion(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::POTION]);
 	CCollidManager::Collision_Rect_PlayerToMaxPotion(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::MAXPOTION]);
-	
+
 }
 
 void CObjManager::Late_Update()
@@ -194,7 +194,7 @@ void CObjManager::Render(HDC _DC)
 				continue;
 			pObj->Render(_DC);
 		}
-		
+
 	}
 
 
@@ -292,7 +292,7 @@ void CObjManager::Set_PlayerY(float fY)
 	}
 }
 
-void CObjManager::Picking_Object(CObj * _pObj, MAPBLOCK::BLOCK _block)
+void CObjManager::Picking_Object(CObj* _pObj, MAPBLOCK::BLOCK _block)
 {
 	POINT pt = {};
 	GetCursorPos(&pt);
@@ -304,7 +304,7 @@ void CObjManager::Picking_Object(CObj * _pObj, MAPBLOCK::BLOCK _block)
 	switch (_block)
 	{
 	case MAPBLOCK::BASKET:
-		_pObj = CAbstractFactory<CBasket>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1),MAPSTARTY + (TILECY * y) + (TILECY >> 1));
+		_pObj = CAbstractFactory<CBasket>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1));
 		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, MAPBLOCK::BASKET);
 		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::BASKET);
 		break;
@@ -370,7 +370,7 @@ void CObjManager::Save_Object()
 			// 애드 오브젝트랑 타일 속성 저장
 			WriteFile(hFile, &pObj->Get_Info(), sizeof(INFO), &dwByte, NULL);
 			WriteFile(hFile, &pObj->Get_BlockType(), sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
-			/*switch (i)	
+			/*switch (i)
 			{
 			case MAPBLOCK::BASKET:
 				WriteFile(hFile, &pObj->Get_BlockType(), sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
@@ -398,9 +398,10 @@ void CObjManager::Load_Object()
 
 	Release();
 	CObj* _pObj = nullptr;
-	DWORD dwByte =		 0;
-	INFO tTemp =		{};
+	DWORD dwByte = 0;
+	INFO tTemp = {};
 	MAPBLOCK::BLOCK		 BlockInfo;
+	int iNum = 0;
 
 	while (true)
 	{
@@ -414,47 +415,55 @@ void CObjManager::Load_Object()
 		{
 		case MAPBLOCK::BASKET:
 			_pObj = CAbstractFactory<CBasket>::Create(tTemp.fX, tTemp.fY);
+			_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::LEAF1:
 			_pObj = CAbstractFactory<CLeaf1>::Create(tTemp.fX, tTemp.fY);
+			_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::LEAF2:
 			_pObj = CAbstractFactory<CLeaf2>::Create(tTemp.fX, tTemp.fY);
+			_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::FLOWER:
-			_pObj = CAbstractFactory<CFlower>::Create(tTemp.fX, tTemp.fY);	
+			_pObj = CAbstractFactory<CFlower>::Create(tTemp.fX, tTemp.fY);
+			_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::GRASS:
 			_pObj = CAbstractFactory<CGrass>::Create(tTemp.fX, tTemp.fY);
+			_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::ROCK1:
-			_pObj = CAbstractFactory<Rock1>::Create(tTemp.fX, tTemp.fY);	
+			_pObj = CAbstractFactory<Rock1>::Create(tTemp.fX, tTemp.fY);
+			_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::ROCK2:
 			_pObj = CAbstractFactory<Rock2>::Create(tTemp.fX, tTemp.fY);
+			_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::ROCK3:
 			_pObj = CAbstractFactory<Rock3>::Create(tTemp.fX, tTemp.fY);
+			_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		}
 
-
+		++iNum;
 	}
 
 	CloseHandle(hFile);
@@ -692,7 +701,7 @@ void CObjManager::Add_Monster(MONSTERINFO info, int iNum)
 		pObj = CAbstractFactory<CMessi>::Create_Monster(info.MonsterPos.fX, info.MonsterPos.fY, info.MonsterDir);
 	if (info.MonsterName == MONSTERNAME::NAME::MBAPE)
 		pObj = CAbstractFactory<CMbape>::Create_Monster(info.MonsterPos.fX, info.MonsterPos.fY, info.MonsterDir);
-	
+
 	Add_Object(pObj, OBJID::MONSTER);
 }
 
@@ -706,7 +715,7 @@ void CObjManager::Add_NetWorkPlayer(CLIENTINFO _playerinfo)
 	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::DAO) {
 		pObj = CAbstractFactory<CDao>::Create();
 		pObj->Set_ClientID(_playerinfo.ClientID);
-}
+	}
 	if (_playerinfo.PlayerInfo.PlayerName == CHARNAME::DIGENIE) {
 		pObj = CAbstractFactory<CDigenie>::Create();
 		pObj->Set_ClientID(_playerinfo.ClientID);
@@ -743,5 +752,27 @@ void CObjManager::Add_Bomb(OBJPOS _pos, int _bombPower)
 	CObj* pObj = nullptr;
 	pObj = CAbstractFactory<CBomb>::Create(_pos.fX, _pos.fY, _bombPower, false);
 	Add_Object(pObj, OBJID::MULTIBOMB);
-	
+
+}
+
+void CObjManager::Organize_BlockList(vector<int> vecTileKey)
+{
+	for (int i = 0; i < vecTileKey.size(); ++i) {
+		for (int j = 0; j < MAPBLOCK::END; ++j) {
+			for (auto iter = m_listMapBLOCK[j].begin(); iter != m_listMapBLOCK[j].end();) {
+				auto findIter = find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), vecTileKey[i]);
+				if (findIter == m_vecDeadTileKey.end()) {
+					m_vecDeadTileKey.emplace_back(vecTileKey[i]);
+				}
+
+				if ((*iter)->Get_ObjNum() == vecTileKey[i]) {
+					SAFE_DELETE(*iter);
+					iter = m_listMapBLOCK[j].erase(iter);
+					break;
+				}
+				else
+					iter++;
+			}
+		}
+	}
 }

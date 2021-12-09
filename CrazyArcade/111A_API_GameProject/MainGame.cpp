@@ -16,8 +16,6 @@ CMainGame::CMainGame()
 	CClientManager::Get_Instance()->recvClientID();
 	// 맵 정보를 받아온다.
 	CClientManager::Get_Instance()->recvInitMapTile();
-	// 몬스터 정보를 받아온다
-	//CClientManager::Get_Instance()->recvInitMonster();
 }
 
 
@@ -46,9 +44,9 @@ void CMainGame::Update()
 		if (!m_bInitMonster) {
 			m_bInitMonster = true;
 			CClientManager::Get_Instance()->setGameStart();
-			CClientManager::Get_Instance()->InitMonster();
 		}
 	}
+
 	// 서버 통신
 	CClientManager::Get_Instance()->sendInfo();
 	CClientManager::Get_Instance()->recvInfo();

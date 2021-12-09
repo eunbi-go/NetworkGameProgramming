@@ -146,26 +146,50 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ballon.cpp" />
+    <ClCompile Include="Basket.cpp" />
+    <ClCompile Include="Flower.cpp" />
+    <ClCompile Include="Grass.cpp" />
+    <ClCompile Include="Leaf1.cpp" />
+    <ClCompile Include="Leaf2.cpp" />
+    <ClCompile Include="MaxPotion.cpp" />
     <ClCompile Include="Mbape.cpp" />
     <ClCompile Include="Messi.cpp" />
     <ClCompile Include="Obj.cpp" />
     <ClCompile Include="ObjManager.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Potion.cpp" />
+    <ClCompile Include="Rock1.cpp" />
+    <ClCompile Include="Rock2.cpp" />
+    <ClCompile Include="Rock3.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Skate.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractFactory.h" />
+    <ClInclude Include="Ballon.h" />
+    <ClInclude Include="Basket.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="enum.h" />
+    <ClInclude Include="Flower.h" />
     <ClInclude Include="Function.h" />
+    <ClInclude Include="Grass.h" />
+    <ClInclude Include="Leaf1.h" />
+    <ClInclude Include="Leaf2.h" />
+    <ClInclude Include="MaxPotion.h" />
     <ClInclude Include="Mbape.h" />
     <ClInclude Include="Messi.h" />
     <ClInclude Include="Obj.h" />
     <ClInclude Include="ObjManager.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Potion.h" />
+    <ClInclude Include="Rock1.h" />
+    <ClInclude Include="Rock2.h" />
+    <ClInclude Include="Rock3.h" />
+    <ClInclude Include="Skate.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="struct.h" />
     <ClInclude Include="Tile.h" />

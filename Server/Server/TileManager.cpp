@@ -35,6 +35,7 @@ void CTileManager::Load_Tile()
 	DWORD	dwByte = 0;
 	INFO	tTemp = {};
 	int		iDrawID = 0;
+	int		iNum = 0;
 
 	while (true)
 	{
@@ -46,8 +47,10 @@ void CTileManager::Load_Tile()
 
 		CObj* pObj = CAbstractFactory<CTile>::Create(tTemp.fX, tTemp.fY);
 		dynamic_cast<CTile*>(pObj)->Set_TileKey(iDrawID);
+		pObj->Set_ObjNum(iNum);
 
 		m_vecTile.emplace_back(pObj);
+		++iNum;
 	}
 
 	CloseHandle(hFile);
@@ -67,4 +70,24 @@ void CTileManager::SetTileBlockType(float _x, float _y, MAPBLOCK::BLOCK _block)
 MAPBLOCK::BLOCK CTileManager::GetTileBlockType(float _x, float _y)
 {
 	return MAPBLOCK::BLOCK();
+}
+
+void CTileManager::Organize_vecTile(vector<int> vecTileKey)
+{
+	for (int i = 0; i < vecTileKey.size(); ++i) {
+		for (auto iter = m_vecTile.begin(); iter != m_vecTile.end();) {
+
+			if (find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), vecTileKey[i])
+				!= m_vecDeadTileKey.end()) {
+				m_vecDeadTileKey.emplace_back(vecTileKey[i]);
+			}
+
+			if (dynamic_cast<CTile*>(*iter)->Get_TileKey() == vecTileKey[i]) {
+				iter = m_vecTile.erase(iter);
+				break;
+			}
+			else
+				iter++;
+		}
+	}
 }

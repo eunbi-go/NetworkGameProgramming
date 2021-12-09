@@ -1,6 +1,5 @@
 ﻿  stdafx.cpp
   ClientManager.cpp
-C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ClientManager.cpp(310,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
   CNetworkStage.cpp
   CrazyArcade.cpp
   Ballon.cpp
@@ -13,7 +12,7 @@ C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GamePro
   BombWave.cpp
   BossBomb.cpp
   CollidManager.cpp
-C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\CollidManager.cpp(67,50): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\CollidManager.cpp(69,50): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   TimeManager.cpp
   Dao.cpp
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\Dao.cpp(205,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
@@ -32,7 +31,7 @@ C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GamePro
   Leaf1.cpp
   Leaf2.cpp
   코드를 생성하고 있습니다...
-C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\CollidManager.cpp(211): warning C4715: 'CCollidManager::isCollision_Rect_BombWaveToBlock': 모든 제어 경로에서 값을 반환하지는 않습니다.
+C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\CollidManager.cpp(216): warning C4715: 'CCollidManager::isCollision_Rect_BombWaveToBlock': 모든 제어 경로에서 값을 반환하지는 않습니다.
   컴파일하고 있습니다...
   Line.cpp
   LineManager.cpp
@@ -49,7 +48,7 @@ C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GamePro
   ObjManager.cpp
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(262,13): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(263,13): warning C4244: '초기화 중': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(307,111): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(307,112): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(307,70): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(309,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(309,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
@@ -81,6 +80,7 @@ C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GamePro
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(342,68): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(344,117): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(344,75): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(760,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
   Player.cpp
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\Player.cpp(455,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\Player.cpp(455,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
@@ -96,9 +96,9 @@ C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GamePro
   Skate.cpp
   코드를 생성하고 있습니다...
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(232): warning C4715: 'CObjManager::Get_PlayerX': 모든 제어 경로에서 값을 반환하지는 않습니다.
-C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(256): warning C4715: 'CObjManager::Get_BombY': 모든 제어 경로에서 값을 반환하지는 않습니다.
-C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(248): warning C4715: 'CObjManager::Get_BombX': 모든 제어 경로에서 값을 반환하지는 않습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(240): warning C4715: 'CObjManager::Get_PlayerY': 모든 제어 경로에서 값을 반환하지는 않습니다.
+C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(248): warning C4715: 'CObjManager::Get_BombX': 모든 제어 경로에서 값을 반환하지는 않습니다.
+C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(256): warning C4715: 'CObjManager::Get_BombY': 모든 제어 경로에서 값을 반환하지는 않습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(269): warning C4715: 'CObjManager::Get_isBombPos': 모든 제어 경로에서 값을 반환하지는 않습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\ObjManager.cpp(277): warning C4715: 'CObjManager::Get_PlayerDir': 모든 제어 경로에서 값을 반환하지는 않습니다.
   컴파일하고 있습니다...
@@ -108,9 +108,11 @@ C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GamePro
   Stage_Boss.cpp
   Tile.cpp
   TileManager.cpp
+C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\TileManager.cpp(152,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\TileManager.cpp(190,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
   Uni.cpp
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\Uni.cpp(208,64): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\Uni.cpp(208,49): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   WatingRoom.cpp
   코드를 생성하고 있습니다...
-C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\Uni.cpp : fatal error C1090: PDB API를 호출하지 못했습니다. 오류 코드 '3': C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\111A_API_GameProject\Debug\vc142.pdb
+  111A_API_GameProject.vcxproj -> C:\Users\고은비\Documents\NetworkGameProgramming\CrazyArcade\Debug\111A_API_GameProject.exe

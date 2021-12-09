@@ -35,8 +35,6 @@ public:
 
 	void	recvInitPlayerPos();
 	void	recvInitMapTile();
-	void	recvInitMonster();
-	void	InitMonster();
 
 public:
 	void	setPlayerInfo();		// 네트워크 통신용 플레이어 위치 전송
@@ -78,8 +76,6 @@ private:
 	// 서버로부터 받는 패킷 
 	// - 플레이어, 상대 플레이어, 몬스터, 아이템 정보가 모두 들어있음
 	map<int, CLIENTINFO>	tWorldInfo;
-	vector<MONSTERINFO>		tMonsterInfo;
-	int						iMonsterCnt = -1;
 
 	// 서버로부터 받은 맵 정보
 	vector<CObj*> vecMapTile;

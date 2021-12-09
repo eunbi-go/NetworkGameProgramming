@@ -29,6 +29,7 @@ public:
 	float Get_BombY();
 
 	list<CObj*>	Get_MonsterList() { return m_listObj[OBJID::MONSTER]; }
+	list<CObj*>	Get_ItemList() { return m_listItem[GAMEITEM::END]; }
 	void Set_MonsterList(list<CObj*>& listM) { m_listObj[OBJID::MONSTER] = listM; }
 
 	void Set_PlayerX(float fX);
@@ -54,7 +55,12 @@ public:
 
 	void Set_Cheat(bool _ischeat) { m_bisCheat = _ischeat; }
 	bool Get_Cheat() { return m_bisCheat; }
-	
+
+public:
+	void Organize_BlockList(vector<int> vecTileKey);
+	vector<int>	Get_DeadTile() { return m_vecDeadTileKey; }
+	void Clear_DeadTile() { m_vecDeadTileKey.clear(); }
+
 public:
 	static CObjManager* Get_Instance()
 	{
@@ -73,7 +79,7 @@ private:
 	list<CObj*>				m_listObj[OBJID::END];
 	list<CObj*>				m_listMapBLOCK[MAPBLOCK::END];
 	list<CObj*>				m_listItem[GAMEITEM::END];
-	static CObjManager*		m_pInstance;
+	static CObjManager* m_pInstance;
 
 	bool					m_bisBombPlayerCollid;
 	int						m_iStage1Clear;
@@ -81,6 +87,7 @@ private:
 
 	bool					m_bisCheat;
 
+	vector<int>				m_vecDeadTileKey;
 };
 
 
