@@ -663,37 +663,10 @@ void CObjManager::Load_Object_Boss()
 	////MessageBox(g_hWnd, L"오브젝트 불러오기 성공", L"성공", MB_OK);
 }
 
-void CObjManager::Organize_BlockList(vector<int> vecTileKey)
+void CObjManager::Add_CollBlock(int iNum)
 {
-	for (int i = 0; i < vecTileKey.size(); ++i) {
-		for (int j = 0; j < MAPBLOCK::END; ++j) {
-			for (auto iter = m_listMapBLOCK[j].begin(); iter != m_listMapBLOCK[j].end();) {
-				if ((*iter)->Get_ObjNum() == vecTileKey[i]) {
-					(*iter)->SetState(OBJSTATE::BUBBLE);
-					break;
-				}
-				else
-					iter++;
-			}
-		}
+	if (find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), iNum)
+		== m_vecDeadTileKey.end()) {
+		m_vecDeadTileKey.emplace_back(iNum);
 	}
-
-	/*for (int i = 0; i < vecTileKey.size(); ++i) {
-		for (int j = 0; j < MAPBLOCK::END; ++j) {
-			for (auto iter = m_listMapBLOCK[j].begin(); iter != m_listMapBLOCK[j].end();) {
-				auto findIter = find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), vecTileKey[i]);
-				if (findIter == m_vecDeadTileKey.end()) {
-					m_vecDeadTileKey.emplace_back(vecTileKey[i]);
-				}
-
-				if ((*iter)->Get_ObjNum() == vecTileKey[i]) {
-					SAFE_DELETE(*iter);
-					iter = m_listMapBLOCK[j].erase(iter);
-					break;
-				}
-				else
-					iter++;
-			}
-		}
-	}*/
 }

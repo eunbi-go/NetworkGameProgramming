@@ -63,9 +63,11 @@ void CWatingRoom::Late_update()
 		if (515 < pt.x && 700 > pt.x
 			&& 496 < pt.y && 547 > pt.y)
 		{
-			CClientManager::Get_Instance()->setGameStart();
-			CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENE_STAGE_NETWORK);
-			CSoundMgr::Get_Instance()->StopSound(CSoundMgr::LOBBY);
+			if (CClientManager::Get_Instance()->GetAllClientNum() == 2) {
+
+				CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENE_STAGE_NETWORK);
+				CSoundMgr::Get_Instance()->StopSound(CSoundMgr::LOBBY);
+			}
 		}
 
 		// 캐릭터 선택

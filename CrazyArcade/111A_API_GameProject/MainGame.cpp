@@ -40,13 +40,6 @@ void CMainGame::Initialize()
 
 void CMainGame::Update()
 {
-	if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
-		if (!m_bInitMonster) {
-			m_bInitMonster = true;
-			CClientManager::Get_Instance()->setGameStart();
-		}
-	}
-
 	// 서버 통신
 	CClientManager::Get_Instance()->sendInfo();
 	CClientManager::Get_Instance()->recvInfo();
@@ -73,8 +66,6 @@ void CMainGame::Render()
 	CSceneManager::Get_Instance()->Render(HBackBuffer);
 
 	BitBlt(m_DC, 0, 0, WINCX, WINCY, HBackBuffer, 0, 0, SRCCOPY);
-
-	//CClientManager::Get_Instance()->applyInfo();
 }
 
 void CMainGame::Release()

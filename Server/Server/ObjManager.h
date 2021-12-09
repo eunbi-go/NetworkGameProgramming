@@ -57,9 +57,9 @@ public:
 	bool Get_Cheat() { return m_bisCheat; }
 
 public:
-	void Organize_BlockList(vector<int> vecTileKey);
 	vector<int>	Get_DeadTile() { return m_vecDeadTileKey; }
 	void Clear_DeadTile() { m_vecDeadTileKey.clear(); }
+	void Add_CollBlock(int iNum);
 
 public:
 	static CObjManager* Get_Instance()

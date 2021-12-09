@@ -43,8 +43,9 @@ public:
 	void	setPlayerName(CHARNAME::NAME _CharName) { tClientInfo.PlayerInfo.PlayerName = _CharName; } // WaitingRoom에서 캐릭터 정해줌
 	void	recvIsGameStart();
 
-	int		GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
-	vector<CObj*> Get_MapTile() { return vecMapTile; }
+	int				GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
+	vector<CObj*>	Get_MapTile() { return vecMapTile; }
+	int				GetAllClientNum() { return AllClientNum; }
 
 	map<int, CLIENTINFO> GetWorldInfo() { return tWorldInfo; }
 

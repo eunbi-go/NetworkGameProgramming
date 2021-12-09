@@ -755,24 +755,19 @@ void CObjManager::Add_Bomb(OBJPOS _pos, int _bombPower)
 
 }
 
-void CObjManager::Organize_BlockList(vector<int> vecTileKey)
+void CObjManager::Set_BlockBubble(int iNum)
 {
-	for (int i = 0; i < vecTileKey.size(); ++i) {
-		for (int j = 0; j < MAPBLOCK::END; ++j) {
-			for (auto iter = m_listMapBLOCK[j].begin(); iter != m_listMapBLOCK[j].end();) {
-				auto findIter = find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), vecTileKey[i]);
-				if (findIter == m_vecDeadTileKey.end()) {
-					m_vecDeadTileKey.emplace_back(vecTileKey[i]);
-				}
-
-				if ((*iter)->Get_ObjNum() == vecTileKey[i]) {
-					SAFE_DELETE(*iter);
-					iter = m_listMapBLOCK[j].erase(iter);
-					break;
-				}
-				else
-					iter++;
+	for (int i = 0; i < MAPBLOCK::END; ++i)
+	{
+		for (auto& iter = m_listMapBLOCK[i].begin(); iter != m_listMapBLOCK[i].end();)
+		{
+			if ((*iter)->Get_ObjNum() == iNum)
+			{
+				(*iter)->SetState(OBJSTATE::STATE::BUBBLE);
+				return;
 			}
+			else
+				++iter;
 		}
 	}
 }

@@ -21,7 +21,6 @@ vector<USHORT> vecIsFirstConnect;		// ≈¨∂Û¿Ãæ∆Æ∞° ¡¢º”«œ∏È ≈¨∂Û¿Ãæ∆Æ¿« ∆˜∆Æπ¯»
 
 HANDLE hRecvEvent;
 HANDLE hSendEvent;
-HANDLE hUpdateEvent;
 
 bool isStart = false;
 bool isSetTimer = false;
@@ -244,7 +243,7 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	// ≈¨∂Û¿Ãæ∆Æ ¡§∫∏ æÚ±‚
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
-	//printf("Recv : %d\n", clientaddr.sin_port);
+	printf("R : %d\n", clientaddr.sin_port);
 
 	// ∞Ì¡§ ±Ê¿Ã µ•¿Ã≈Õ πﬁæ∆ø¿±‚
 	retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
@@ -252,37 +251,29 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		err_display("recv()");
 	}
 
-	int iStart;
-	retval = recvn(client_sock, (char*)&iStart, sizeof(int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	if (iStart == 1 && !isSetTimer) {
-		isStart = true;
-		isSetTimer = true;
-		//CTimeManager::Get_Instance()->Ready_CTimeManager();
-	}
-
 	// πﬁæ∆ø¬ µ•¿Ã≈Õ mapø° ¿˙¿Â
 	auto iter = mapClientPort.find(clientaddr.sin_port);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-	//// # 4. ∫Ø»≠µ» ≈∏¿œ ¡§∫∏
-	//int nTileCnt = -1;
-	//retval = recvn(client_sock, (char*)&nTileCnt, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
-	//vector<int>	vecTileKey;
-	//vecTileKey.resize(nTileCnt);
+	// # 4. ∫Ø»≠µ» ≈∏¿œ ¡§∫∏
+	int nTileCnt = -1;
+	retval = recvn(client_sock, (char*)&nTileCnt, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
 
-	//for (int i = 0; i < nTileCnt; ++i) {
-	//	retval = recvn(client_sock, (char*)&vecTileKey[i], sizeof(int), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("recv()");
-	//	}
-	//}
-	//CObjManager::Get_Instance()->Organize_BlockList(vecTileKey);
+	if (nTileCnt > 0) {
+		vector<int>	vecTileKey;
+		vecTileKey.resize(nTileCnt);
+
+		for (int i = 0; i < nTileCnt; ++i) {
+			retval = recvn(client_sock, (char*)&vecTileKey[i], sizeof(int), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+			}
+			CObjManager::Get_Instance()->Add_CollBlock(vecTileKey[i]);
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	auto Portiter = mapClientPort.find(clientaddr.sin_port);
@@ -308,7 +299,12 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-	//printf("Send : %d\n", clientaddr.sin_port);
+	printf("S : %d\n", clientaddr.sin_port);
+
+	retval = send(client_sock, (char*)&iClientID, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
 
 	for (int i = 0; i < iClientID; ++i)
 	{
@@ -322,36 +318,26 @@ void Send_Data(LPVOID arg)
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-	//// ∏  ∫Ì∑∞
-	//vector<int>	vecDeadTileKey = CObjManager::Get_Instance()->Get_DeadTile();
-	//list<CObj*>	itemList = CObjManager::Get_Instance()->Get_ItemList();
-	//int	iTileNum = vecDeadTileKey.size();
-	//int iItemNum = itemList.size();
+	// ∏  ∫Ì∑∞
+	vector<int>	vecDeadTileKey = CObjManager::Get_Instance()->Get_DeadTile();
+	int	iTileNum = vecDeadTileKey.size();
 
-	//// - æ¯æÓ¡˙ ≈∏¿œ
-	//retval = send(client_sock, (char*)&iTileNum, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
+	// - æ¯æÓ¡˙ ≈∏¿œ
+	retval = send(client_sock, (char*)&iTileNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
 
-	//for (int i = 0; i < iTileNum; ++i) {
-	//	retval = send(client_sock, (char*)&vecDeadTileKey[i], sizeof(int), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("send()");
-	//	}
-	//}
+	if (iTileNum > 0) {
+		for (int i = 0; i < iTileNum; ++i) {
+			retval = send(client_sock, (char*)&vecDeadTileKey[i], sizeof(int), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
+		}
+	}
 
-	//// - ≥™≈∏≥Ø æ∆¿Ã≈€
-	//retval = send(client_sock, (char*)&iItemNum, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-
-	////for (auto iter = itemList.begin(); iter != itemList.end(); ) {
-	////	ITEMINFO	itemInfo = (*iter)->
-	////}
-
-	//CObjManager::Get_Instance()->Clear_DeadTile();
+	CObjManager::Get_Instance()->Clear_DeadTile();
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	LeaveCriticalSection(&cs);

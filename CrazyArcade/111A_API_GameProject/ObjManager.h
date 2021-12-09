@@ -69,8 +69,8 @@ public:
 	void Add_Bomb(OBJPOS _pos, int _bombPower);
 
 public:
-	void Organize_BlockList(vector<int> vecTileKey);
 	void Clear_DeadBlockList() { m_vecDeadTileKey.clear(); }
+	void Set_BlockBubble(int iNum);
 
 public:
 	static CObjManager* Get_Instance()

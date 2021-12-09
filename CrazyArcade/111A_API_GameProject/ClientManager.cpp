@@ -96,31 +96,24 @@ int CClientManager::sendInfo()
 		err_display("send()");
 	}
 
-
-	int iStart = -1;
-	if (bisStart)	iStart = 1;
-	else	iStart = 2;
-	// 게임 시작했는지 확인
-	retval = send(sock, (char*)&iStart, sizeof(int), 0);
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// 변화된 타일 정보 전송
+	vector<int>	vecTileKey = CTileManager::Get_Instance()->Get_vecCollTileKey();
+	int	nSize = vecTileKey.size();
+	retval = send(sock, (char*)&nSize, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {
 		err_display("send()");
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	//// 변화된 타일 정보 전송
-	//vector<int>	vecTileKey = CTileManager::Get_Instance()->Get_vecCollTileKey();
-	//int	nSize = vecTileKey.size();
-	//retval = send(sock, (char*)&nSize, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
-	//
-	//for (int i = 0; i < nSize; ++i) {
-	//	retval = send(sock, (char*)&vecTileKey[i], sizeof(int), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("send()");
-	//	}
-	//}
+	if (nSize > 0) {
+		for (int i = 0; i < nSize; ++i) {
+			retval = send(sock, (char*)&vecTileKey[i], sizeof(int), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
+		}
+	}
+	CTileManager::Get_Instance()->Clear_vecCollTileKey();
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	return retval;
@@ -132,10 +125,17 @@ int CClientManager::recvInfo()
 	// 플레이어 정보, 아이템 정보, 몬스터 정보를 담고 있는 
 	// WorldInfo 맵 컨테이너를 받는다.
 
-	AllClientNum = tClientInfo.ClientID_Number;	// 총 접속한 클라이언트의 개수
+	//AllClientNum = tClientInfo.ClientID_Number;	// 총 접속한 클라이언트의 개수
 
-	if (AllClientNum == 0)
-		AllClientNum = 1;
+	//if (AllClientNum == 0)
+	//	AllClientNum = 1;
+
+	//
+	retval = recvn(sock, (char*)&AllClientNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	//
 
 	for (int i = 0; i < AllClientNum; ++i)
 	{
@@ -170,25 +170,25 @@ int CClientManager::recvInfo()
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-	//// 타일 정보
-	//vector<int>	vecDeadTileKey;
-	//int	nTileNum = -1;
-	//retval = recvn(sock, (char*)&nTileNum, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
-	//vecDeadTileKey.resize(nTileNum);
+	// 타일 정보
+	vector<int>	vecDeadTileKey;
+	int	nTileNum = -1;
+	retval = recvn(sock, (char*)&nTileNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
 
-	//for (int i = 0; i < nTileNum; ++i) {
-	//	retval = recvn(sock, (char*)&vecDeadTileKey[i], sizeof(int), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("recv()");
-	//	}
-	//	CTileManager::Get_Instance()->Add_CollTileKey(vecDeadTileKey[i]);
-	//}
-	//vector<int> vecKeyTile = CTileManager::Get_Instance()->Get_vecCollTileKey();
-	//CObjManager::Get_Instance()->Organize_BlockList(vecKeyTile);
-	//CObjManager::Get_Instance()->Clear_DeadBlockList();
+	if (nTileNum > 0) {
+		vecDeadTileKey.resize(nTileNum);
+
+		for (int i = 0; i < nTileNum; ++i) {
+			retval = recvn(sock, (char*)&vecDeadTileKey[i], sizeof(int), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+			}
+			CObjManager::Get_Instance()->Set_BlockBubble(vecDeadTileKey[i]);
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	return retval;

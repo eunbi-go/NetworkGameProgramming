@@ -122,7 +122,7 @@ void CCollidManager::Collision_Rect_BombWaveToBlock(list<CObj*>& _Dst, list<CObj
 			{
 				//Dst->Set_Dead();
 
-				Src->SetState(OBJSTATE::BUBBLE);
+				//Src->SetState(OBJSTATE::BUBBLE);
 
 				int nKey = Src->Get_ObjNum();
 				CTileManager::Get_Instance()->CollByBomb(nKey);
