@@ -244,7 +244,7 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
-	printf("Recv : %d\n", clientaddr.sin_port);
+	//printf("Recv : %d\n", clientaddr.sin_port);
 
 	// 고정 길이 데이터 받아오기
 	retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
@@ -308,7 +308,7 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-	printf("Send : %d\n", clientaddr.sin_port);
+	//printf("Send : %d\n", clientaddr.sin_port);
 
 	for (int i = 0; i < iClientID; ++i)
 	{
