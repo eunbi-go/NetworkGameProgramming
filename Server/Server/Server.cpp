@@ -12,7 +12,7 @@
 static int iClientID = 0;				// Å¬¶óÀÌ¾ğÆ®ÀÇ ID
 map<int, CLIENTINFO> WorldInfo;			// Å¬¶óÀÌ¾ğÆ®·Î º¸³¾ ÆĞÅ¶
 map<USHORT, int> mapClientPort;			// Å¬¶óÀÌ¾ğÆ®ÀÇ Æ÷Æ®¹øÈ£¿Í Å¬¶óÀÌ¾ğÆ®ID ÀúÀå
-//map<int, bool> mapIsRecv;				// Å¬¶óÀÌ¾ğÆ®¿¡¼­ µ¥ÀÌÅÍ¸¦ Àü¼Û¹Ş¾Ò´ÂÁö ÆÇ´ÜÇÏ±â À§ÇÑ ¸Ê
+										//map<int, bool> mapIsRecv;				// Å¬¶óÀÌ¾ğÆ®¿¡¼­ µ¥ÀÌÅÍ¸¦ Àü¼Û¹Ş¾Ò´ÂÁö ÆÇ´ÜÇÏ±â À§ÇÑ ¸Ê
 map<int, bool> mapIsCollision;			// ¹öÇÁ ÆÇ´ÜÀ» À§ÇÑ Ãæµ¹ È®ÀÎ ¸Ê
 vector<USHORT>	vecClientPort;
 
@@ -21,6 +21,7 @@ vector<USHORT> vecIsFirstConnect;		// Å¬¶óÀÌ¾ğÆ®°¡ Á¢¼ÓÇÏ¸é Å¬¶óÀÌ¾ğÆ®ÀÇ Æ÷Æ®¹øÈ
 
 HANDLE hRecvEvent;
 HANDLE hSendEvent;
+HANDLE hUpdateEvent;
 
 bool isStart = false;
 bool isSetTimer = false;
@@ -132,6 +133,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// µ¥ÀÌÅÍ º¸³»±â
 		Send_Data((LPVOID)client_sock);
+
+
+		CTimeManager::Get_Instance()->Update_CTimeManager();
 	}
 
 	closesocket(client_sock);

@@ -143,7 +143,7 @@ void CObjManager::Update()
 	CCollidManager::Collision_Rect_PlayerToSkate(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::SKATE]);
 	CCollidManager::Collision_Rect_PlayerToPotion(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::POTION]);
 	CCollidManager::Collision_Rect_PlayerToMaxPotion(m_listObj[OBJID::MULTIPLAYER], m_listItem[GAMEITEM::MAXPOTION]);
-
+	
 }
 
 void CObjManager::Late_Update()
@@ -194,7 +194,7 @@ void CObjManager::Render(HDC _DC)
 				continue;
 			pObj->Render(_DC);
 		}
-
+		
 	}
 
 
@@ -703,6 +703,430 @@ void CObjManager::Add_Monster(MONSTERINFO info, int iNum)
 		pObj = CAbstractFactory<CMbape>::Create_Monster(info.MonsterPos.fX, info.MonsterPos.fY, info.MonsterDir);
 
 	Add_Object(pObj, OBJID::MONSTER);
+	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
+	{
+		return dynamic_cast<CPlayer*>(*iter)->Get_PlayerDir();
+	}
+}
+
+void CObjManager::Set_PlayerX(float fX)
+{
+	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
+	{
+		dynamic_cast<CPlayer*>(*iter)->Set_PlayerX(fX);
+	}
+}
+
+void CObjManager::Set_PlayerY(float fY)
+{
+	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
+	{
+		dynamic_cast<CPlayer*>(*iter)->Set_PlayerY(fY);
+	}
+}
+
+void CObjManager::Picking_Object(CObj * _pObj, MAPBLOCK::BLOCK _block)
+{
+	POINT pt = {};
+	GetCursorPos(&pt);
+	ScreenToClient(g_hWnd, &pt);
+
+	int x = (pt.x - MAPSTARTX) / TILECX;
+	int y = (pt.y - MAPSTARTY) / TILECY;
+
+	switch (_block)
+	{
+	case MAPBLOCK::BASKET:
+		_pObj = CAbstractFactory<CBasket>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1),MAPSTARTY + (TILECY * y) + (TILECY >> 1));
+		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, MAPBLOCK::BASKET);
+		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::BASKET);
+		break;
+	case MAPBLOCK::LEAF1:
+		_pObj = CAbstractFactory<CLeaf1>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1));
+		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, MAPBLOCK::LEAF1);
+		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::LEAF1);
+		break;
+	case MAPBLOCK::LEAF2:
+		_pObj = CAbstractFactory<CLeaf2>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1));
+		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, MAPBLOCK::LEAF2);
+		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::LEAF2);
+		break;
+	case MAPBLOCK::FLOWER:
+		_pObj = CAbstractFactory<CFlower>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1));
+		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, MAPBLOCK::FLOWER);
+		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::FLOWER);
+		break;
+	case MAPBLOCK::GRASS:
+		_pObj = CAbstractFactory<CGrass>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1));
+		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, MAPBLOCK::GRASS);
+		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::GRASS);
+		break;
+	case MAPBLOCK::ROCK1:
+		_pObj = CAbstractFactory<Rock1>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1));
+		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, MAPBLOCK::ROCK1);
+		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::ROCK1);
+		break;
+	case MAPBLOCK::ROCK2:
+		_pObj = CAbstractFactory<Rock2>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1));
+		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, MAPBLOCK::ROCK2);
+		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::ROCK2);
+		break;
+	case MAPBLOCK::ROCK3:
+		_pObj = CAbstractFactory<Rock3>::Create(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1));
+		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, MAPBLOCK::ROCK3);
+		CTileManager::Get_Instance()->SetTileBlockType(MAPSTARTX + (TILECX * x) + (TILECX >> 1), MAPSTARTY + (TILECY * y) + (TILECY >> 1), MAPBLOCK::ROCK3);
+		break;
+	}
+}
+
+// 네트워크 텀프를 위한 수정
+void CObjManager::Save_Object()
+{
+	//HANDLE hFile = CreateFile(L"../Data/Object.dat", GENERIC_WRITE,
+	//	NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	HANDLE hFile = CreateFile(L"../Data/NetworkObject.dat", GENERIC_WRITE,
+		NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MessageBox(g_hWnd, L"오브젝트 저장 실패", L"실패", MB_OK);
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	for (int i = 0; i < MAPBLOCK::END; ++i)
+	{
+		for (auto& pObj : m_listMapBLOCK[i])
+		{
+			// 애드 오브젝트랑 타일 속성 저장
+			WriteFile(hFile, &pObj->Get_Info(), sizeof(INFO), &dwByte, NULL);
+			WriteFile(hFile, &pObj->Get_BlockType(), sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
+			/*switch (i)	
+			{
+			case MAPBLOCK::BASKET:
+				WriteFile(hFile, &pObj->Get_BlockType(), sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
+				break;
+			}*/
+
+		}
+	}
+
+	CloseHandle(hFile);
+	MessageBox(g_hWnd, L"저장 성공", L"성공", MB_OK);
+}
+
+// 네트워크 텀프를 위한 수정
+void CObjManager::Load_Object()
+{
+	HANDLE hFile = CreateFile(L"../Data/NetworkObject.dat", GENERIC_READ,
+		NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MessageBox(g_hWnd, L"오브젝트 불러오기 실패", L"실패", MB_OK);
+		return;
+	}
+
+	Release();
+	CObj* _pObj = nullptr;
+	DWORD dwByte =		 0;
+	INFO tTemp =		{};
+	MAPBLOCK::BLOCK		 BlockInfo;
+
+	while (true)
+	{
+		ReadFile(hFile, &tTemp, sizeof(INFO), &dwByte, NULL);
+		ReadFile(hFile, &BlockInfo, sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
+
+		if (0 == dwByte)
+			break;
+
+		switch (BlockInfo)
+		{
+		case MAPBLOCK::BASKET:
+			_pObj = CAbstractFactory<CBasket>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::LEAF1:
+			_pObj = CAbstractFactory<CLeaf1>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::LEAF2:
+			_pObj = CAbstractFactory<CLeaf2>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::FLOWER:
+			_pObj = CAbstractFactory<CFlower>::Create(tTemp.fX, tTemp.fY);	
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::GRASS:
+			_pObj = CAbstractFactory<CGrass>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK1:
+			_pObj = CAbstractFactory<Rock1>::Create(tTemp.fX, tTemp.fY);	
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK2:
+			_pObj = CAbstractFactory<Rock2>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK3:
+			_pObj = CAbstractFactory<Rock3>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		}
+
+
+	}
+
+	CloseHandle(hFile);
+	//MessageBox(g_hWnd, L"오브젝트 불러오기 성공", L"성공", MB_OK);
+
+}
+
+void CObjManager::Save_Object_Stage2()
+{
+	HANDLE hFile = CreateFile(L"../Data/Object_Stage2.dat", GENERIC_WRITE,
+		NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MessageBox(g_hWnd, L"오브젝트 저장 실패", L"실패", MB_OK);
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	for (int i = 0; i < MAPBLOCK::END; ++i)
+	{
+		for (auto& pObj : m_listMapBLOCK[i])
+		{
+			// 애드 오브젝트랑 타일 속성 저장
+			WriteFile(hFile, &pObj->Get_Info(), sizeof(INFO), &dwByte, NULL);
+			WriteFile(hFile, &pObj->Get_BlockType(), sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
+
+		}
+	}
+
+	CloseHandle(hFile);
+	MessageBox(g_hWnd, L"저장 성공", L"성공", MB_OK);
+}
+
+void CObjManager::Load_Object_Stage2()
+{
+	HANDLE hFile = CreateFile(L"../Data/Object_Stage2.dat", GENERIC_READ,
+		NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MessageBox(g_hWnd, L"오브젝트 불러오기 실패", L"실패", MB_OK);
+		return;
+	}
+
+	Release();
+	CObj* _pObj = nullptr;
+	DWORD dwByte = 0;
+	INFO tTemp = {};
+	MAPBLOCK::BLOCK		 BlockInfo;
+
+	while (true)
+	{
+		ReadFile(hFile, &tTemp, sizeof(INFO), &dwByte, NULL);
+		ReadFile(hFile, &BlockInfo, sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
+
+		if (0 == dwByte)
+			break;
+
+		switch (BlockInfo)
+		{
+		case MAPBLOCK::BASKET:
+			_pObj = CAbstractFactory<CBasket>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::LEAF1:
+			_pObj = CAbstractFactory<CLeaf1>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::LEAF2:
+			_pObj = CAbstractFactory<CLeaf2>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::FLOWER:
+			_pObj = CAbstractFactory<CFlower>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::GRASS:
+			_pObj = CAbstractFactory<CGrass>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK1:
+			_pObj = CAbstractFactory<Rock1>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK2:
+			_pObj = CAbstractFactory<Rock2>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK3:
+			_pObj = CAbstractFactory<Rock3>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		}
+
+
+	}
+
+	CloseHandle(hFile);
+	//MessageBox(g_hWnd, L"오브젝트 불러오기 성공", L"성공", MB_OK);
+}
+
+void CObjManager::Save_Object_Boss()
+{
+	HANDLE hFile = CreateFile(L"../Data/Object_Boss.dat", GENERIC_WRITE,
+		NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MessageBox(g_hWnd, L"오브젝트 저장 실패", L"실패", MB_OK);
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	for (int i = 0; i < MAPBLOCK::END; ++i)
+	{
+		for (auto& pObj : m_listMapBLOCK[i])
+		{
+			// 애드 오브젝트랑 타일 속성 저장
+			WriteFile(hFile, &pObj->Get_Info(), sizeof(INFO), &dwByte, NULL);
+			WriteFile(hFile, &pObj->Get_BlockType(), sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
+
+		}
+	}
+
+	CloseHandle(hFile);
+	MessageBox(g_hWnd, L"저장 성공", L"성공", MB_OK);
+}
+
+void CObjManager::Load_Object_Boss()
+{
+	HANDLE hFile = CreateFile(L"../Data/Object_Boss.dat", GENERIC_READ,
+		NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MessageBox(g_hWnd, L"오브젝트 불러오기 실패", L"실패", MB_OK);
+		return;
+	}
+
+	Release();
+	CObj* _pObj = nullptr;
+	DWORD dwByte = 0;
+	INFO tTemp = {};
+	MAPBLOCK::BLOCK		 BlockInfo;
+
+
+	while (true)
+	{
+		ReadFile(hFile, &tTemp, sizeof(INFO), &dwByte, NULL);
+		ReadFile(hFile, &BlockInfo, sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
+
+		if (0 == dwByte)
+			break;
+
+		switch (BlockInfo)
+		{
+		case MAPBLOCK::BASKET:
+			_pObj = CAbstractFactory<CBasket>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::LEAF1:
+			_pObj = CAbstractFactory<CLeaf1>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::LEAF2:
+			_pObj = CAbstractFactory<CLeaf2>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::FLOWER:
+			_pObj = CAbstractFactory<CFlower>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::GRASS:
+			_pObj = CAbstractFactory<CGrass>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK1:
+			_pObj = CAbstractFactory<Rock1>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK2:
+			_pObj = CAbstractFactory<Rock2>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK3:
+			_pObj = CAbstractFactory<Rock3>::Create(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		}
+
+
+	}
+
+	CloseHandle(hFile);
+	//MessageBox(g_hWnd, L"오브젝트 불러오기 성공", L"성공", MB_OK);
+}
+
+void CObjManager::Update_MonsterInfo(vector<MONSTERINFO> vInfo)
+{
+	int i = 0;
+	for (auto iter = m_listObj[OBJID::MONSTER].begin(); iter != m_listObj[OBJID::MONSTER].end(); ++iter)
+	{
+		(*iter)->Change_PosX(vInfo[i].MonsterPos.fX);
+		(*iter)->Change_PosY(vInfo[i].MonsterPos.fY);
+		(*iter)->SetCurDIR(vInfo[i].MonsterDir);
+		(*iter)->SetFrame(vInfo[i].Monsterframe);
+		(*iter)->SetMonsterID(i);
+		++i;
+	}
+}
+
+void CObjManager::Add_Monster(MONSTERINFO info, int iNum)
+{
+	CObj* pObj = nullptr;
+	if (info.MonsterName == MONSTERNAME::NAME::MESSI)
+		pObj = CAbstractFactory<CMessi>::Create_Monster(info.MonsterPos.fX, info.MonsterPos.fY, info.MonsterDir);
+	if (info.MonsterName == MONSTERNAME::NAME::MBAPE)
+		pObj = CAbstractFactory<CMbape>::Create_Monster(info.MonsterPos.fX, info.MonsterPos.fY, info.MonsterDir);
+	
+	Add_Object(pObj, OBJID::MONSTER);
 }
 
 void CObjManager::Add_NetWorkPlayer(CLIENTINFO _playerinfo)
@@ -752,7 +1176,6 @@ void CObjManager::Add_Bomb(OBJPOS _pos, int _bombPower)
 	CObj* pObj = nullptr;
 	pObj = CAbstractFactory<CBomb>::Create(_pos.fX, _pos.fY, _bombPower, false);
 	Add_Object(pObj, OBJID::MULTIBOMB);
-
 }
 
 void CObjManager::Organize_BlockList(vector<int> vecTileKey)
@@ -775,4 +1198,5 @@ void CObjManager::Organize_BlockList(vector<int> vecTileKey)
 			}
 		}
 	}
+}
 }
