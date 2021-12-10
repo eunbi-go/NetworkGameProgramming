@@ -72,6 +72,8 @@ public:
 public:
 	void Clear_DeadBlockList() { m_vecDeadTileKey.clear(); m_vecDeadTileKey.resize(0); }
 	void Set_BlockBubble(int iNum);
+	bool Check_BlockState(int iNum);
+	void Add_NoItemBlock(int iNum) { m_vecNoItemBlock.emplace_back(iNum); }
 
 public:
 	static CObjManager* Get_Instance()
@@ -100,6 +102,7 @@ private:
 	bool					m_bisCheat;
 
 	vector<int>				m_vecDeadTileKey;
+	vector<int>				m_vecNoItemBlock;
 };
 
 

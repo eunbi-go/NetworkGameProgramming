@@ -230,26 +230,28 @@ void CObjManager::Release()
 
 void CObjManager::Make_Add_Item(ITEMINFO tItem)
 {
-	CObj* pObj = nullptr;
+	if (!Check_BlockState(tItem.iBlockObjNum)) {
+		CObj* pObj = nullptr;
 
-	switch (tItem.ItemName)
-	{
-	case GAMEITEM::BALLON:
-		pObj = CAbstractFactory<CBallon>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
-		CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::BALLON);
-		break;
-	case GAMEITEM::POTION:
-		pObj = CAbstractFactory<CPotion>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
-		CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::POTION);
-		break;
-	case GAMEITEM::SKATE:
-		pObj = CAbstractFactory<CSkate>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
-		CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::SKATE);
-		break;
-	case GAMEITEM::MAXPOTION:
-		pObj = CAbstractFactory<CMaxPotion>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
-		CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::MAXPOTION);
-		break;
+		switch (tItem.ItemName)
+		{
+		case GAMEITEM::BALLON:
+			pObj = CAbstractFactory<CBallon>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
+			CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::BALLON);
+			break;
+		case GAMEITEM::POTION:
+			pObj = CAbstractFactory<CPotion>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
+			CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::POTION);
+			break;
+		case GAMEITEM::SKATE:
+			pObj = CAbstractFactory<CSkate>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
+			CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::SKATE);
+			break;
+		case GAMEITEM::MAXPOTION:
+			pObj = CAbstractFactory<CMaxPotion>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
+			CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::MAXPOTION);
+			break;
+		}
 	}
 }
 
@@ -445,54 +447,54 @@ void CObjManager::Load_Object()
 		{
 		case MAPBLOCK::BASKET:
 			_pObj = CAbstractFactory<CBasket>::Create(tTemp.fX, tTemp.fY);
-			_pObj->Set_ObjNum(iNum);
+			//_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::LEAF1:
 			_pObj = CAbstractFactory<CLeaf1>::Create(tTemp.fX, tTemp.fY);
-			_pObj->Set_ObjNum(iNum);
+			//_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::LEAF2:
 			_pObj = CAbstractFactory<CLeaf2>::Create(tTemp.fX, tTemp.fY);
-			_pObj->Set_ObjNum(iNum);
+			//_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::FLOWER:
 			_pObj = CAbstractFactory<CFlower>::Create(tTemp.fX, tTemp.fY);
-			_pObj->Set_ObjNum(iNum);
+			//_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::GRASS:
 			_pObj = CAbstractFactory<CGrass>::Create(tTemp.fX, tTemp.fY);
-			_pObj->Set_ObjNum(iNum);
+			//_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::ROCK1:
 			_pObj = CAbstractFactory<Rock1>::Create(tTemp.fX, tTemp.fY);
-			_pObj->Set_ObjNum(iNum);
+			//_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::ROCK2:
 			_pObj = CAbstractFactory<Rock2>::Create(tTemp.fX, tTemp.fY);
-			_pObj->Set_ObjNum(iNum);
+			//_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		case MAPBLOCK::ROCK3:
 			_pObj = CAbstractFactory<Rock3>::Create(tTemp.fX, tTemp.fY);
-			_pObj->Set_ObjNum(iNum);
+			//_pObj->Set_ObjNum(iNum);
 			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
 			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
 			break;
 		}
-
+		_pObj->Set_ObjNum(iNum);
 		++iNum;
 	}
 
@@ -800,4 +802,13 @@ void CObjManager::Set_BlockBubble(int iNum)
 				++iter;
 		}
 	}
+}
+
+bool CObjManager::Check_BlockState(int iNum)
+{
+	auto iter = find(m_vecNoItemBlock.begin(), m_vecNoItemBlock.end(), iNum);
+	if (iter != m_vecNoItemBlock.end())
+		return true;
+	else
+		return false;
 }

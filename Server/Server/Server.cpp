@@ -163,6 +163,8 @@ int main(int argc, char* argv[])
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (listen_sock == INVALID_SOCKET)
 		err_quit("socket()");
+	//int	option = TRUE;	// Nagle On
+	//setsockopt(listen_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 
 	// bind()
 	SOCKADDR_IN serveraddr;
@@ -280,6 +282,7 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 
 		// 아이템 생성
 		CObjManager::Get_Instance()->Make_Item();
+		// 
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -34,6 +34,8 @@ int CClientManager::connectToServer()
 
 	// socket »ý¼º
 	sock = socket(AF_INET, SOCK_STREAM, 0);
+	//int	option = TRUE;	// Nagle On
+	//setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
 
@@ -209,6 +211,13 @@ int CClientManager::recvInfo()
 				err_display("recv()");
 			}
 			CObjManager::Get_Instance()->Make_Add_Item(vecItem[i]);
+		}
+	}
+	if (nTileNum > 0) {
+		//vecDeadTileKey.resize(nTileNum);
+
+		for (int i = 0; i < nTileNum; ++i) {
+			CObjManager::Get_Instance()->Add_NoItemBlock(vecDeadTileKey[i]);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////

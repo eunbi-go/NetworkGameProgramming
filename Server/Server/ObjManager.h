@@ -63,6 +63,12 @@ public:
 		m_vecItemKey.clear();		m_vecItemKey.resize(0); 
 		m_vecItem.clear();			m_vecItem.resize(0);
 	}
+	void Add_DeadBlock(int iNum) {
+		if (find(m_vecDeadBlockKey.begin(), m_vecDeadBlockKey.end(), iNum)
+			== m_vecDeadBlockKey.end()) {
+			m_vecDeadBlockKey.emplace_back(iNum);
+		}
+	}
 	void Add_CollBlock(int iNum);
 
 public:
@@ -102,6 +108,7 @@ private:
 	vector<int>				m_vecDeadTileKey;
 	vector<int>				m_vecItemKey;
 	vector<ITEMINFO>		m_vecItem;
+	vector<int>				m_vecDeadBlockKey;
 };
 
 

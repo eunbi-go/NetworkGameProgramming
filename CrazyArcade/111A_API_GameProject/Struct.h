@@ -45,6 +45,7 @@ typedef struct ItemInfo
 {
 	GAMEITEM::ITEM		ItemName;			// 아이템의 이름(포션, 폭탄, 스케이트)
 	OBJPOS				ItemPos;			// 아이템의 위치
+	int					iBlockObjNum;
 }ITEMINFO;
 
 typedef struct tagFrame
