@@ -20,6 +20,7 @@ public:
 	void Add_Object(CObj* _pObj, OBJID::ID _eID) { m_listObj[_eID].emplace_back(_pObj); }
 	void Add_Object_MapBlock(CObj* _pObj, MAPBLOCK::BLOCK _eBlock) { m_listMapBLOCK[_eBlock].emplace_back(_pObj); }
 	void Add_Object_Item(CObj* _pObj, GAMEITEM::ITEM _eItem) { m_listItem[_eItem].emplace_back(_pObj); }
+	void Make_Add_Item(ITEMINFO tItem);
 
 public:
 	float Get_PlayerX();
@@ -69,7 +70,7 @@ public:
 	void Add_Bomb(OBJPOS _pos, int _bombPower);
 
 public:
-	void Clear_DeadBlockList() { m_vecDeadTileKey.clear(); }
+	void Clear_DeadBlockList() { m_vecDeadTileKey.clear(); m_vecDeadTileKey.resize(0); }
 	void Set_BlockBubble(int iNum);
 
 public:

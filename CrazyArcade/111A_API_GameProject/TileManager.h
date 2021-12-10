@@ -31,10 +31,17 @@ public:
 	vector<int>	Get_vecCollTileKey() { return m_vecCollTileKey; }
 
 public:
-	void CollByBomb(int nKey) { m_vecCollTileKey.emplace_back(nKey); }
+	void CollByBomb(int nKey) {
+		if (find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), nKey)
+			== m_vecDeadTileKey.end()) {
+			m_vecCollTileKey.emplace_back(nKey);
+		}
+	}
 	void Organize_Tile();
-	void Clear_vecCollTileKey() { m_vecCollTileKey.clear(); }
+	void Clear_vecCollTileKey() { m_vecCollTileKey.clear(); m_vecCollTileKey.resize(0); }
 	void Add_CollTileKey(int nKey);
+	void Add_DeadTileKey(int nKey);
+	bool Is_DeadTile(int nKey);
 
 public:
 	static CTileManager* Get_Instance()
@@ -55,6 +62,7 @@ private:
 	char* m_fileName;
 
 	vector<int>					m_vecCollTileKey;
+	vector<int>					m_vecDeadTileKey;
 };
 
 

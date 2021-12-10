@@ -58,8 +58,20 @@ public:
 
 public:
 	vector<int>	Get_DeadTile() { return m_vecDeadTileKey; }
-	void Clear_DeadTile() { m_vecDeadTileKey.clear(); }
+	void Clear_DeadTile() {
+		m_vecDeadTileKey.clear();	m_vecDeadTileKey.resize(0); 
+		m_vecItemKey.clear();		m_vecItemKey.resize(0); 
+		m_vecItem.clear();			m_vecItem.resize(0);
+	}
 	void Add_CollBlock(int iNum);
+
+public:
+	void Check_ItemBlock(int iNum);
+	float Get_blockPosX(int iNum);
+	float Get_blockPosY(int iNum);
+	void Make_Item();
+	//vector<int>	Get_vecItemkey() { return m_vecItemKey; }
+	vector<ITEMINFO>	Get_vecItemInfo() { return m_vecItem; }
 
 public:
 	static CObjManager* Get_Instance()
@@ -88,6 +100,8 @@ private:
 	bool					m_bisCheat;
 
 	vector<int>				m_vecDeadTileKey;
+	vector<int>				m_vecItemKey;
+	vector<ITEMINFO>		m_vecItem;
 };
 
 

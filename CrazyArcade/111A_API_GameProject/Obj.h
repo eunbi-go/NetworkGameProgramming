@@ -27,6 +27,8 @@ public:
 	const int Get_BombPower() const { return m_tInfo.iBombPower; }
 	const int			Get_ObjNum() const { return m_nObjNum; }
 
+	bool Get_Dead() { return m_tInfo.bisDead; }
+
 public:
 	void Set_Pos(float _x, float _y) { m_tInfo.fX = _x, m_tInfo.fY = _y; }
 	void Set_Dead() { m_tInfo.bisDead = true; }

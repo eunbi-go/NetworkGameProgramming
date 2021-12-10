@@ -208,6 +208,22 @@ void CTileManager::Add_CollTileKey(int nKey)
 		m_vecCollTileKey.emplace_back(nKey);
 }
 
+void CTileManager::Add_DeadTileKey(int nKey)
+{
+	auto iter = find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), nKey);
+	if (iter != m_vecDeadTileKey.end())
+		m_vecDeadTileKey.emplace_back(nKey);
+}
+
+bool CTileManager::Is_DeadTile(int nKey)
+{
+	auto iter = find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), nKey);
+	if (iter != m_vecDeadTileKey.end())
+		return true;	// 없어진 타일
+	else
+		return false;
+}
+
 
 
 

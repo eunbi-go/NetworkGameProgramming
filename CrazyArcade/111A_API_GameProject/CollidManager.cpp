@@ -45,11 +45,15 @@ void CCollidManager::Collision_Rect_PlayerToBallon(list<CObj*>& _Dst, list<CObj*
 	{
 		for (auto& Src : _Src)
 		{
-			if (IntersectRect(&rc, &Dst->Get_Rect(), &Src->Get_Rect()))
-			{
-				CSoundMgr::Get_Instance()->PlaySound(L"eat_item.mp3", CSoundMgr::ITEM);
-				dynamic_cast<CPlayer*>(Dst)->Set_PlayerBombCount(1);
-				Src->Set_Dead();
+			int nKey = Src->Get_ObjNum();
+			if (!CTileManager::Get_Instance()->Is_DeadTile(nKey)) {
+				if (IntersectRect(&rc, &Dst->Get_Rect(), &Src->Get_Rect()))
+				{
+					CSoundMgr::Get_Instance()->PlaySound(L"eat_item.mp3", CSoundMgr::ITEM);
+					dynamic_cast<CPlayer*>(Dst)->Set_PlayerBombCount(1);
+					CTileManager::Get_Instance()->Add_DeadTileKey(nKey);
+					Src->Set_Dead();
+				}
 			}
 		}
 	}
@@ -67,6 +71,8 @@ void CCollidManager::Collision_Rect_PlayerToSkate(list<CObj*>& _Dst, list<CObj*>
 			{
 				CSoundMgr::Get_Instance()->PlaySound(L"eat_item.mp3", CSoundMgr::ITEM);
 				dynamic_cast<CPlayer*>(Dst)->Set_PlayerSpeed(1.0f);
+				int nKey = Src->Get_ObjNum();
+				CTileManager::Get_Instance()->Add_DeadTileKey(nKey);
 				Src->Set_Dead();
 			}
 		}
@@ -85,6 +91,8 @@ void CCollidManager::Collision_Rect_PlayerToPotion(list<CObj*>& _Dst, list<CObj*
 			{
 				CSoundMgr::Get_Instance()->PlaySound(L"eat_item.mp3", CSoundMgr::ITEM);
 				dynamic_cast<CPlayer*>(Dst)->Set_PlayerBombPower(1);
+				int nKey = Src->Get_ObjNum();
+				CTileManager::Get_Instance()->Add_DeadTileKey(nKey);
 				Src->Set_Dead();
 			}
 		}
@@ -101,8 +109,11 @@ void CCollidManager::Collision_Rect_PlayerToMaxPotion(list<CObj*>& _Dst, list<CO
 		{
 			if (IntersectRect(&rc, &Dst->Get_Rect(), &Src->Get_Rect()))
 			{
+
 				CSoundMgr::Get_Instance()->PlaySound(L"eat_item.mp3", CSoundMgr::ITEM);
 				dynamic_cast<CPlayer*>(Dst)->Set_PlayerBombMax();
+				int nKey = Src->Get_ObjNum();
+				CTileManager::Get_Instance()->Add_DeadTileKey(nKey);
 				Src->Set_Dead();
 			}
 		}
@@ -117,19 +128,17 @@ void CCollidManager::Collision_Rect_BombWaveToBlock(list<CObj*>& _Dst, list<CObj
 	{
 		for (auto& Src : _Src)
 		{
-			// Dst = 웨이브				Src = 블록
-			if (IntersectRect(&rc, &Dst->Get_Rect(), &Src->Get_Rect()))
-			{
-				//Dst->Set_Dead();
+				// Dst = 웨이브				Src = 블록
+				if (IntersectRect(&rc, &Dst->Get_Rect(), &Src->Get_Rect()))
+				{
+					//Dst->Set_Dead();
 
-				//Src->SetState(OBJSTATE::BUBBLE);
-
-				int nKey = Src->Get_ObjNum();
-				CTileManager::Get_Instance()->CollByBomb(nKey);
-
-				//dynamic_cast<CBombWave*>(Dst)->SetCollid();
-			}
-
+					//Src->SetState(OBJSTATE::BUBBLE);
+					int nKey = Src->Get_ObjNum();
+					CTileManager::Get_Instance()->CollByBomb(nKey);
+					CTileManager::Get_Instance()->Add_DeadTileKey(nKey);
+					//dynamic_cast<CBombWave*>(Dst)->SetCollid();
+				}
 		}
 	}
 }
@@ -270,23 +279,26 @@ void CCollidManager::Collision_Rect_NoPush(list<CObj*>& _Dst, list<CObj*>& _Src)
 	{
 		for (auto& Src : _Src)
 		{
-			if (Check_Rect(Dst, Src, &fX, &fY))
-			{
-				if (fX > fY)
+			if (Src->GetState() != OBJSTATE::BUBBLE) {
+				if (Check_Rect(Dst, Src, &fX, &fY))
 				{
-					if (Dst->Get_Info().fY < Src->Get_Info().fY)
-						Dst->Set_PosY(-fY);
+					int k = 0;
+ 					if (fX > fY)
+					{
+						if (Dst->Get_Info().fY < Src->Get_Info().fY)
+							Dst->Set_PosY(-fY);
+						else
+							Dst->Set_PosY(fY);
+					}
 					else
-						Dst->Set_PosY(fY);
-				}
-				else
-				{
-					if (Dst->Get_Info().fX < Src->Get_Info().fX)
-						Dst->Set_PosX(-fX);
-					else
-						Dst->Set_PosX(fX);
-				}
+					{
+						if (Dst->Get_Info().fX < Src->Get_Info().fX)
+							Dst->Set_PosX(-fX);
+						else
+							Dst->Set_PosX(fX);
+					}
 
+				}
 			}
 		}
 	}

@@ -23,6 +23,10 @@
 #include "Digenie.h"
 #include "Uni.h"
 #include "Bomb.h"
+#include "Ballon.h"
+#include "Potion.h"
+#include "Skate.h"
+#include "MaxPotion.h"
 
 CObjManager* CObjManager::m_pInstance = nullptr;
 
@@ -178,7 +182,8 @@ void CObjManager::Render(HDC _DC)
 		{
 			if (!pObj)
 				continue;
-			pObj->Render(_DC);
+			if (pObj->GetState() != OBJSTATE::BUBBLE)
+				pObj->Render(_DC);
 		}
 	}
 	for (int i = 0; i < GAMEITEM::END; ++i)
@@ -220,6 +225,31 @@ void CObjManager::Release()
 	{
 		for_each(m_listItem[i].begin(), m_listItem[i].end(), Safe_Delete<CObj*>);
 		m_listItem[i].clear();
+	}
+}
+
+void CObjManager::Make_Add_Item(ITEMINFO tItem)
+{
+	CObj* pObj = nullptr;
+
+	switch (tItem.ItemName)
+	{
+	case GAMEITEM::BALLON:
+		pObj = CAbstractFactory<CBallon>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
+		CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::BALLON);
+		break;
+	case GAMEITEM::POTION:
+		pObj = CAbstractFactory<CPotion>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
+		CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::POTION);
+		break;
+	case GAMEITEM::SKATE:
+		pObj = CAbstractFactory<CSkate>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
+		CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::SKATE);
+		break;
+	case GAMEITEM::MAXPOTION:
+		pObj = CAbstractFactory<CMaxPotion>::Create(tItem.ItemPos.fX, tItem.ItemPos.fY);
+		CObjManager::Get_Instance()->Add_Object_Item(pObj, GAMEITEM::MAXPOTION);
+		break;
 	}
 }
 

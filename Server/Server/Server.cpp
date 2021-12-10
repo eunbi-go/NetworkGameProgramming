@@ -271,8 +271,15 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
 			}
+			// 버블 상태가 될 블럭의 오브젝트num을 받아와서 저장
 			CObjManager::Get_Instance()->Add_CollBlock(vecTileKey[i]);
+
+			// 아이템을 갖고 있는 블럭인지 확인
+			CObjManager::Get_Instance()->Check_ItemBlock(vecTileKey[i]);
 		}
+
+		// 아이템 생성
+		CObjManager::Get_Instance()->Make_Item();
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -331,6 +338,24 @@ void Send_Data(LPVOID arg)
 	if (iTileNum > 0) {
 		for (int i = 0; i < iTileNum; ++i) {
 			retval = send(client_sock, (char*)&vecDeadTileKey[i], sizeof(int), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
+		}
+	}
+
+	// - 아이템이 생길 타일
+	vector<ITEMINFO>	vecItem = CObjManager::Get_Instance()->Get_vecItemInfo();
+	int	iItemNum = vecItem.size();
+
+	retval = send(client_sock, (char*)&iItemNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
+	if (iItemNum > 0) {
+		for (int i = 0; i < iItemNum; ++i) {
+			retval = send(client_sock, (char*)&vecItem[i], sizeof(ITEMINFO), 0);
 			if (retval == SOCKET_ERROR) {
 				err_display("send()");
 			}

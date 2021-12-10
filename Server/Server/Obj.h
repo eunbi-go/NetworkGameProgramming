@@ -33,6 +33,7 @@ public:
 	void SetState(OBJSTATE::STATE _State) { m_eState = _State; }
 	void SetCurDIR(OBJDIR::DIR _Dir) { m_eCurDir = _Dir; }
 	void Set_ObjNum(int _id) { m_nObjNum = _id; }
+	void Set_BlolckType(MAPBLOCK::BLOCK eBlock) { m_eBlock = eBlock; }
 
 	void Set_PosX(float _x) { m_tInfo.fX += _x; }
 	void Set_PosY(float _y) { m_tInfo.fY += _y; }

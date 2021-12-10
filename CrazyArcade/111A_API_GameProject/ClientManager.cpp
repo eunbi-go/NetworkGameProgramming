@@ -170,7 +170,9 @@ int CClientManager::recvInfo()
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-	// 타일 정보
+	// #. 맵 블럭
+
+	// - 상태가 바뀔 타일
 	vector<int>	vecDeadTileKey;
 	int	nTileNum = -1;
 	retval = recvn(sock, (char*)&nTileNum, sizeof(int), 0);
@@ -187,6 +189,26 @@ int CClientManager::recvInfo()
 				err_display("recv()");
 			}
 			CObjManager::Get_Instance()->Set_BlockBubble(vecDeadTileKey[i]);
+		}
+	}
+
+	// - 새로 생길 아이템
+	vector<ITEMINFO>	vecItem;
+	int	nItemNum = -1;
+	retval = recvn(sock, (char*)&nItemNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	if (nItemNum > 0) {
+		vecItem.resize(nItemNum);
+
+		for (int i = 0; i < nItemNum; ++i) {
+			retval = recvn(sock, (char*)&vecItem[i], sizeof(ITEMINFO), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+			}
+			CObjManager::Get_Instance()->Make_Add_Item(vecItem[i]);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////
