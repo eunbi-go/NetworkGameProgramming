@@ -63,7 +63,7 @@ public:
 
 	// 모든 클라이언트의 플레이어 동기화
 	void Add_NetWorkPlayer(CLIENTINFO _playerinfo);
-	void Update_NetWorkPlayer(CLIENTINFO _playerinfo);
+	void Update_NetWorkPlayer(CLIENTINFO& _playerinfo);
 
 	// 모든 클라이언트의 폭탄 동기화
 	void Add_Bomb(OBJPOS _pos, int _bombPower);

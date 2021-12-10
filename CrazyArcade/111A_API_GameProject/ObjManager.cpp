@@ -259,8 +259,6 @@ bool CObjManager::Get_isBombPos(float _x, float _y)
 {
 	for (auto& iter = m_listObj[OBJID::MULTIBOMB].begin(); iter != m_listObj[OBJID::MULTIBOMB].end(); ++iter)
 	{
-		int tempx = dynamic_cast<CBomb*>(*iter)->Get_BombX();
-		int tempy = dynamic_cast<CBomb*>(*iter)->Get_BombY();
 		if (dynamic_cast<CBomb*>(*iter)->Get_BombX() == _x &&
 			dynamic_cast<CBomb*>(*iter)->Get_BombY() == _y)
 			return true;
@@ -720,15 +718,16 @@ void CObjManager::Add_NetWorkPlayer(CLIENTINFO _playerinfo)
 	//Add_Object(pObj, OBJID::MULTIPLAYER);
 }
 
-void CObjManager::Update_NetWorkPlayer(CLIENTINFO _playerinfo)
+void CObjManager::Update_NetWorkPlayer(CLIENTINFO& _playerinfo)
 {
 	for (auto& player : m_listObj[OBJID::MULTIPLAYER])
 	{
 		if (player->Get_ClientID() == _playerinfo.ClientID)
 		{
 			if (!isnan(_playerinfo.BombPos.fX) && !isnan(_playerinfo.BombPos.fY)) {
-				if (!Get_isBombPos(_playerinfo.BombPos.fX, _playerinfo.BombPos.fY))
+				if (!Get_isBombPos(_playerinfo.BombPos.fX, _playerinfo.BombPos.fY)) {
 					Add_Bomb(_playerinfo.BombPos, player->Get_BombPower());
+				}
 			}
 			player->Change_PosX(_playerinfo.PlayerInfo.PlayerPos.fX);
 			player->Change_PosY(_playerinfo.PlayerInfo.PlayerPos.fY);

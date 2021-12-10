@@ -53,7 +53,7 @@ void CDao::Initialize()
 	m_tInfo.iBombPower = 1;
 
 	m_tInfo.iHP = 1;
-	m_tInfo.iMaxBomb = 1;
+	m_tInfo.iMaxBomb = 5;
 
 	m_tInfo.fSpeed = 2.f;
 	m_tInfo.bisDead = false;
