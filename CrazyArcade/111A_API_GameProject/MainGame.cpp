@@ -32,7 +32,7 @@ void CMainGame::Initialize()
 	CBmpManager::Get_Instance()->Insert_Bmp(L"../Image/BackBuffer.bmp", L"BackBuffer");
 	m_DC = GetDC(g_hWnd);
 
-	CSoundMgr::Get_Instance()->Initialize();
+	//CSoundMgr::Get_Instance()->Initialize();
 	CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENEID::SCENE_MENU);
 	CTileManager::Get_Instance()->Initialize();
 
@@ -87,7 +87,7 @@ void CMainGame::Release()
 	CTileManager::Destroy_Instance();
 
 	CObjManager::Destroy_Instance();
-	CSoundMgr::Destroy_Instance();
+	//CSoundMgr::Destroy_Instance();
 	CTimeManager::Destroy_Instance();
 
 	CClientManager::Destroy_Instance();

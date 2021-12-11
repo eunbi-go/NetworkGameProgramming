@@ -181,25 +181,8 @@ int CClientManager::recvInfo()
 			}
 		}
 	}
-	
-	//// 서버로부터 받을 몬스터 개수
-	//if (bisStart) {
-	//	retval = recvn(sock, (char*)&iMonsterCnt, sizeof(int), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("recv()");
-	//	}
-
-	//	for (int i = 0; i < iMonsterCnt; ++i) {
-	//		retval = recvn(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
-	//		if (retval == SOCKET_ERROR) {
-	//			err_display("recv()");
-	//		}
-	//	}
-
-	//	if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
-	//		CObjManager::Get_Instance()->Update_MonsterInfo(tMonsterInfo);
-	//	}
-	//}
+	// 왠지 모르겠는데 ClientID가 초기화됨; 다시 설정해줌
+	//tClientInfo.ClientID = iClientID;
 
 	return retval;
 }

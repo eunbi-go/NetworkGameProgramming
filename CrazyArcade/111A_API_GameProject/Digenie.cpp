@@ -87,8 +87,10 @@ int CDigenie::Update()
 
 
 
-	if (OBJSTATE::IDLE == m_eState)
-		Key_Check();
+	if (CClientManager::Get_Instance()->GetClientID() == 2) {
+		if (OBJSTATE::IDLE == m_eState)
+			Key_Check();
+	}
 
 	Update_Rect();
 	Scene_Change();
@@ -163,25 +165,25 @@ void CDigenie::Key_Check()
 	{
 		m_tInfo.fX -= m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::LEFT;
-		//m_tInfo.PlayerDir = m_eCurDir;
+		m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else if (CKeyManager::Get_Instance()->Key_Pressing(VK_RIGHT))
 	{
 		m_tInfo.fX += m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::RIGHT;
-		//m_tInfo.PlayerDir = m_eCurDir;
+		m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else if (CKeyManager::Get_Instance()->Key_Pressing(VK_UP))
 	{
 		m_tInfo.fY -= m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::TOP;
-		//m_tInfo.PlayerDir = m_eCurDir;
+		m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else if (CKeyManager::Get_Instance()->Key_Pressing(VK_DOWN))
 	{
 		m_tInfo.fY += m_tInfo.fSpeed;
 		m_eCurDir = OBJDIR::BOTTOM;
-		//m_tInfo.PlayerDir = m_eCurDir;
+		m_tInfo.PlayerDir = m_eCurDir;
 	}
 	else
 		m_eCurDir = OBJDIR::IDLE;
@@ -210,7 +212,52 @@ void CDigenie::Key_Check()
 
 void CDigenie::Scene_Change()
 {
-	if (m_ePreDir != m_eCurDir)
+	switch (m_tInfo.PlayerDir)
+	{
+	case OBJDIR::IDLE:
+		m_eCurDir = m_tInfo.PlayerDir;
+		m_tFrame.iFrameStart = 0;
+		m_tFrame.iFrameEnd = 3;
+		m_tFrame.iFrameScene = OBJDIR::IDLE;
+		m_tFrame.dwFrameTime = GetTickCount();
+		m_tFrame.dwFrameSpeed = 500;
+		break;
+	case OBJDIR::TOP:
+		m_eCurDir = m_tInfo.PlayerDir;
+		m_tFrame.iFrameStart = 0;
+		m_tFrame.iFrameEnd = 3;
+		m_tFrame.iFrameScene = OBJDIR::TOP;
+		m_tFrame.dwFrameTime = GetTickCount();
+		m_tFrame.dwFrameSpeed = 200;
+		break;
+	case OBJDIR::BOTTOM:
+		m_eCurDir = m_tInfo.PlayerDir;
+		m_tFrame.iFrameStart = 0;
+		m_tFrame.iFrameEnd = 3;
+		m_tFrame.iFrameScene = OBJDIR::BOTTOM;
+		m_tFrame.dwFrameTime = GetTickCount();
+		m_tFrame.dwFrameSpeed = 200;
+		break;
+	case OBJDIR::LEFT:
+		m_eCurDir = m_tInfo.PlayerDir;
+		m_tFrame.iFrameStart = 0;
+		m_tFrame.iFrameEnd = 3;
+		m_tFrame.iFrameScene = OBJDIR::LEFT;
+		m_tFrame.dwFrameTime = GetTickCount();
+		m_tFrame.dwFrameSpeed = 200;
+		break;
+	case OBJDIR::RIGHT:
+		m_eCurDir = m_tInfo.PlayerDir;
+		m_tFrame.iFrameStart = 0;
+		m_tFrame.iFrameEnd = 3;
+		m_tFrame.iFrameScene = OBJDIR::RIGHT;
+		m_tFrame.dwFrameTime = GetTickCount();
+		m_tFrame.dwFrameSpeed = 200;
+		break;
+	};
+	m_ePreDir = m_eCurDir;
+
+	/*if (m_ePreDir != m_eCurDir)
 	{
 		switch (m_eCurDir)
 		{
@@ -251,5 +298,5 @@ void CDigenie::Scene_Change()
 			break;
 		}
 		m_ePreDir = m_eCurDir;
-	}
+	}*/
 }

@@ -731,8 +731,12 @@ void CObjManager::Update_NetWorkPlayer(CLIENTINFO& _playerinfo)
 			}
 			player->Change_PosX(_playerinfo.PlayerInfo.PlayerPos.fX);
 			player->Change_PosY(_playerinfo.PlayerInfo.PlayerPos.fY);
-			player->SetCurDIR(_playerinfo.PlayerInfo.PlayerDir);
-
+			if (player->Get_ClientID() == 0)
+				dynamic_cast<CBazzi*>(player)->SetPlayerDIR(_playerinfo.PlayerInfo.PlayerDir);
+			if (player->Get_ClientID() == 1)
+				dynamic_cast<CDao*>(player)->SetPlayerDIR(_playerinfo.PlayerInfo.PlayerDir);
+			if (player->Get_ClientID() == 2)
+				dynamic_cast<CDigenie*>(player)->SetPlayerDIR(_playerinfo.PlayerInfo.PlayerDir);
 		}
 	}
 }
