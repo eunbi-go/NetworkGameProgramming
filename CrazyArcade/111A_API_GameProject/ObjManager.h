@@ -27,7 +27,8 @@ public:
 	float Get_PlayerY();
 	float Get_BombX();
 	float Get_BombY();
-	bool Get_isBombPos(float _x, float _y);
+	bool Get_isBombPos(float _x, float _y, int id);
+	void Set_MultiBomb(float _x, float _y, int id);
 	OBJDIR::DIR Get_PlayerDir();
 	OBJSTATE::STATE Get_PlayerState();
 
@@ -68,7 +69,7 @@ public:
 	void Update_NetWorkPlayer(CLIENTINFO& _playerinfo);
 
 	// 모든 클라이언트의 폭탄 동기화
-	void Add_Bomb(OBJPOS _pos, int _bombPower);
+	void Add_Bomb(OBJPOS _pos, int _bombPower, int id);
 
 public:
 	void Clear_DeadBlockList() { m_vecDeadTileKey.clear(); m_vecDeadTileKey.resize(0); }
@@ -104,6 +105,9 @@ private:
 
 	vector<int>				m_vecDeadTileKey;
 	vector<int>				m_vecNoItemBlock;
+
+	float tempx;
+	float tempy;
 };
 
 

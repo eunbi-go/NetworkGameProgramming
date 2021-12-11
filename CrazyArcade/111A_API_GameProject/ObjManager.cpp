@@ -131,7 +131,7 @@ void CObjManager::Update()
 
 	///////////////////////////////// 치트
 	// 테스트용으로 치트 켜놓은 상태
-	if (!m_bisCheat)
+	if (m_bisCheat)
 	{
 		CCollidManager::Collision_Rect_PlayerToBoss(m_listObj[OBJID::PLAYER], m_listObj[OBJID::BOSS]);
 		CCollidManager::Collision_Rect_PlayerToMonster(m_listObj[OBJID::PLAYER], m_listObj[OBJID::MONSTER]);
@@ -274,29 +274,111 @@ float CObjManager::Get_PlayerY()
 
 float CObjManager::Get_BombX()
 {
-	for (auto& iter = m_listObj[OBJID::BOMB].begin(); iter != m_listObj[OBJID::BOMB].end(); ++iter)
+	/*for (auto& iter = m_listObj[OBJID::BOMB].begin(); iter != m_listObj[OBJID::BOMB].end(); ++iter)
 	{
 		return dynamic_cast<CBomb*>(*iter)->Get_BombX();
+	}*/
+	if (m_listObj[OBJID::BOMB].size() != 0) {
+		auto& iter = m_listObj[OBJID::BOMB].back();
+		return dynamic_cast<CBomb*>(iter)->Get_BombX();
 	}
-
+	else
+		return 0.f;
 }
 
 float CObjManager::Get_BombY()
 {
-	for (auto& iter = m_listObj[OBJID::BOMB].begin(); iter != m_listObj[OBJID::BOMB].end(); ++iter)
+	/*for (auto& iter = m_listObj[OBJID::BOMB].begin(); iter != m_listObj[OBJID::BOMB].end(); ++iter)
 	{
 		return dynamic_cast<CBomb*>(*iter)->Get_BombY();
+	}*/
+	if (m_listObj[OBJID::BOMB].size() != 0) {
+		auto& iter = m_listObj[OBJID::BOMB].back();
+		return dynamic_cast<CBomb*>(iter)->Get_BombY();
 	}
+	else
+		return 0.f;
 }
 
-bool CObjManager::Get_isBombPos(float _x, float _y)
+bool CObjManager::Get_isBombPos(float _x, float _y, int id)
 {
-	for (auto& iter = m_listObj[OBJID::MULTIBOMB].begin(); iter != m_listObj[OBJID::MULTIBOMB].end(); ++iter)
+	switch (id)
+	{
+	case 0:
+		if (m_listObj[OBJID::MULTIBOMB0].size() != 0) {
+			auto& iter = m_listObj[OBJID::MULTIBOMB0].back();
+			if (dynamic_cast<CBomb*>(iter)->Get_BombX() == _x &&
+				dynamic_cast<CBomb*>(iter)->Get_BombY() == _y)
+				return true;
+		}
+		break;
+	case 1:
+		if (m_listObj[OBJID::MULTIBOMB1].size() != 0) {
+			auto& iter = m_listObj[OBJID::MULTIBOMB1].back();
+			if (dynamic_cast<CBomb*>(iter)->Get_BombX() == _x &&
+				dynamic_cast<CBomb*>(iter)->Get_BombY() == _y)
+				return true;
+		}
+		break;
+	case 2:
+		if (m_listObj[OBJID::MULTIBOMB2].size() != 0) {
+			auto& iter = m_listObj[OBJID::MULTIBOMB2].back();
+			if (dynamic_cast<CBomb*>(iter)->Get_BombX() == _x &&
+				dynamic_cast<CBomb*>(iter)->Get_BombY() == _y)
+				return true;
+		}
+		break;
+	}
+	/*if (m_listObj[OBJID::MULTIBOMB].size() != 0) {
+		auto& iter = m_listObj[OBJID::MULTIBOMB].back();
+		if (dynamic_cast<CBomb*>(iter)->Get_BombX() == _x &&
+			dynamic_cast<CBomb*>(iter)->Get_BombY() == _y)
+			return true;
+	}*/
+	return false;
+	/*for (auto& iter = m_listObj[OBJID::MULTIBOMB].begin(); iter != m_listObj[OBJID::MULTIBOMB].end(); ++iter)
 	{
 		if (dynamic_cast<CBomb*>(*iter)->Get_BombX() == _x &&
 			dynamic_cast<CBomb*>(*iter)->Get_BombY() == _y)
 			return true;
 		return false;
+	}*/
+}
+
+void CObjManager::Set_MultiBomb(float _x, float _y, int id)
+{
+	switch (id)
+	{
+	case 0:
+		if (m_listObj[OBJID::MULTIBOMB0].size() != 0) {
+			auto& iter = m_listObj[OBJID::MULTIBOMB0].back();
+			if (dynamic_cast<CBomb*>(iter)->Get_BombX() != _x &&
+				dynamic_cast<CBomb*>(iter)->Get_BombY() != _y) {
+				OBJPOS temp = { dynamic_cast<CBomb*>(iter)->Get_BombX(), dynamic_cast<CBomb*>(iter)->Get_BombY() };
+				Add_Bomb(temp, 1, id);
+			}
+		}
+		break;
+	case 1:
+		if (m_listObj[OBJID::MULTIBOMB1].size() != 0) {
+			auto& iter = m_listObj[OBJID::MULTIBOMB1].back();
+			if (dynamic_cast<CBomb*>(iter)->Get_BombX() != _x &&
+				dynamic_cast<CBomb*>(iter)->Get_BombY() != _y) {
+				OBJPOS temp = { dynamic_cast<CBomb*>(iter)->Get_BombX(), dynamic_cast<CBomb*>(iter)->Get_BombY() };
+				Add_Bomb(temp, 1, id);
+			}
+		}
+		break;
+	case 2:
+		if (m_listObj[OBJID::MULTIBOMB2].size() != 0) {
+			auto& iter = m_listObj[OBJID::MULTIBOMB2].back();
+			if (dynamic_cast<CBomb*>(iter)->Get_BombX() != _x &&
+				dynamic_cast<CBomb*>(iter)->Get_BombY() != _y) {
+				OBJPOS temp = { dynamic_cast<CBomb*>(iter)->Get_BombX(), dynamic_cast<CBomb*>(iter)->Get_BombY() };
+				Add_Bomb(temp, 1, id);
+			}
+		}
+		break;
 	}
 }
 
@@ -776,9 +858,12 @@ void CObjManager::Update_NetWorkPlayer(CLIENTINFO& _playerinfo)
 		if (player->Get_ClientID() == _playerinfo.ClientID)
 		{
 			if (!isnan(_playerinfo.BombPos.fX) && !isnan(_playerinfo.BombPos.fY)) {
-				if (!Get_isBombPos(_playerinfo.BombPos.fX, _playerinfo.BombPos.fY)) {
-					Add_Bomb(_playerinfo.BombPos, player->Get_BombPower());
+				if (_playerinfo.BombPos.fX != 0.f && _playerinfo.BombPos.fY != 0.f) {
+					if (!Get_isBombPos(_playerinfo.BombPos.fX, _playerinfo.BombPos.fY, _playerinfo.ClientID)) {
+						Add_Bomb(_playerinfo.BombPos, player->Get_BombPower(), _playerinfo.ClientID);
+					}
 				}
+				//Set_MultiBomb(_playerinfo.BombPos.fX, _playerinfo.BombPos.fY, _playerinfo.ClientID);
 			}
 			player->Change_PosX(_playerinfo.PlayerInfo.PlayerPos.fX);
 			player->Change_PosY(_playerinfo.PlayerInfo.PlayerPos.fY);
@@ -798,14 +883,27 @@ void CObjManager::Update_NetWorkPlayer(CLIENTINFO& _playerinfo)
 	}
 }
 
-void CObjManager::Add_Bomb(OBJPOS _pos, int _bombPower)
+void CObjManager::Add_Bomb(OBJPOS _pos, int _bombPower, int id)
 {
 	CObj* pObj = nullptr;
 	pObj = CAbstractFactory<CBomb>::Create(_pos.fX, _pos.fY, _bombPower, false);
-	Add_Object(pObj, OBJID::MULTIBOMB);
-	cout << "ClientID" << CClientManager::Get_Instance()->GetClientID() << " 가 설치한 폭탄" << endl;
+	switch (id)
+	{
+	case 0:
+		Add_Object(pObj, OBJID::MULTIBOMB0);
+		break;
+	case 1:
+		Add_Object(pObj, OBJID::MULTIBOMB1);
+		break;
+	case 2:
+		Add_Object(pObj, OBJID::MULTIBOMB2);
+		break;
+	}
+	//Add_Object(pObj, OBJID::MULTIBOMB);
+	cout << "ClientID" << CClientManager::Get_Instance()->GetClientID() << "의 화면에 설치되어야 할 폭탄" << endl;
 	cout << "X: " << _pos.fX << ", Y: " << _pos.fY << endl;
 	cout << "=====================================" << endl;
+
 }
 
 void CObjManager::Set_BlockBubble(int iNum)
