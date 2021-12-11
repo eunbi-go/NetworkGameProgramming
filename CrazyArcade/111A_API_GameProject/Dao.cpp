@@ -72,18 +72,20 @@ int CDao::Update()
 			m_dwTime = GetTickCount();
 		}
 
+
 	}
 	if (OBJSTATE::DEAD == m_eState)
 	{
 		if (m_dwTime + 2000 < GetTickCount())
 		{
 			m_dwTime = GetTickCount();
-			CSoundMgr::Get_Instance()->StopAll();
+			/*CSoundMgr::Get_Instance()->StopAll();
 			CSoundMgr::Get_Instance()->PlaySound(L"lose.mp3", CSoundMgr::PLAYER_LOSE);
 			CTileManager::Get_Instance()->Release();
-			CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENE_MENU);
+			CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENE_MENU);*/
 			return OBJ_DEAD;
 		}
+	
 	}
 
 

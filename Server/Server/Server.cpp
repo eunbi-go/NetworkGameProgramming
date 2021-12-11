@@ -27,9 +27,6 @@ bool isSetTimer = false;
 #define SERVERPORT 9000
 CRITICAL_SECTION cs;
 
-
-CRITICAL_SECTION cs;
-
 void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo);
 void Send_Data(LPVOID arg);
 void Send_InitMap(LPVOID arg);

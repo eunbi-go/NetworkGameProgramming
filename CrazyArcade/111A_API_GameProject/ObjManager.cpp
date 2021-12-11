@@ -27,6 +27,7 @@
 #include "Potion.h"
 #include "Skate.h"
 #include "MaxPotion.h"
+#include "ClientManager.h"
 
 CObjManager* CObjManager::m_pInstance = nullptr;
 
@@ -130,7 +131,7 @@ void CObjManager::Update()
 
 	///////////////////////////////// 치트
 	// 테스트용으로 치트 켜놓은 상태
-	if (m_bisCheat)
+	if (!m_bisCheat)
 	{
 		CCollidManager::Collision_Rect_PlayerToBoss(m_listObj[OBJID::PLAYER], m_listObj[OBJID::BOSS]);
 		CCollidManager::Collision_Rect_PlayerToMonster(m_listObj[OBJID::PLAYER], m_listObj[OBJID::MONSTER]);
@@ -277,6 +278,7 @@ float CObjManager::Get_BombX()
 	{
 		return dynamic_cast<CBomb*>(*iter)->Get_BombX();
 	}
+
 }
 
 float CObjManager::Get_BombY()
@@ -303,6 +305,14 @@ OBJDIR::DIR CObjManager::Get_PlayerDir()
 	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
 	{
 		return dynamic_cast<CPlayer*>(*iter)->Get_PlayerDir();
+	}
+}
+
+OBJSTATE::STATE CObjManager::Get_PlayerState()
+{
+	for (auto& iter = m_listObj[OBJID::PLAYER].begin(); iter != m_listObj[OBJID::PLAYER].end(); ++iter)
+	{
+		return dynamic_cast<CPlayer*>(*iter)->Get_PlayerState();
 	}
 }
 
@@ -772,12 +782,18 @@ void CObjManager::Update_NetWorkPlayer(CLIENTINFO& _playerinfo)
 			}
 			player->Change_PosX(_playerinfo.PlayerInfo.PlayerPos.fX);
 			player->Change_PosY(_playerinfo.PlayerInfo.PlayerPos.fY);
-			if (player->Get_ClientID() == 0)
+			if (player->Get_ClientID() == 0) {
 				dynamic_cast<CBazzi*>(player)->SetPlayerDIR(_playerinfo.PlayerInfo.PlayerDir);
-			if (player->Get_ClientID() == 1)
+				dynamic_cast<CBazzi*>(player)->SetPlayerState(_playerinfo.PlayerInfo.PlayerState);
+			}
+			if (player->Get_ClientID() == 1) {
 				dynamic_cast<CDao*>(player)->SetPlayerDIR(_playerinfo.PlayerInfo.PlayerDir);
-			if (player->Get_ClientID() == 2)
+				dynamic_cast<CDao*>(player)->SetPlayerState(_playerinfo.PlayerInfo.PlayerState);
+			}
+			if (player->Get_ClientID() == 2) {
 				dynamic_cast<CDigenie*>(player)->SetPlayerDIR(_playerinfo.PlayerInfo.PlayerDir);
+				dynamic_cast<CDigenie*>(player)->SetPlayerState(_playerinfo.PlayerInfo.PlayerState);
+			}
 		}
 	}
 }
@@ -787,7 +803,9 @@ void CObjManager::Add_Bomb(OBJPOS _pos, int _bombPower)
 	CObj* pObj = nullptr;
 	pObj = CAbstractFactory<CBomb>::Create(_pos.fX, _pos.fY, _bombPower, false);
 	Add_Object(pObj, OBJID::MULTIBOMB);
-
+	cout << "ClientID" << CClientManager::Get_Instance()->GetClientID() << " 가 설치한 폭탄" << endl;
+	cout << "X: " << _pos.fX << ", Y: " << _pos.fY << endl;
+	cout << "=====================================" << endl;
 }
 
 void CObjManager::Set_BlockBubble(int iNum)

@@ -22,6 +22,7 @@ typedef struct tagInfo
 	int			iClientID;
 
 	OBJDIR::DIR PlayerDir;
+	//OBJSTATE::STATE PlayerState;
 }INFO;
 
 /////////////////// 네트워크 구현을 위한 패킷 정보 ///////////////////////////
@@ -39,6 +40,7 @@ typedef struct PlayerInfo
 	//FRAME				PlayerFrame;		// 플레이어 현재 프레임
 	RECT				PlayerSize;			// 플레이어 사이즈(크기)
 	bool				b_isContactPlayer;	// 플레이어가 모두 충돌했는가? 서버에서 판단
+	OBJSTATE::STATE		PlayerState;		// 플레이어의 상태
 }PLAYERINFO;
 
 typedef struct ItemInfo

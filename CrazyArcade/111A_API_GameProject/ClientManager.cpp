@@ -145,10 +145,10 @@ int CClientManager::recvInfo()
 		if (retval == SOCKET_ERROR) {
 			err_display("recv()");
 		}
-		cout << "접속한 클라이언트 수 : " << AllClientNum << endl;
-		cout << "Player" << tClientInfo.ClientID << "-> X:" << tClientInfo.PlayerInfo.PlayerPos.fX
-			<< " Y:" << tClientInfo.PlayerInfo.PlayerPos.fY << endl;
-		cout << "-------------------------------------------" << endl;
+		//cout << "접속한 클라이언트 수 : " << AllClientNum << endl;
+		//cout << "Player" << tClientInfo.ClientID << "-> X:" << tClientInfo.PlayerInfo.PlayerPos.fX
+		//	<< " Y:" << tClientInfo.PlayerInfo.PlayerPos.fY << endl;
+		//cout << "-------------------------------------------" << endl;
 		tWorldInfo.insert({ tClientInfo.ClientID, tClientInfo });
 		tWorldInfo[tClientInfo.ClientID] = tClientInfo;
 
@@ -292,6 +292,9 @@ void CClientManager::setPlayerInfo()
 	// 폭탄 위치 저장
 	tClientInfo.BombPos.fX = CObjManager::Get_Instance()->Get_BombX();
 	tClientInfo.BombPos.fY = CObjManager::Get_Instance()->Get_BombY();
+
+	// 플레이어 상태 저장
+	tClientInfo.PlayerInfo.PlayerState = CObjManager::Get_Instance()->Get_PlayerState();
 }
 
 void CClientManager::setPlayerPosToClientInfo(float fX, float fY)

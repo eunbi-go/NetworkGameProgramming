@@ -74,6 +74,7 @@ int CBazzi::Update()
 			m_eState = OBJSTATE::DEAD;
 			m_dwTime = GetTickCount();
 		}
+		
 
 	}
 	if (OBJSTATE::DEAD == m_eState)
@@ -81,12 +82,13 @@ int CBazzi::Update()
 		if (m_dwTime + 2000 < GetTickCount())
 		{
 			m_dwTime = GetTickCount();
-			CSoundMgr::Get_Instance()->StopAll();
-			CSoundMgr::Get_Instance()->PlaySound(L"lose.mp3", CSoundMgr::PLAYER_LOSE);
-			CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENE_MENU);
-			CTileManager::Get_Instance()->Release();
+			//CSoundMgr::Get_Instance()->StopAll();
+			//CSoundMgr::Get_Instance()->PlaySound(L"lose.mp3", CSoundMgr::PLAYER_LOSE);
+			//CSceneManager::Get_Instance()->Scene_Change(CSceneManager::SCENE_MENU);
+			//CTileManager::Get_Instance()->Release();
 			return OBJ_DEAD;
 		}
+		
 	}
 
 
