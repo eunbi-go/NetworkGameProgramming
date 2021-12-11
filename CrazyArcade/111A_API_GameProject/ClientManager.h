@@ -35,8 +35,6 @@ public:
 
 	void	recvInitPlayerPos();
 	void	recvInitMapTile();
-	void	recvInitMonster();
-	void	InitMonster();
 
 public:
 	void	setPlayerInfo();		// 네트워크 통신용 플레이어 위치 전송
@@ -45,8 +43,9 @@ public:
 	void	setPlayerName(CHARNAME::NAME _CharName) { tClientInfo.PlayerInfo.PlayerName = _CharName; } // WaitingRoom에서 캐릭터 정해줌
 	void	recvIsGameStart();
 
-	int		GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
-	vector<CObj*> Get_MapTile() { return vecMapTile; }
+	int				GetClientID() { return iClientID; }		// 클라이언트 아이디를 반환
+	vector<CObj*>	Get_MapTile() { return vecMapTile; }
+	int				GetAllClientNum() { return AllClientNum; }
 
 	map<int, CLIENTINFO> GetWorldInfo() { return tWorldInfo; }
 
@@ -78,8 +77,6 @@ private:
 	// 서버로부터 받는 패킷 
 	// - 플레이어, 상대 플레이어, 몬스터, 아이템 정보가 모두 들어있음
 	map<int, CLIENTINFO>	tWorldInfo;
-	vector<MONSTERINFO>		tMonsterInfo;
-	int						iMonsterCnt = -1;
 
 	// 서버로부터 받은 맵 정보
 	vector<CObj*> vecMapTile;

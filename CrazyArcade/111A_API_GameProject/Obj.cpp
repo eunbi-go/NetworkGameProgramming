@@ -3,7 +3,7 @@
 
 
 CObj::CObj()
-	: m_dwTime(GetTickCount()), m_eBlock(MAPBLOCK::NOBLOCK), m_ePreDir(OBJDIR::END), m_eCurDir(OBJDIR::END), m_eState(OBJSTATE::END)
+	: m_dwTime(GetTickCount()), m_eBlock(MAPBLOCK::NOBLOCK), m_ePreDir(OBJDIR::END), m_eCurDir(OBJDIR::END), m_eState(OBJSTATE::END), m_nObjNum(-1)
 {
 	ZeroMemory(&m_tInfo, sizeof(m_tInfo));
 	ZeroMemory(&m_tRect, sizeof(m_tRect));

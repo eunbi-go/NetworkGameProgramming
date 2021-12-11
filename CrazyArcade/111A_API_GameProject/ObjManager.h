@@ -20,6 +20,7 @@ public:
 	void Add_Object(CObj* _pObj, OBJID::ID _eID) { m_listObj[_eID].emplace_back(_pObj); }
 	void Add_Object_MapBlock(CObj* _pObj, MAPBLOCK::BLOCK _eBlock) { m_listMapBLOCK[_eBlock].emplace_back(_pObj); }
 	void Add_Object_Item(CObj* _pObj, GAMEITEM::ITEM _eItem) { m_listItem[_eItem].emplace_back(_pObj); }
+	void Make_Add_Item(ITEMINFO tItem);
 
 public:
 	float Get_PlayerX();
@@ -55,7 +56,7 @@ public:
 
 	list<CObj*>& Get_List(OBJID::ID _eID) { return m_listObj[_eID]; }
 	CObj* Get_Player() { return m_listObj[OBJID::PLAYER].front(); }
-	
+
 	void Update_MonsterInfo(vector<MONSTERINFO> vInfo);
 	void Add_Monster(MONSTERINFO info, int iNum);
 	list<CObj*> Get_MonsterList() { return m_listObj[OBJID::MONSTER]; }
@@ -67,6 +68,12 @@ public:
 
 	// 모든 클라이언트의 폭탄 동기화
 	void Add_Bomb(OBJPOS _pos, int _bombPower);
+
+public:
+	void Clear_DeadBlockList() { m_vecDeadTileKey.clear(); m_vecDeadTileKey.resize(0); }
+	void Set_BlockBubble(int iNum);
+	bool Check_BlockState(int iNum);
+	void Add_NoItemBlock(int iNum) { m_vecNoItemBlock.emplace_back(iNum); }
 
 public:
 	static CObjManager* Get_Instance()
@@ -86,7 +93,7 @@ private:
 	list<CObj*>				m_listObj[OBJID::END];
 	list<CObj*>				m_listMapBLOCK[MAPBLOCK::END];
 	list<CObj*>				m_listItem[GAMEITEM::END];
-	static CObjManager*		m_pInstance;
+	static CObjManager* m_pInstance;
 
 	bool					m_bisBombPlayerCollid;
 	int						m_iStage1Clear;
@@ -94,6 +101,8 @@ private:
 
 	bool					m_bisCheat;
 
+	vector<int>				m_vecDeadTileKey;
+	vector<int>				m_vecNoItemBlock;
 };
 
 

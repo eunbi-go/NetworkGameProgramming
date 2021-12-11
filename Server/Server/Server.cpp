@@ -12,12 +12,12 @@
 static int iClientID = 0;				// 클라이언트의 ID
 map<int, CLIENTINFO> WorldInfo;			// 클라이언트로 보낼 패킷
 map<USHORT, int> mapClientPort;			// 클라이언트의 포트번호와 클라이언트ID 저장
-//map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
+										//map<int, bool> mapIsRecv;				// 클라이언트에서 데이터를 전송받았는지 판단하기 위한 맵
 map<int, bool> mapIsCollision;			// 버프 판단을 위한 충돌 확인 맵
+vector<USHORT>	vecClientPort;
 
 vector<CObj*>	vecMapTile;				// 맵 타일
 vector<USHORT> vecIsFirstConnect;		// 클라이언트가 접속하면 클라이언트의 포트번호를 저장함 (처음 접속인지 확인용)
-vector<MONSTERINFO>	vecMonster;
 
 HANDLE hRecvEvent;
 HANDLE hSendEvent;
@@ -25,6 +25,8 @@ HANDLE hSendEvent;
 bool isStart = false;
 bool isSetTimer = false;
 #define SERVERPORT 9000
+CRITICAL_SECTION cs;
+
 
 CRITICAL_SECTION cs;
 
@@ -33,7 +35,6 @@ void Send_Data(LPVOID arg);
 void Send_InitMap(LPVOID arg);
 
 void CheckBuff();
-void Init_Monster(LPVOID arg);
 
 // 소켓 함수 오류 출력 후 종료
 void err_quit(const char* msg)
@@ -115,8 +116,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		// 맵 정보 전송 -> 클라이언트는 이 정보를 바탕으로 맵 초기화
 		Send_InitMap((LPVOID)client_sock);
 
-		// 몬스터 정보 전송
-		//Init_Monster((LPVOID)client_sock);
 
 		printf("포트 번호=%d 에게 ClientID: %d 전송 성공\n", ntohs(clientaddr.sin_port), iClientID);
 
@@ -128,11 +127,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	}
 
 	while (1) {
-
-		// 몬스터 정보 업데이트
-		//if (isStart)
-			//CObjManager::Get_Instance()->Update_Monster();
-
 		// 데이터 받기
 		Receive_Data((LPVOID)client_sock, WorldInfo);
 
@@ -141,6 +135,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		// 데이터 보내기
 		Send_Data((LPVOID)client_sock);
+
 
 		CTimeManager::Get_Instance()->Update_CTimeManager();
 	}
@@ -160,6 +155,7 @@ int main(int argc, char* argv[])
 
 	// 맵 생성
 	CTileManager::Get_Instance()->Load_Tile();
+	CObjManager::Get_Instance()->Load_Object();
 
 	// 윈속 초기화
 	WSADATA wsa;
@@ -170,6 +166,8 @@ int main(int argc, char* argv[])
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (listen_sock == INVALID_SOCKET)
 		err_quit("socket()");
+	//int	option = TRUE;	// Nagle On
+	//setsockopt(listen_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 
 	// bind()
 	SOCKADDR_IN serveraddr;
@@ -215,6 +213,7 @@ int main(int argc, char* argv[])
 		hThread = CreateThread(NULL, 0, ProcessClient,
 			(LPVOID)client_sock, 0, NULL);
 
+
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
@@ -249,6 +248,7 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
+	printf("R : %d\n", clientaddr.sin_port);
 
 	// 고정 길이 데이터 받아오기
 	retval = recvn(client_sock, (char*)&ClientInfo, sizeof(CLIENTINFO), 0);
@@ -256,48 +256,38 @@ void Receive_Data(LPVOID arg, map<int, ClientInfo> _worldInfo)
 		err_display("recv()");
 	}
 
-	//int iStart;
-	//retval = recvn(client_sock, (char*)&iStart, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("recv()");
-	//}
-	//if (iStart == 1 && !isSetTimer) {
-	//	isStart = true;
-	//	isSetTimer = true;
-	//	//CTimeManager::Get_Instance()->Ready_CTimeManager();
-	//}
+	// 받아온 데이터 map에 저장
+	auto iter = mapClientPort.find(clientaddr.sin_port);
 
-	//// 받아온 데이터 map에 저장
-	//auto iter = mapClientPort.find(clientaddr.sin_port);
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// # 4. 변화된 타일 정보
+	int nTileCnt = -1;
+	retval = recvn(client_sock, (char*)&nTileCnt, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
 
-	//// # 3. 몬스터 정보 
-	//if (isStart) {
-	//	int iMonsterCnt = -1;
-	//	retval = recvn(client_sock, (char*)&iMonsterCnt, sizeof(int), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("recv()");
-	//	}
+	if (nTileCnt > 0) {
+		vector<int>	vecTileKey;
+		vecTileKey.resize(nTileCnt);
 
-	//	for (int i = 0; i < iMonsterCnt; ++i) {
-	//		retval = recvn(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
-	//		if (retval == SOCKET_ERROR) {
-	//			err_display("recv()");
-	//		}
-	//	}
+		for (int i = 0; i < nTileCnt; ++i) {
+			retval = recvn(client_sock, (char*)&vecTileKey[i], sizeof(int), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+			}
+			// 버블 상태가 될 블럭의 오브젝트num을 받아와서 저장
+			CObjManager::Get_Instance()->Add_CollBlock(vecTileKey[i]);
 
-	//	list<CObj*> monsterList = CObjManager::Get_Instance()->Get_MonsterList();
-	//	int iNum = 0;
-	//	for (auto iter = monsterList.begin(); iter != monsterList.end(); ++iter) {
-	//		if (vecMonster[iNum].MonsterDead) {
-	//			vecMonster.erase(vecMonster.begin() + iNum);
-	//			SAFE_DELETE(*iter);
-	//			iter = monsterList.erase(iter);
-	//		}
-	//		++iNum;
-	//	}
+			// 아이템을 갖고 있는 블럭인지 확인
+			CObjManager::Get_Instance()->Check_ItemBlock(vecTileKey[i]);
+		}
 
-	//	CObjManager::Get_Instance()->Set_MonsterList(monsterList);
-	//}
+		// 아이템 생성
+		CObjManager::Get_Instance()->Make_Item();
+		// 
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	auto Portiter = mapClientPort.find(clientaddr.sin_port);
 	// WorldInfo의 ClientID 키값에 ClientInfo를 저장한다.
@@ -322,6 +312,13 @@ void Send_Data(LPVOID arg)
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
+	printf("S : %d\n", clientaddr.sin_port);
+
+	retval = send(client_sock, (char*)&iClientID, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
 	for (int i = 0; i < iClientID; ++i)
 	{
 		//auto iter = mapClientPort.find(clientaddr.sin_port);
@@ -333,34 +330,46 @@ void Send_Data(LPVOID arg)
 		}
 	}
 
-	//// 몬스터 부분
-	//if (isStart) {
-	//	// 업데이트된 몬스터들 위치
-	//	list<CObj*>	listMonster = CObjManager::Get_Instance()->Get_MonsterList();
-	//	int iNum = 0, iSendCnt = 0;
-	//	int iCnt = listMonster.size();
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// 맵 블럭
+	vector<int>	vecDeadTileKey = CObjManager::Get_Instance()->Get_DeadTile();
+	int	iTileNum = vecDeadTileKey.size();
 
-	//	for (auto iter = listMonster.begin(); iter != listMonster.end(); ++iter)
-	//	{
-	//		vecMonster[iNum].MonsterPos.fX = (*iter)->Get_Info().fX;
-	//		vecMonster[iNum].MonsterPos.fY = (*iter)->Get_Info().fY;
-	//		vecMonster[iNum].MonsterDir = (*iter)->GetDir();
-	//		vecMonster[iNum].Monsterframe = (*iter)->Get_Frame();
-	//		++iNum;
-	//	}
+	// - 없어질 타일
+	retval = send(client_sock, (char*)&iTileNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
 
-	//	retval = send(client_sock, (char*)&iNum, sizeof(int), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("send()");
-	//	}
+	if (iTileNum > 0) {
+		for (int i = 0; i < iTileNum; ++i) {
+			retval = send(client_sock, (char*)&vecDeadTileKey[i], sizeof(int), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
+		}
+	}
 
-	//	for (int i = 0; i < iNum; ++i) {
-	//		retval = send(client_sock, (char*)&vecMonster[i], sizeof(MONSTERINFO), 0);
-	//		if (retval == SOCKET_ERROR) {
-	//			err_display("send()");
-	//		}
-	//	}
-	//}
+	// - 아이템이 생길 타일
+	vector<ITEMINFO>	vecItem = CObjManager::Get_Instance()->Get_vecItemInfo();
+	int	iItemNum = vecItem.size();
+
+	retval = send(client_sock, (char*)&iItemNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
+	if (iItemNum > 0) {
+		for (int i = 0; i < iItemNum; ++i) {
+			retval = send(client_sock, (char*)&vecItem[i], sizeof(ITEMINFO), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
+		}
+	}
+
+	CObjManager::Get_Instance()->Clear_DeadTile();
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 
 	LeaveCriticalSection(&cs);
 }
@@ -418,7 +427,7 @@ void Send_InitMap(LPVOID arg)
 	int retval;
 	char buf[BUFSIZE + 1];
 
-	ifstream    in{ "newTile2.dat", ios::in | ios::binary }; 
+	ifstream    in{ "newTile2.dat", ios::in | ios::binary };
 	if (!in) {
 		printf("파일 열기 실패\n");
 		exit(0);
@@ -451,131 +460,4 @@ void Send_InitMap(LPVOID arg)
 	retval = send(client_sock, &FileData[0], iSize, 0);
 	if (retval == SOCKET_ERROR)
 		err_display("send()");
-}
-
-void Init_Monster(LPVOID arg)
-{
-	SOCKET client_sock = (SOCKET)arg;
-	int retval;
-
-	CObj* pObj = nullptr;
-	MONSTERINFO	tInfo;
-
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 14) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MESSI;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 14) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::BOTTOM;
-	tInfo.MonsterID = 1;
-	tInfo.MonsterDead = false;
-	vecMonster.emplace_back(tInfo);
-
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 12) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MESSI;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 12) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::BOTTOM;
-	tInfo.MonsterID = 2;
-	tInfo.MonsterDead = false;
-	vecMonster.emplace_back(tInfo);
-
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 0) + (TILECY >> 1), OBJDIR::LEFT);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MESSI;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 8) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 0) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::LEFT;
-	tInfo.MonsterID = 3;
-	tInfo.MonsterDead = false;
-	vecMonster.emplace_back(tInfo);
-
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 8) + (TILECX >> 1), MAPSTARTY + (TILECY * 2) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MESSI;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 8) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 2) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::BOTTOM;
-	tInfo.MonsterID = 4;
-	tInfo.MonsterDead = false;
-	vecMonster.emplace_back(tInfo);
-
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 0) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::RIGHT);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MESSI;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 0) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::RIGHT;
-	tInfo.MonsterID = 5;
-	tInfo.MonsterDead = false;
-	vecMonster.emplace_back(tInfo);
-
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 3) + (TILECX >> 1), MAPSTARTY + (TILECY * 6) + (TILECY >> 1), OBJDIR::BOTTOM);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MESSI;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 3) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 6) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::BOTTOM;
-	tInfo.MonsterID = 6;
-	tInfo.MonsterDead = false;
-	vecMonster.emplace_back(tInfo);
-	//
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 10) + (TILECY >> 1), OBJDIR::LEFT);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MESSI;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 7) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 10) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::LEFT;
-	tInfo.MonsterID = 7;
-	tInfo.MonsterDead = false;
-	vecMonster.emplace_back(tInfo);
-
-	pObj = CAbstractFactory<CMessi>::Create_Monster(MAPSTARTX + (TILECX * 7) + (TILECX >> 1), MAPSTARTY + (TILECY * 12) + (TILECY >> 1), OBJDIR::TOP);
-	CObjManager::Get_Instance()->Add_Object(pObj, OBJID::MONSTER);
-	tInfo.MonsterName = MONSTERNAME::MESSI;
-	tInfo.MonsterPos.fX = MAPSTARTX + (TILECX * 7) + (TILECX >> 1);
-	tInfo.MonsterPos.fY = MAPSTARTY + (TILECY * 12) + (TILECY >> 1);
-	tInfo.MonsterDir = OBJDIR::TOP;
-	tInfo.MonsterID = 8;
-	tInfo.MonsterDead = false;
-	vecMonster.emplace_back(tInfo);
-
-	int iNum = 8;
-
-	retval = send(client_sock, (char*)&iNum, sizeof(int), 0);
-	if (retval == SOCKET_ERROR) err_display("send()");
-
-	retval = send(client_sock, (char*)&vecMonster[0], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	retval = send(client_sock, (char*)&vecMonster[1], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	retval = send(client_sock, (char*)&vecMonster[2], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	retval = send(client_sock, (char*)&vecMonster[3], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	retval = send(client_sock, (char*)&vecMonster[4], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	retval = send(client_sock, (char*)&vecMonster[5], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	retval = send(client_sock, (char*)&vecMonster[6], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-	retval = send(client_sock, (char*)&vecMonster[7], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
 }

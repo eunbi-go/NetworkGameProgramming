@@ -7,9 +7,9 @@
 
 CTileManager* CTileManager::m_pInstance = nullptr;
 CTileManager::CTileManager()
-	
+
 {
-	//m_vecTile.reserve(TILEX * TILEY);
+	m_vecTile.reserve(TILEX * TILEY);
 	for (int i = 0; i < TILEY; ++i)
 	{
 		for (int j = 0; j < TILEX; ++j)
@@ -31,8 +31,8 @@ void CTileManager::Initialize()
 	{
 		for (int j = 0; j < TILEX; ++j)
 		{
-			float fX = (float) MAPSTARTX + (j * TILECX) + (TILECX >> 1);
-			float fY = (float) MAPSTARTY + (i * TILECY) + (TILECY >> 1);
+			float fX = (float)MAPSTARTX + (j * TILECX) + (TILECX >> 1);
+			float fY = (float)MAPSTARTY + (i * TILECY) + (TILECY >> 1);
 
 			CObj* pObj = CAbstractFactory<CTile>::Create(fX, fY);
 			m_Tile[j][i] = dynamic_cast<CTile*>(pObj);
@@ -68,10 +68,10 @@ void CTileManager::Picking_Tile(int _iDrawID)
 	POINT pt = {};
 	GetCursorPos(&pt);
 	ScreenToClient(g_hWnd, &pt);
-	
-	int x = (pt.x - MAPSTARTX) / TILECX ;
+
+	int x = (pt.x - MAPSTARTX) / TILECX;
 	int y = (pt.y - MAPSTARTY) / TILECY;
-	
+
 	int iIdx = TILEX * y + x;
 
 	if (0 > iIdx || m_vecTile.size() <= (size_t)iIdx)
@@ -130,6 +130,7 @@ void CTileManager::Load_Tile()
 	DWORD	dwByte = 0;
 	INFO	tTemp = {};
 	int		iDrawID = 0;
+	int		iObjNum = 0;
 
 	while (true)
 	{
@@ -141,8 +142,16 @@ void CTileManager::Load_Tile()
 
 		CObj* pObj = CAbstractFactory<CTile>::Create(tTemp.fX, tTemp.fY);
 		dynamic_cast<CTile*>(pObj)->Set_TileKey(iDrawID);
+		//pObj->Set_ObjNum(iObjNum);
+
 
 		m_vecTile.emplace_back(pObj);
+		//++iObjNum;
+	}
+
+	for (int i = 0; i < m_vecTile.size(); ++i) {
+		m_vecTile[i]->Set_ObjNum(i);
+		int k = 0;
 	}
 
 	CloseHandle(hFile);
@@ -173,6 +182,46 @@ MAPBLOCK::BLOCK CTileManager::GetTileBlockType(float _x, float _y)
 	int TileY = ((int)_y - MAPSTARTY) / TILECY;
 
 	return m_Tile[TileX][TileY]->GetTileType();
+}
+
+void CTileManager::Organize_Tile()
+{
+
+	for (int i = 0; i < m_vecCollTileKey.size(); ++i) {
+		for (auto& iter = m_vecTile.begin(); iter != m_vecTile.end();) {
+			if ((*iter)->Get_ObjNum() == m_vecCollTileKey[i]) {
+				iter = m_vecTile.erase(iter);
+				break;
+			}
+			else
+				iter++;
+		}
+	}
+
+	//m_vecCollTileKey.clear();
+}
+
+void CTileManager::Add_CollTileKey(int nKey)
+{
+	auto iter = find(m_vecCollTileKey.begin(), m_vecCollTileKey.end(), nKey);
+	if (iter != m_vecCollTileKey.end())
+		m_vecCollTileKey.emplace_back(nKey);
+}
+
+void CTileManager::Add_DeadTileKey(int nKey)
+{
+	auto iter = find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), nKey);
+	if (iter != m_vecDeadTileKey.end())
+		m_vecDeadTileKey.emplace_back(nKey);
+}
+
+bool CTileManager::Is_DeadTile(int nKey)
+{
+	auto iter = find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), nKey);
+	if (iter != m_vecDeadTileKey.end())
+		return true;	// 없어진 타일
+	else
+		return false;
 }
 
 

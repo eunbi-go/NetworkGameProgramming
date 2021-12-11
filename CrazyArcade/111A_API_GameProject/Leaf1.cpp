@@ -35,7 +35,7 @@ void CLeaf1::Initialize()
 
 int CLeaf1::Update()
 {
-	CObj* pObj = nullptr;
+	/*CObj* pObj = nullptr;
 
 	if (m_eState == OBJSTATE::BUBBLE)
 	{
@@ -63,7 +63,7 @@ int CLeaf1::Update()
 			break;
 		}
 		return OBJ_DEAD;
-	}
+	}*/
 
 
 	Update_Rect();

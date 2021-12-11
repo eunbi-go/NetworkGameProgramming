@@ -19,7 +19,12 @@ public:
 
 public:
 	MAPBLOCK::BLOCK GetTileBlockType(float _x, float _y);
-	vector<CObj*> Get_MapTile() { return m_vecTile; }
+	vector<CObj*>	Get_MapTile() { return m_vecTile; }
+	vector<int>		Get_DeadTile() { return m_vecDeadTileKey; }
+
+public:
+	void Organize_vecTile(vector<int> vecTileKey);
+	void Clear_DeadTileKey() { m_vecDeadTileKey.clear(); }
 
 public:
 	static CTileManager* Get_Instance()
@@ -35,8 +40,9 @@ public:
 
 private:
 	static CTileManager* m_pInstance;
-	vector<CObj*>				m_vecTile;
+	vector<CObj*>			m_vecTile;
 	CTile* m_Tile[TILEX][TILEY];
+	vector<int>				m_vecDeadTileKey;
 };
 
 

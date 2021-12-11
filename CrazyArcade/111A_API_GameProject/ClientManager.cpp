@@ -34,6 +34,8 @@ int CClientManager::connectToServer()
 
 	// socket 생성
 	sock = socket(AF_INET, SOCK_STREAM, 0);
+	//int	option = TRUE;	// Nagle On
+	//setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&option, sizeof(option));
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
 
@@ -96,45 +98,24 @@ int CClientManager::sendInfo()
 		err_display("send()");
 	}
 
+	// 변화된 타일 정보 전송
+	vector<int>	vecTileKey = CTileManager::Get_Instance()->Get_vecCollTileKey();
+	int	nSize = vecTileKey.size();
+	retval = send(sock, (char*)&nSize, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
 
-	//int iStart = -1;
-	//if (bisStart)	iStart = 1;
-	//else	iStart = 2;
-	//// 게임 시작했는지 확인
-	//retval = send(sock, (char*)&iStart, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//}
+	if (nSize > 0) {
+		for (int i = 0; i < nSize; ++i) {
+			retval = send(sock, (char*)&vecTileKey[i], sizeof(int), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()");
+			}
+		}
+	}
+	CTileManager::Get_Instance()->Clear_vecCollTileKey();
 
-	//// 변화된 몬스터 정보 전송
-	//if (bisStart) {
-	//	int iNum = 0;
-	//	list<CObj*> monsterList = CObjManager::Get_Instance()->Get_MonsterList();
-	//	for (auto iter = monsterList.begin(); iter != monsterList.end(); ++iter) {
-	//		if ((*iter)->GetState() == OBJSTATE::HIT) {
-	//			//tMonsterInfo.erase(tMonsterInfo.begin() + iNum);
-	//			tMonsterInfo[iNum].MonsterDead = true;
-	//			SAFE_DELETE(*iter);
-	//			iter = monsterList.erase(iter);
-	//		}
-	//		++iNum;
-	//	}
-	//	iMonsterCnt = monsterList.size();
-	//	CObjManager::Get_Instance()->Set_MonsterList(monsterList);
-
-
-	//	retval = send(sock, (char*)&iNum, sizeof(int), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("send()");
-	//	}
-
-	//	for (int i = 0; i < iNum; ++i) {
-	//		retval = send(sock, (char*)&tMonsterInfo[i], sizeof(MONSTERINFO), 0);
-	//		if (retval == SOCKET_ERROR) {
-	//			err_display("send()");
-	//		}
-	//	}
-	//}
 
 	return retval;
 }
@@ -145,10 +126,17 @@ int CClientManager::recvInfo()
 	// 플레이어 정보, 아이템 정보, 몬스터 정보를 담고 있는 
 	// WorldInfo 맵 컨테이너를 받는다.
 
-	AllClientNum = tClientInfo.ClientID_Number;	// 총 접속한 클라이언트의 개수
+	//AllClientNum = tClientInfo.ClientID_Number;	// 총 접속한 클라이언트의 개수
 
-	if (AllClientNum == 0)
-		AllClientNum = 1;
+	//if (AllClientNum == 0)
+	//	AllClientNum = 1;
+
+	//
+	retval = recvn(sock, (char*)&AllClientNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	//
 
 	for (int i = 0; i < AllClientNum; ++i)
 	{
@@ -181,8 +169,56 @@ int CClientManager::recvInfo()
 			}
 		}
 	}
-	// 왠지 모르겠는데 ClientID가 초기화됨; 다시 설정해줌
-	//tClientInfo.ClientID = iClientID;
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// #. 맵 블럭
+
+	// - 상태가 바뀔 타일
+	vector<int>	vecDeadTileKey;
+	int	nTileNum = -1;
+	retval = recvn(sock, (char*)&nTileNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	if (nTileNum > 0) {
+		vecDeadTileKey.resize(nTileNum);
+
+		for (int i = 0; i < nTileNum; ++i) {
+			retval = recvn(sock, (char*)&vecDeadTileKey[i], sizeof(int), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+			}
+			CObjManager::Get_Instance()->Set_BlockBubble(vecDeadTileKey[i]);
+		}
+	}
+
+	// - 새로 생길 아이템
+	vector<ITEMINFO>	vecItem;
+	int	nItemNum = -1;
+	retval = recvn(sock, (char*)&nItemNum, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	if (nItemNum > 0) {
+		vecItem.resize(nItemNum);
+
+		for (int i = 0; i < nItemNum; ++i) {
+			retval = recvn(sock, (char*)&vecItem[i], sizeof(ITEMINFO), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("recv()");
+			}
+			CObjManager::Get_Instance()->Make_Add_Item(vecItem[i]);
+		}
+	}
+	if (nTileNum > 0) {
+		//vecDeadTileKey.resize(nTileNum);
+
+		for (int i = 0; i < nTileNum; ++i) {
+			CObjManager::Get_Instance()->Add_NoItemBlock(vecDeadTileKey[i]);
+		}
+	}
 
 	return retval;
 }
@@ -242,57 +278,6 @@ void CClientManager::recvInitMapTile()
 
 	strcat_s(buf, pName);
 	CTileManager::Get_Instance()->Set_DataFile(buf, strlen(buf));
-}
-
-void CClientManager::recvInitMonster()
-{
-	int iNum = 0;
-	retval = recvn(sock, (char*)&iNum, sizeof(int), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-
-	tMonsterInfo.resize(iNum);
-
-	retval = recvn(sock, (char*)&tMonsterInfo[0], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	retval = recvn(sock, (char*)&tMonsterInfo[1], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	retval = recvn(sock, (char*)&tMonsterInfo[2], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	retval = recvn(sock, (char*)&tMonsterInfo[3], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	retval = recvn(sock, (char*)&tMonsterInfo[4], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	retval = recvn(sock, (char*)&tMonsterInfo[5], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	retval = recvn(sock, (char*)&tMonsterInfo[6], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-	retval = recvn(sock, (char*)&tMonsterInfo[7], sizeof(MONSTERINFO), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("recv()");
-	}
-}
-
-void CClientManager::InitMonster()
-{
-	for (int i = 0; i < tMonsterInfo.size(); ++i) {
-		CObjManager::Get_Instance()->Add_Monster(tMonsterInfo[i], i);
-	}
 }
 
 void CClientManager::setPlayerInfo()

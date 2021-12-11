@@ -6,19 +6,20 @@
 #include "Player.h"
 //#include "Bomb.h"
 #include "TileManager.h"
-//#include "Basket.h"
-//#include "Leaf1.h"
-//#include "Leaf2.h"
-//#include "Flower.h"
-//#include "Grass.h"
-//#include "Rock1.h"
-//#include "Rock2.h"
-//#include "Rock3.h"
+#include "Basket.h"
+#include "Leaf1.h"
+#include "Leaf2.h"
+#include "Flower.h"
+#include "Grass.h"
+#include "Rock1.h"
+#include "Rock2.h"
+#include "Rock3.h"
 #include "Messi.h"
 #include "Mbape.h"
 //#include "HMSon.h"
 //#include "BossBomb.h"
 #include "TimeManager.h"
+#include "Tile.h"
 
 CObjManager* CObjManager::m_pInstance = nullptr;
 
@@ -129,36 +130,26 @@ void CObjManager::Update()
 	//CCollidManager::Collision_Rect_PlayerToSkate(m_listObj[OBJID::PLAYER], m_listItem[GAMEITEM::SKATE]);
 	//CCollidManager::Collision_Rect_PlayerToPotion(m_listObj[OBJID::PLAYER], m_listItem[GAMEITEM::POTION]);
 	//CCollidManager::Collision_Rect_PlayerToMaxPotion(m_listObj[OBJID::PLAYER], m_listItem[GAMEITEM::MAXPOTION]);
-	
+
 }
 
 void CObjManager::Update_Monster()
 {
-	for (int i = 0; i < OBJID::END; ++i)
+	for (auto&& iter = m_listObj[OBJID::MONSTER].begin(); iter != m_listObj[OBJID::MONSTER].end();)
 	{
-		if (i == OBJID::MONSTER) {
-			for (auto&& iter = m_listObj[i].begin(); iter != m_listObj[i].end();)
-			{
-				int iEvent = (*iter)->Update();
-				
-				if (iEvent == OBJ_DEAD)
-				{
-					SAFE_DELETE(*iter);
-					iter = m_listObj[i].erase(iter);
-				}
-				else
-					++iter;
-			}
+		int iEvent = (*iter)->Update();
+
+		if (iEvent == OBJ_DEAD)
+		{
+			SAFE_DELETE(*iter);
+			iter = m_listObj[OBJID::MONSTER].erase(iter);
 		}
+		else
+			++iter;
 	}
 
-	for (int i = 0; i < OBJID::END; ++i)
-	{
-		if (i == OBJID::MONSTER) {
-			for (auto& pObj : m_listObj[i])
-				pObj->Late_Update();
-		}
-	}
+	for (auto& pObj : m_listObj[OBJID::MONSTER])
+		pObj->Late_Update();
 	//CTimeManager::Get_Instance()->Update_CTimeManager();
 }
 
@@ -207,7 +198,7 @@ void CObjManager::Render(HDC _DC)
 				continue;
 			pObj->Render(_DC);
 		}
-		
+
 	}
 
 
@@ -284,7 +275,7 @@ void CObjManager::Set_PlayerY(float fY)
 	}
 }
 
-void CObjManager::Picking_Object(CObj * _pObj, MAPBLOCK::BLOCK _block)
+void CObjManager::Picking_Object(CObj* _pObj, MAPBLOCK::BLOCK _block)
 {
 	/*POINT pt = {};
 	GetCursorPos(&pt);
@@ -379,77 +370,102 @@ void CObjManager::Save_Object()
 // 네트워크 텀프를 위한 수정
 void CObjManager::Load_Object()
 {
-	//HANDLE hFile = CreateFile(L"../Data/NetworkObject.dat", GENERIC_READ,
-	//	NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFile("../Data/NetworkObject.dat", GENERIC_READ,
+		NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-	//if (INVALID_HANDLE_VALUE == hFile)
-	//{
-	//	MessageBox(g_hWnd, L"오브젝트 불러오기 실패", L"실패", MB_OK);
-	//	return;
-	//}
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		//MessageBox(g_hWnd, L"오브젝트 불러오기 실패", L"실패", MB_OK);
+		return;
+	}
 
-	//Release();
-	//CObj* _pObj = nullptr;
-	//DWORD dwByte =		 0;
-	//INFO tTemp =		{};
-	//MAPBLOCK::BLOCK		 BlockInfo;
+	Release();
+	CObj* _pObj = nullptr;
+	DWORD dwByte = 0;
+	INFO tTemp = {};
+	MAPBLOCK::BLOCK		 BlockInfo;
+	int iNum = 0;
 
-	//while (true)
-	//{
-	//	ReadFile(hFile, &tTemp, sizeof(INFO), &dwByte, NULL);
-	//	ReadFile(hFile, &BlockInfo, sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
+	while (true)
+	{
+		ReadFile(hFile, &tTemp, sizeof(INFO), &dwByte, NULL);
+		ReadFile(hFile, &BlockInfo, sizeof(MAPBLOCK::BLOCK), &dwByte, NULL);
 
-	//	if (0 == dwByte)
-	//		break;
+		if (0 == dwByte)
+			break;
 
-	//	switch (BlockInfo)
-	//	{
-	//	case MAPBLOCK::BASKET:
-	//		_pObj = CAbstractFactory<CBasket>::Create(tTemp.fX, tTemp.fY);
-	//		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
-	//		CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
-	//		break;
-	//	case MAPBLOCK::LEAF1:
-	//		_pObj = CAbstractFactory<CLeaf1>::Create(tTemp.fX, tTemp.fY);
-	//		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
-	//		CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
-	//		break;
-	//	case MAPBLOCK::LEAF2:
-	//		_pObj = CAbstractFactory<CLeaf2>::Create(tTemp.fX, tTemp.fY);
-	//		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
-	//		CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
-	//		break;
-	//	case MAPBLOCK::FLOWER:
-	//		_pObj = CAbstractFactory<CFlower>::Create(tTemp.fX, tTemp.fY);	
-	//		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
-	//		CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
-	//		break;
-	//	case MAPBLOCK::GRASS:
-	//		_pObj = CAbstractFactory<CGrass>::Create(tTemp.fX, tTemp.fY);
-	//		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
-	//		CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
-	//		break;
-	//	case MAPBLOCK::ROCK1:
-	//		_pObj = CAbstractFactory<Rock1>::Create(tTemp.fX, tTemp.fY);	
-	//		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
-	//		CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
-	//		break;
-	//	case MAPBLOCK::ROCK2:
-	//		_pObj = CAbstractFactory<Rock2>::Create(tTemp.fX, tTemp.fY);
-	//		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
-	//		CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
-	//		break;
-	//	case MAPBLOCK::ROCK3:
-	//		_pObj = CAbstractFactory<Rock3>::Create(tTemp.fX, tTemp.fY);
-	//		CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
-	//		CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
-	//		break;
-	//	}
+		switch (BlockInfo)
+		{
+		case MAPBLOCK::BASKET:
+			_pObj = CAbstractFactory<CBasket>::Create(tTemp.fX, tTemp.fY);
+			//_pObj->Set_ObjNum(iNum);
+			_pObj->Set_BlolckType(BlockInfo);
+			_pObj->Set_Pos(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::LEAF1:
+			_pObj = CAbstractFactory<CLeaf1>::Create(tTemp.fX, tTemp.fY);
+			//_pObj->Set_ObjNum(iNum);
+			_pObj->Set_BlolckType(BlockInfo);
+			_pObj->Set_Pos(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::LEAF2:
+			_pObj = CAbstractFactory<CLeaf2>::Create(tTemp.fX, tTemp.fY);
+			//_pObj->Set_ObjNum(iNum);
+			_pObj->Set_BlolckType(BlockInfo);
+			_pObj->Set_Pos(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::FLOWER:
+			_pObj = CAbstractFactory<CFlower>::Create(tTemp.fX, tTemp.fY);
+			//_pObj->Set_ObjNum(iNum);
+			_pObj->Set_BlolckType(BlockInfo);
+			_pObj->Set_Pos(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::GRASS:
+			_pObj = CAbstractFactory<CGrass>::Create(tTemp.fX, tTemp.fY);
+			//_pObj->Set_ObjNum(iNum);
+			_pObj->Set_BlolckType(BlockInfo);
+			_pObj->Set_Pos(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK1:
+			_pObj = CAbstractFactory<Rock1>::Create(tTemp.fX, tTemp.fY);
+			//_pObj->Set_ObjNum(iNum);
+			_pObj->Set_BlolckType(BlockInfo);
+			_pObj->Set_Pos(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK2:
+			_pObj = CAbstractFactory<Rock2>::Create(tTemp.fX, tTemp.fY);
+			//_pObj->Set_ObjNum(iNum);
+			_pObj->Set_BlolckType(BlockInfo);
+			_pObj->Set_Pos(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		case MAPBLOCK::ROCK3:
+			_pObj = CAbstractFactory<Rock3>::Create(tTemp.fX, tTemp.fY);
+			//_pObj->Set_ObjNum(iNum);
+			_pObj->Set_BlolckType(BlockInfo);
+			_pObj->Set_Pos(tTemp.fX, tTemp.fY);
+			CObjManager::Get_Instance()->Add_Object_MapBlock(_pObj, BlockInfo);
+			CTileManager::Get_Instance()->SetTileBlockType(tTemp.fX, tTemp.fY, BlockInfo);
+			break;
+		}
+		_pObj->Set_ObjNum(iNum);
+		++iNum;
+	}
 
-
-	//}
-
-	//CloseHandle(hFile);
+	CloseHandle(hFile);
 	////MessageBox(g_hWnd, L"오브젝트 불러오기 성공", L"성공", MB_OK);
 
 }
@@ -661,4 +677,87 @@ void CObjManager::Load_Object_Boss()
 
 	//CloseHandle(hFile);
 	////MessageBox(g_hWnd, L"오브젝트 불러오기 성공", L"성공", MB_OK);
+}
+
+void CObjManager::Add_CollBlock(int iNum)
+{
+	if (find(m_vecDeadTileKey.begin(), m_vecDeadTileKey.end(), iNum)
+		== m_vecDeadTileKey.end()) {
+		m_vecDeadTileKey.emplace_back(iNum);
+	}
+}
+
+void CObjManager::Check_ItemBlock(int iNum)
+{
+	for (int i = 0; i < MAPBLOCK::END; ++i)
+	{
+		for (auto& pObj : m_listMapBLOCK[i]) {
+			if (pObj->Get_ObjNum() == iNum && pObj->Get_BlockType() == MAPBLOCK::BLOCK::LEAF1) {
+				if (find(m_vecItemKey.begin(), m_vecItemKey.end(), iNum)
+					== m_vecItemKey.end()) {
+						m_vecItemKey.emplace_back(iNum);
+				}
+				return;
+			}
+		}
+	}
+}
+
+void CObjManager::Make_Item()
+{
+	for (int i = 0; i < m_vecItemKey.size(); ++i) {
+
+		ITEMINFO	tItem;
+
+		// 종류
+		int iItem = rand() % 5;
+		switch (iItem)
+		{
+		case 0:
+			tItem.ItemName = GAMEITEM::ITEM::BALLON;
+			break;
+		case 1:
+			tItem.ItemName = GAMEITEM::ITEM::POTION;
+			break;
+		case 2:
+			tItem.ItemName = GAMEITEM::ITEM::SKATE;
+			break;
+		case 3:
+			tItem.ItemName = GAMEITEM::ITEM::MAXPOTION;
+			break;
+		case 4:
+			break;
+		}
+
+		// 위치
+		tItem.ItemPos.fX = Get_blockPosX(m_vecItemKey[i]);
+		tItem.ItemPos.fY = Get_blockPosY(m_vecItemKey[i]);
+
+		tItem.iBlockObjNum = m_vecItemKey[i];
+
+		m_vecItem.emplace_back(tItem);
+	}
+}
+
+float CObjManager::Get_blockPosX(int iNum)
+{
+	for (int i = 0; i < MAPBLOCK::END; ++i)
+	{
+		for (auto& pObj : m_listMapBLOCK[i]) {
+			if (pObj->Get_ObjNum() == iNum) {
+				return pObj->Get_Info().fX;
+			}
+		}
+	}
+}
+float CObjManager::Get_blockPosY(int iNum)
+{
+	for (int i = 0; i < MAPBLOCK::END; ++i)
+	{
+		for (auto& pObj : m_listMapBLOCK[i]) {
+			if (pObj->Get_ObjNum() == iNum) {
+				return pObj->Get_Info().fY;
+			}
+		}
+	}
 }

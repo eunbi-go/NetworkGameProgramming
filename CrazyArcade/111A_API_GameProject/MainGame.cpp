@@ -16,8 +16,6 @@ CMainGame::CMainGame()
 	CClientManager::Get_Instance()->recvClientID();
 	// 맵 정보를 받아온다.
 	CClientManager::Get_Instance()->recvInitMapTile();
-	// 몬스터 정보를 받아온다
-	//CClientManager::Get_Instance()->recvInitMonster();
 }
 
 
@@ -42,13 +40,6 @@ void CMainGame::Initialize()
 
 void CMainGame::Update()
 {
-	if (CSceneManager::Get_Instance()->Get_CurScene() == CSceneManager::SCENEID::SCENE_STAGE_NETWORK) {
-		/*if (!m_bInitMonster) {
-			m_bInitMonster = true;
-			CClientManager::Get_Instance()->setGameStart();
-			CClientManager::Get_Instance()->InitMonster();
-		}*/
-	}
 	// 서버 통신
 	CClientManager::Get_Instance()->sendInfo();
 	CClientManager::Get_Instance()->recvInfo();
@@ -75,8 +66,6 @@ void CMainGame::Render()
 	CSceneManager::Get_Instance()->Render(HBackBuffer);
 
 	BitBlt(m_DC, 0, 0, WINCX, WINCY, HBackBuffer, 0, 0, SRCCOPY);
-
-	//CClientManager::Get_Instance()->applyInfo();
 }
 
 void CMainGame::Release()

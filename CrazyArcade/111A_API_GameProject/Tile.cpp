@@ -17,7 +17,6 @@ void CTile::Initialize()
 {
 	m_tInfo.iCX = TILECX;
 	m_tInfo.iCY = TILECY;
-
 }
 
 int CTile::Update()

@@ -29,6 +29,7 @@ public:
 	float Get_BombY();
 
 	list<CObj*>	Get_MonsterList() { return m_listObj[OBJID::MONSTER]; }
+	list<CObj*>	Get_ItemList() { return m_listItem[GAMEITEM::END]; }
 	void Set_MonsterList(list<CObj*>& listM) { m_listObj[OBJID::MONSTER] = listM; }
 
 	void Set_PlayerX(float fX);
@@ -54,7 +55,30 @@ public:
 
 	void Set_Cheat(bool _ischeat) { m_bisCheat = _ischeat; }
 	bool Get_Cheat() { return m_bisCheat; }
-	
+
+public:
+	vector<int>	Get_DeadTile() { return m_vecDeadTileKey; }
+	void Clear_DeadTile() {
+		m_vecDeadTileKey.clear();	m_vecDeadTileKey.resize(0); 
+		m_vecItemKey.clear();		m_vecItemKey.resize(0); 
+		m_vecItem.clear();			m_vecItem.resize(0);
+	}
+	void Add_DeadBlock(int iNum) {
+		if (find(m_vecDeadBlockKey.begin(), m_vecDeadBlockKey.end(), iNum)
+			== m_vecDeadBlockKey.end()) {
+			m_vecDeadBlockKey.emplace_back(iNum);
+		}
+	}
+	void Add_CollBlock(int iNum);
+
+public:
+	void Check_ItemBlock(int iNum);
+	float Get_blockPosX(int iNum);
+	float Get_blockPosY(int iNum);
+	void Make_Item();
+	//vector<int>	Get_vecItemkey() { return m_vecItemKey; }
+	vector<ITEMINFO>	Get_vecItemInfo() { return m_vecItem; }
+
 public:
 	static CObjManager* Get_Instance()
 	{
@@ -73,7 +97,7 @@ private:
 	list<CObj*>				m_listObj[OBJID::END];
 	list<CObj*>				m_listMapBLOCK[MAPBLOCK::END];
 	list<CObj*>				m_listItem[GAMEITEM::END];
-	static CObjManager*		m_pInstance;
+	static CObjManager* m_pInstance;
 
 	bool					m_bisBombPlayerCollid;
 	int						m_iStage1Clear;
@@ -81,6 +105,10 @@ private:
 
 	bool					m_bisCheat;
 
+	vector<int>				m_vecDeadTileKey;
+	vector<int>				m_vecItemKey;
+	vector<ITEMINFO>		m_vecItem;
+	vector<int>				m_vecDeadBlockKey;
 };
 
 
