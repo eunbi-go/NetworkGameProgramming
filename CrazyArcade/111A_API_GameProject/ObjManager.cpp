@@ -131,7 +131,7 @@ void CObjManager::Update()
 
 	///////////////////////////////// 치트
 	// 테스트용으로 치트 켜놓은 상태
-	if (m_bisCheat)
+	if (!m_bisCheat)
 	{
 		CCollidManager::Collision_Rect_PlayerToBoss(m_listObj[OBJID::PLAYER], m_listObj[OBJID::BOSS]);
 		CCollidManager::Collision_Rect_PlayerToMonster(m_listObj[OBJID::PLAYER], m_listObj[OBJID::MONSTER]);
