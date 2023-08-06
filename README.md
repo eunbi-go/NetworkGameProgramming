@@ -13,11 +13,15 @@
 동기화: 맵, 블록, 아이템  
 
 5) 관련 소스코드  
-데이터 송수신하며 맵 블록, 아이템 동기화:  
+- 데이터 송수신하며 맵 블록, 아이템 동기화:  
 CrazyArcade / 98.Manager / 09.ClientManager / ClientManager.cpp 내 sendInfo(), recvInfo()
-Server / server.cpp 내 Send_Data()
-Server / server.cpp 내 Receive_Data()
 
-맵 초기화:  
-CrazyArcade / 98.Manager / 09.ClinetManager / ClientManager.cpp 내 recvInitMapTile()  
+Server / server.cpp 내 Send_Data()  
+
+Server / server.cpp 내 Receive_Data()  
+
+
+- 맵 초기화:  
+CrazyArcade / 98.Manager / 09.ClinetManager / ClientManager.cpp 내 recvInitMapTile()
+
 Server / server.cpp 내 Send_InitMap()
